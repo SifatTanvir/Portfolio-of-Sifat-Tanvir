@@ -1,0 +1,151 @@
+<!Doctype html>
+<html lang="en">
+    <head>
+        <meta charset= "UTF-8">
+        <meta name="author" content="Sifat">
+        <meta name="description" content="Lesson 2">
+        <title>Contact Me</title>
+        <link rel="icon" href="html5.png" 
+        type="image/x-icon">
+        <link rel="stylesheet" href="main.css" type="text/css">
+
+
+    </head> 
+
+    <body>
+      <!-- <h1>Contact Me</h1> -->
+        <section id="contactme">
+            <h1 id="demo"></h1>
+            <form id= "form" action="" method="get"><p>
+              <fieldset>
+              <legend><strong>Personal Information</strong></legend> <p></p>
+              
+              <label for="firstName" class="xyz">First Name</label>
+              <input type="text" name="firstName" id="firstName" placeholder="Sifat" required>
+              <br></p><p>
+              <label for="lastName" class="xyz">Last Name</label>
+              <input type="text" name="lastName" id="lastName"  placeholder="Tanvir">
+              <br></p><p>
+              <label for="email" class="xyz">Email</label>
+              <input type="email" name="email" id="email"  placeholder="sifat.tanvir@gmail.com" required>
+              </p><p><br></p>
+              <label for="age" class="xy">Age</label>
+              <input type="number" name="age" id="age" value="25" 
+              min="18" max="40" step="1" pattern="[0-9]{2}">
+              </p>
+              </fieldset> <br>
+  
+              <fieldset>
+              <legend><strong>Career Information</strong></legend> <p></p>
+              <p>Educational Background</p>
+              <input type="radio" name="background" class= "edu" id="student" value="student" required>
+              <label for="student">Student</label> <br>
+              <input type="radio" name="background" class= "edu" id="graduate" value="graduate" required>
+              <label for="graduate">Graduate</label><br>
+              <input type="radio" name="background" class= "edu" id="postgraduate" value="postgraduate" required>
+              <label for="postgraduate">Post Graduate</label>
+              <p><br></p>
+  
+              <label for="field">Field of Interest</label><p></p>
+              <select name="field" id="field" required>
+                <optgroup label="Front-End">
+                  <option value="developer">Web Developer</option>
+                  <option value="designer">Web Designer</option>
+                  <option value="uiux">UI/UX Designer</option> 
+                </optgroup>
+                <optgroup label="Back-End">
+                  <option value="database">Database Developer</option>
+                  <option value="back-end">Back-end Developer</option>
+                </optgroup>
+                <option value="other">Other</option>
+              </select><br><br><br></p>
+  
+              <p>Programming Skills</p>
+              <input type="checkbox" name="html" class="skill" value="html">
+              <label for="html">HTML</label>
+              <input type="checkbox" name="css" class="skill" value="css">
+              <label for="css">CSS</label>
+              <input type="checkbox" name="js" class="skill" value="js">
+              <label for="js">JavaScript</label>
+              <input type="checkbox" name="python" class="skill" value="python">
+              <label for="python">Python</label>
+              <input type="checkbox" name="java" class="skill" value="java">
+              <label for="java">Java</label>
+              <input type="checkbox" name="php" class="skill" value="php">
+              <label for="php">PHP</label> <p></p>
+            </fieldset> <p></p>
+            
+            <fieldset>
+              <legend><strong>Send me a message</strong> </legend>
+              <textarea name="msg" id="msg" cols="80" rows="10" placeholder="Hello World!"></textarea>
+            </fieldset><p></p>
+  
+            <button type="submit">Submit</button>
+            <button type="reset">Reset</button>
+  
+            </form>
+  
+          </section>
+          <hr>
+          <footer>&copy; Sifat Tanvir  <br>
+            <a href="index.html">Back to Previous Page</a>
+            
+            </footer>
+    
+
+    <script>
+      const myTimeout = setTimeout(myGreeting, 5000);
+      function myGreeting() {
+        document.getElementById("demo").innerHTML = "Contact Me"
+      }
+
+      var form= document.getElementById("form")
+      form.addEventListener("submit", function(event){
+        event.preventDefault() //Prevents autosubmitting
+        // alert("Thank you for reaching out!");
+
+        var firstName= document.getElementById("firstName").value
+        var lastName= document.getElementById("lastName").value
+        var email= document.getElementById("email").value
+        var age= document.getElementById("age").value
+        var edu= document.getElementsByClassName("edu").value
+        var field= document.getElementById("field").value
+
+        var skill = []; 
+        var inputElements = document.getElementsByClassName('skill');
+        for(var i=0; inputElements[i]; ++i){
+              if(inputElements[i].checked){
+                skill.push(inputElements[i].value)
+                // console.log(skill)
+              }
+        }
+
+        var edu = "";
+        if(document.getElementById('student').checked) {   
+                edu  = "Student";
+        } else if (document.getElementById('graduate').checked) {
+                edu  = "Graduate";
+        } else {
+                edu  = "Post Graduate";
+        }  
+
+        var msg= document.getElementById("msg").value
+
+        console.log(firstName, lastName, email, age, field, edu, skill, msg)
+
+        var info = {
+          "First Name": firstName,
+          "Last Name": lastName,
+          "Email": email,
+          "Age": age,
+          "Field": field
+        }
+        console.log(info)
+
+        
+      })
+
+      
+    </script>
+    </body>
+    </html>
