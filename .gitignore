@@ -1,0 +1,6 @@
+# Local Python (do not commit venv into repo)
+Lib/
+venv/
+.venv/
+__pycache__/
+*.pyc

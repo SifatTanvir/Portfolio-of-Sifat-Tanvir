@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Projects | Sifat Tanvir</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Kelly
+  * Template URL: https://bootstrapmade.com/kelly-free-bootstrap-cv-resume-html-template/
+  * Updated: Aug 07 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="projects-page">
+
+  <header id="header" class="header d-flex align-items-center light-background sticky-top">
+    <div class="container-fluid position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">Sifat Tanvir</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="skills.html">Skills</a></li>
+          <li><a href="resume.html">Resume</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="projects.html" class="active">Projects</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <div class="header-social-links">
+        <a href="#" class="github"><i class="bi bi-github"></i></a>
+        <a href="#" class="google-scholar" aria-label="Google Scholar" title="Google Scholar"><i class="bi bi-mortarboard"></i></a>
+        <a href="#" class="ieee" aria-label="IEEE" title="IEEE"><span class="ieee-mark">IEEE</span></a>
+        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Projects</h2>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+        <div class="project-switcher d-flex flex-wrap justify-content-center gap-2 mb-4" data-aos="fade-up" role="tablist" aria-label="Project areas">
+          <button type="button" class="project-tab-btn active" role="tab" aria-selected="true" aria-controls="project-panel-llm" id="tab-llm" data-project="llm">LLM Compression</button>
+          <button type="button" class="project-tab-btn" role="tab" aria-selected="false" aria-controls="project-panel-android" id="tab-android" data-project="android">Android App</button>
+          <button type="button" class="project-tab-btn" role="tab" aria-selected="false" aria-controls="project-panel-webgames" id="tab-webgames" data-project="webgames">Webgames</button>
+        </div>
+
+        <div class="project-panels" data-aos="fade-up" data-aos-delay="100">
+          <div id="project-panel-llm" class="project-panel active" role="tabpanel" aria-labelledby="tab-llm" aria-hidden="false">
+            <h3 class="project-panel-title">LLM Compression</h3>
+
+            <h4 class="project-llm-subheading">Why LLM Compression is necessary</h4>
+            <div class="project-llm-prose">
+              <p>Due to the model complexity, exceptional hardware requirements, large training data and lengthy inference time, large language models (LLMs) are not scalable.</p>
+              <p>Scaling of LLMs involves several challenges such as trade-off between the expenses, ensuring compliance with data regulations and the performance, increased model complexity and latency.</p>
+              <p>Successful scaling of LLMs can lead to the proper balancing of the expenses, model complexity, latency and performance.</p>
+              <p>This shows the comparative analysis among several state-of-the-art LLM compression techniques such as Parameter Pruning, Dynamic Quantization, and Mixed Precision Quantization on the BERT (bert-base-uncased) model and analyzes which technique yields the best performance tackling the scalability issues and reveals their limitations.</p>
+              <p>The research also introduces a hybrid approach of Pruning and Dynamic Quantization, and shows how the proposed approach performs compared to the state-of-the-art approaches. The implementation of the hybrid approach is also highlighted in this work.</p>
+              <p>How Quantization Aware Training (QAT) affects the models is discussed at the end.</p>
+            </div>
+
+            <h4 class="project-llm-subheading">Methodology and Workflow</h4>
+            <div class="project-deck-wrap mb-2">
+              <div class="project-deck-zoombar d-flex flex-wrap justify-content-center align-items-center gap-2 py-2 px-2" role="toolbar" aria-label="Slide zoom">
+                <button type="button" class="btn btn-sm project-deck-zoom-btn" id="project-deck-zoom-in" aria-label="Zoom in" title="Zoom in"><i class="bi bi-zoom-in"></i></button>
+                <button type="button" class="btn btn-sm project-deck-zoom-btn" id="project-deck-zoom-out" aria-label="Zoom out" title="Zoom out"><i class="bi bi-zoom-out"></i></button>
+                <button type="button" class="btn btn-sm project-deck-zoom-btn" id="project-deck-zoom-reset" aria-label="Reset zoom" title="Reset zoom"><i class="bi bi-arrows-angle-contract"></i></button>
+              </div>
+              <div class="swiper init-swiper project-deck-swiper">
+                <script type="application/json" class="swiper-config">
+                  {
+                    "loop": true,
+                    "speed": 500,
+                    "slidesPerView": 1,
+                    "spaceBetween": 16,
+                    "observer": true,
+                    "observeParents": true,
+                    "zoom": { "maxRatio": 4, "minRatio": 1, "toggle": true },
+                    "pagination": { "el": ".project-deck-swiper-pagination", "clickable": true },
+                    "navigation": { "nextEl": ".project-deck-swiper-button-next", "prevEl": ".project-deck-swiper-button-prev" }
+                  }
+                </script>
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide1.JPG" class="project-deck-img" alt="Slide 1" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide2.JPG" class="project-deck-img" alt="Slide 2" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide3.JPG" class="project-deck-img" alt="Slide 3" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide4.JPG" class="project-deck-img" alt="Slide 4" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide5.JPG" class="project-deck-img" alt="Slide 5" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide6.JPG" class="project-deck-img" alt="Slide 6" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide7.JPG" class="project-deck-img" alt="Slide 7" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide8.JPG" class="project-deck-img" alt="Slide 8" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide9.JPG" class="project-deck-img" alt="Slide 9" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide10.JPG" class="project-deck-img" alt="Slide 10" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide11.JPG" class="project-deck-img" alt="Slide 11" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide12.JPG" class="project-deck-img" alt="Slide 12" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide13.JPG" class="project-deck-img" alt="Slide 13" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide14.JPG" class="project-deck-img" alt="Slide 14" loading="lazy"></div></div>
+                  <div class="swiper-slide"><div class="swiper-zoom-container"><img src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/Slide15.JPG" class="project-deck-img" alt="Slide 15" loading="lazy"></div></div>
+                </div>
+                <div class="swiper-pagination project-deck-swiper-pagination"></div>
+                <div class="swiper-button-prev project-deck-swiper-button-prev"></div>
+                <div class="swiper-button-next project-deck-swiper-button-next"></div>
+              </div>
+            </div>
+
+            <h4 class="project-llm-subheading">Implementation Notebook</h4>
+                        <div class="project-embed-frame project-embed-frame--notebook">
+              <iframe src="assets/projects/Comparative%20Analysis%20of%20Scalability%2C%20Performance%20and%20Limitations%20of%20Large%20Language%20Model%20Compression%20Techniques/llm-compression-techniques-bertbaseuncased.html" title="LLM compression notebook (exported cells)"></iframe>
+            </div>
+          </div>
+          <div id="project-panel-android" class="project-panel" role="tabpanel" aria-labelledby="tab-android" aria-hidden="true">
+            <h3 class="project-panel-title">Falling Object Catcher</h3>
+            <p class="text-muted mb-0">Add your content inside this panel.</p>
+          </div>
+          <div id="project-panel-webgames" class="project-panel" role="tabpanel" aria-labelledby="tab-webgames" aria-hidden="true">
+            <h3 class="project-panel-title">Webgames</h3>
+            <p class="text-muted mb-0">Add your content inside this panel.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Projects Section -->
+
+  </main>
+
+  <footer id="footer" class="footer light-background">
+
+    <div class="container">
+      <div class="copyright text-center ">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">Sifat Tanvir</strong> <span>All Rights Reserved<br></span></p>
+      </div>
+      <div class="social-links d-flex justify-content-center">
+        <a href="" class="github"><i class="bi bi-github"></i></a>
+        <a href="" class="google-scholar" aria-label="Google Scholar" title="Google Scholar"><i class="bi bi-mortarboard"></i></a>
+        <a href="" class="ieee" aria-label="IEEE" title="IEEE"><span class="ieee-mark">IEEE</span></a>
+        <a href="" class="facebook"><i class="bi bi-facebook"></i></a>
+        <a href="" class="instagram"><i class="bi bi-instagram"></i></a>
+        <a href="" class="linkedin"><i class="bi bi-linkedin"></i></a>
+      </div>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> · <a href="https://themewagon.com/">ThemeWagon</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/projects-tabs.js"></script>
+  <script src="assets/js/projects-deck-zoom.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Notebook — LLM Compression</title><style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:1.25rem;max-width:56rem;margin:0 auto;color:#333;line-height:1.5}h1{font-size:1.35rem;margin-bottom:.5rem}.nb-note{color:#666;font-size:.9rem;margin-bottom:1.5rem}.nb-cell{margin-bottom:1.25rem}.nb-md{white-space:pre-wrap}.nb-code{background:#f6f8fa;border:1px solid #e1e4e8;border-radius:6px;padding:.85rem 1rem;overflow-x:auto;font-size:.8rem;line-height:1.45}</style></head><body><h1>llm-compression-techniques-bertbaseuncased.ipynb</h1><p class="nb-note">Static export of notebook source cells (markdown and code).</p><div class="nb-cell"><pre class="nb-code"><code>import numpy as np
+import pandas as pd
+import sklearn
+import transformers
+import torchvision
+
+import os
+for dirname, _, filenames in os.walk(&#x27;/kaggle/input&#x27;):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from __future__ import absolute_import, division, print_function
+import logging
+import numpy as np
+import random
+import sys
+import time
+import torch
+
+from argparse import Namespace
+from torch.utils.data import (DataLoader, RandomSampler, SequentialSampler,
+                              TensorDataset)
+from tqdm import tqdm
+from transformers import (BertConfig, BertForSequenceClassification, BertTokenizer,)
+from transformers import glue_compute_metrics as compute_metrics
+from transformers import glue_output_modes as output_modes
+from transformers import glue_processors as processors
+from transformers import glue_convert_examples_to_features as convert_examples_to_features
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(format = &#x27;%(asctime)s - %(levelname)s - %(name)s -   %(message)s&#x27;,
+                    datefmt = &#x27;%m/%d/%Y %H:%M:%S&#x27;,
+                    level = logging.WARN)
+
+logging.getLogger(&quot;transformers.modeling_utils&quot;).setLevel(
+   logging.WARN)  # Reduce logging
+
+print(torch.__version__)</code></pre></div><div class="nb-cell nb-md">We set the number of threads to compare the single thread performance between FP32 and INT8 performance. In the end of the tutorial, the user can set other number of threads by building PyTorch with right parallel backend.</div><div class="nb-cell"><pre class="nb-code"><code>torch.set_num_threads(1)
+print(torch.__config__.parallel_info())</code></pre></div><div class="nb-cell nb-md"># Download Dataset</div><div class="nb-cell"><pre class="nb-code"><code>!pwd
+!ls
+!wget https://gist.githubusercontent.com/W4ngatang/60c2bdb54d156a41194446737ce03e2e/raw/17b8dd0d724281ed7c3b2aeeda662b92809aadd5/download_glue_data.py
+!python download_glue_data.py --data_dir=&#x27;glue_data&#x27; --tasks=&#x27;MRPC&#x27;
+!ls glue_data/MRPC</code></pre></div><div class="nb-cell nb-md"># Import Fine-tune the BERT model</div><div class="nb-cell"><pre class="nb-code"><code>!wget https://download.pytorch.org/tutorial/MRPC.zip
+!unzip MRPC.zip
+!ls
+!pwd</code></pre></div><div class="nb-cell nb-md"># Set global configurations</div><div class="nb-cell"><pre class="nb-code"><code>configs = Namespace()
+
+# The output directory for the fine-tuned model.
+configs.output_dir = &quot;/kaggle/working/MRPC&quot;
+# configs.output_dir = &quot;./MRPC/&quot;
+
+# The data directory for the MRPC task in the GLUE benchmark.
+configs.data_dir = &quot;/kaggle/working/glue_data/MRPC&quot;
+
+# The model name or path for the pre-trained model.
+configs.model_name_or_path = &quot;bert-base-uncased&quot;
+# The maximum length of an input sequence
+configs.max_seq_length = 128
+
+# Prepare GLUE task.
+configs.task_name = &quot;MRPC&quot;.lower()
+configs.processor = processors[configs.task_name]()
+configs.output_mode = output_modes[configs.task_name]
+configs.label_list = configs.processor.get_labels()
+configs.model_type = &quot;bert&quot;.lower()
+configs.do_lower_case = True
+
+# Set the device, batch size, topology, and caching flags.
+configs.device = &quot;cpu&quot;
+configs.per_gpu_eval_batch_size = 8
+configs.n_gpu = 0
+configs.local_rank = -1
+configs.overwrite_cache = False
+
+
+# Set random seed for reproducibility.
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+set_seed(42)</code></pre></div><div class="nb-cell nb-md"># Load the fine-tuned BERT model</div><div class="nb-cell"><pre class="nb-code"><code>print(configs.output_dir) 
+tokenizer = BertTokenizer.from_pretrained(
+    configs.output_dir, do_lower_case=configs.do_lower_case)
+
+model = BertForSequenceClassification.from_pretrained(configs.output_dir)
+model.to(configs.device)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>def evaluate(args, model, tokenizer, prefix=&quot;&quot;):
+    # Loop to handle MNLI double evaluation (matched, mis-matched)
+    eval_task_names = (&quot;mnli&quot;, &quot;mnli-mm&quot;) if args.task_name == &quot;mnli&quot; else (args.task_name,)
+    eval_outputs_dirs = (args.output_dir, args.output_dir + &#x27;-MM&#x27;) if args.task_name == &quot;mnli&quot; else (args.output_dir,)
+
+    results = {}
+    for eval_task, eval_output_dir in zip(eval_task_names, eval_outputs_dirs):
+        eval_dataset = load_and_cache_examples(args, eval_task, tokenizer, evaluate=True)
+
+        if not os.path.exists(eval_output_dir) and args.local_rank in [-1, 0]:
+            os.makedirs(eval_output_dir)
+
+        args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
+        # Note that DistributedSampler samples randomly
+        eval_sampler = SequentialSampler(eval_dataset) if args.local_rank == -1 else DistributedSampler(eval_dataset)
+        eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size)
+
+        # multi-gpu eval
+        if args.n_gpu &gt; 1:
+            model = torch.nn.DataParallel(model)
+
+        # Eval!
+        logger.info(&quot;***** Running evaluation {} *****&quot;.format(prefix))
+        logger.info(&quot;  Num examples = %d&quot;, len(eval_dataset))
+        logger.info(&quot;  Batch size = %d&quot;, args.eval_batch_size)
+        eval_loss = 0.0
+        nb_eval_steps = 0
+        preds = None
+        out_label_ids = None
+        for batch in tqdm(eval_dataloader, desc=&quot;Evaluating&quot;):
+            model.eval()
+            batch = tuple(t.to(args.device) for t in batch)
+
+            with torch.no_grad():
+                inputs = {&#x27;input_ids&#x27;:      batch[0],
+                          &#x27;attention_mask&#x27;: batch[1],
+                          &#x27;labels&#x27;:         batch[3]}
+                if args.model_type != &#x27;distilbert&#x27;:
+                    inputs[&#x27;token_type_ids&#x27;] = batch[2] if args.model_type in [&#x27;bert&#x27;, &#x27;xlnet&#x27;] else None  # XLM, DistilBERT and RoBERTa don&#x27;t use segment_ids
+                outputs = model(**inputs)
+                tmp_eval_loss, logits = outputs[:2]
+
+                eval_loss += tmp_eval_loss.mean().item()
+            nb_eval_steps += 1
+            if preds is None:
+                preds = logits.detach().cpu().numpy()
+                out_label_ids = inputs[&#x27;labels&#x27;].detach().cpu().numpy()
+            else:
+                preds = np.append(preds, logits.detach().cpu().numpy(), axis=0)
+                out_label_ids = np.append(out_label_ids, inputs[&#x27;labels&#x27;].detach().cpu().numpy(), axis=0)
+
+        eval_loss = eval_loss / nb_eval_steps
+        if args.output_mode == &quot;classification&quot;:
+            preds = np.argmax(preds, axis=1)
+        elif args.output_mode == &quot;regression&quot;:
+            preds = np.squeeze(preds)
+        result = compute_metrics(eval_task, preds, out_label_ids)
+        results.update(result)
+
+        output_eval_file = os.path.join(eval_output_dir, prefix, &quot;eval_results.txt&quot;)
+        with open(output_eval_file, &quot;w&quot;) as writer:
+            logger.info(&quot;***** Eval results {} *****&quot;.format(prefix))
+            for key in sorted(result.keys()):
+                logger.info(&quot;  %s = %s&quot;, key, str(result[key]))
+                writer.write(&quot;%s = %s\n&quot; % (key, str(result[key])))
+
+    return results
+
+
+def load_and_cache_examples(args, task, tokenizer, evaluate=False):
+    if args.local_rank not in [-1, 0] and not evaluate:
+        torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
+
+    processor = processors[task]()
+    output_mode = output_modes[task]
+    # Load data features from cache or dataset file
+    cached_features_file = os.path.join(args.data_dir, &#x27;cached_{}_{}_{}_{}&#x27;.format(
+        &#x27;dev&#x27; if evaluate else &#x27;train&#x27;,
+        list(filter(None, args.model_name_or_path.split(&#x27;/&#x27;))).pop(),
+        str(args.max_seq_length),
+        str(task)))
+    if os.path.exists(cached_features_file) and not args.overwrite_cache:
+        logger.info(&quot;Loading features from cached file %s&quot;, cached_features_file)
+        features = torch.load(cached_features_file)
+    else:
+        logger.info(&quot;Creating features from dataset file at %s&quot;, args.data_dir)
+        label_list = processor.get_labels()
+        if task in [&#x27;mnli&#x27;, &#x27;mnli-mm&#x27;] and args.model_type in [&#x27;roberta&#x27;]:
+            # HACK(label indices are swapped in RoBERTa pretrained model)
+            label_list[1], label_list[2] = label_list[2], label_list[1] 
+        examples = processor.get_dev_examples(args.data_dir) if evaluate else processor.get_train_examples(args.data_dir)
+        features = convert_examples_to_features(examples,
+                                                tokenizer,
+                                                label_list=label_list,
+                                                max_length=args.max_seq_length,
+                                                output_mode=output_mode,
+#                                                 pad_on_left=bool(args.model_type in [&#x27;xlnet&#x27;]),                 # pad on the left for xlnet
+#                                                 pad_token=tokenizer.convert_tokens_to_ids([tokenizer.pad_token])[0],
+#                                                 pad_token_segment_id=4 if args.model_type in [&#x27;xlnet&#x27;] else 0,
+        )
+        if args.local_rank in [-1, 0]:
+            logger.info(&quot;Saving features into cached file %s&quot;, cached_features_file)
+            torch.save(features, cached_features_file)
+
+    if args.local_rank == 0 and not evaluate:
+        torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
+
+    # Convert to Tensors and build dataset
+    all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
+    all_attention_mask = torch.tensor([f.attention_mask for f in features], dtype=torch.long)
+    all_token_type_ids = torch.tensor([f.token_type_ids for f in features], dtype=torch.long)
+    if output_mode == &quot;classification&quot;:
+        all_labels = torch.tensor([f.label for f in features], dtype=torch.long)
+    elif output_mode == &quot;regression&quot;:
+        all_labels = torch.tensor([f.label for f in features], dtype=torch.float)
+
+    dataset = TensorDataset(all_input_ids, all_attention_mask, all_token_type_ids, all_labels)
+    return dataset
+</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(model)</code></pre></div><div class="nb-cell nb-md"># Define the tokenize and evaluation function</div><div class="nb-cell nb-md"># 1. Apply the dynamic quantization
+We call torch.quantization.quantize_dynamic on the model to apply the dynamic quantization on the HuggingFace BERT model. Specifically,
+
+We specify that we want the torch.nn.Linear modules in our model to be quantized;
+We specify that we want weights to be converted to quantized int8 values.</div><div class="nb-cell"><pre class="nb-code"><code># Define quantization configuration
+model.train()
+# model.qconfig = torch.quantization.get_default_qat_qconfig(&#x27;fbgemm&#x27;)
+model.qconfig = torch.quantization.float_qparams_weight_only_qconfig
+
+# Prepare the model for QAT
+model = torch.quantization.prepare_qat(model, inplace=False)
+
+quantized_model = torch.quantization.quantize_dynamic(
+    model, {torch.nn.Linear}, dtype=torch.qint8
+)
+print(quantized_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(quantized_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>
+quantized_model_2 = torch.quantization.quantize_dynamic(
+    model, {torch.nn.Linear}, dtype=torch.float16
+)
+print(quantized_model_2)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(quantized_model_2)</code></pre></div><div class="nb-cell nb-md"># 2. Apply the dynamic quantization with mixed precision</div><div class="nb-cell"><pre class="nb-code"><code># from torch.cuda.amp import autocast
+
+quantized_model_2 = torch.quantization.quantize_dynamic(
+    model,
+    {torch.nn.Linear},  # Specify layers to quantize
+    dtype=torch.float16
+)
+
+# # Perform inference with mixed precision
+# def infer_with_mixed_precision(model, data_loader):
+#     model.eval()
+#     results = []
+#     with torch.no_grad():
+#         for inputs in data_loader:
+#             with autocast():
+#                 outputs = model(inputs)
+#                 results.append(outputs)
+#     return results
+
+# Load the data
+# data_loader = torch.utils.data.DataLoader(eval_dataset, batch_size=32)
+
+# Perform inference
+# results = infer_with_mixed_precision(quantized_model_2, data_loader)
+
+# Print results
+# print(results)
+
+# quantized_model_2 = torch.quantization.quantize_dynamic(
+#     model, {torch.nn.Linear}, dtype=torch.qint8
+# )
+print(quantized_model_2)</code></pre></div><div class="nb-cell nb-md"># Check the model size</div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(quantized_model_2)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>def print_size_of_model(model):
+    torch.save(model.state_dict(), &quot;temp.p&quot;)
+    print(&#x27;Size (MB):&#x27;, os.path.getsize(&quot;temp.p&quot;)/1e6)
+    os.remove(&#x27;temp.p&#x27;)
+
+print_size_of_model(model)
+print_size_of_model(quantized_model)
+print_size_of_model(quantized_model_2)</code></pre></div><div class="nb-cell nb-md"># Evaluate the inference accuracy and time</div><div class="nb-cell"><pre class="nb-code"><code>def time_model_evaluation(model, configs, tokenizer):
+    eval_start_time = time.time()
+    result = evaluate(configs, model, tokenizer, prefix=&quot;&quot;)
+    eval_end_time = time.time()
+    eval_duration_time = eval_end_time - eval_start_time
+    print(result)
+    print(&quot;Evaluate total time (seconds): {0:.1f}&quot;.format(eval_duration_time))</code></pre></div><div class="nb-cell"><pre class="nb-code"><code># Evaluate the original FP32 BERT model
+time_model_evaluation(model, configs, tokenizer)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>time_model_evaluation(quantized_model, configs, tokenizer)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>time_model_evaluation(quantized_model_2, configs, tokenizer)</code></pre></div><div class="nb-cell nb-md"># Weight Pruning</div><div class="nb-cell"><pre class="nb-code"><code>import torch.nn as nn
+
+def prune_weights(model, pruning_ratio):
+    pruned_model=model
+    # Function to prune weights of the model
+    for name, module in pruned_model.named_modules():
+        if isinstance(module, nn.Linear):
+            weight = module.weight.data
+            # Compute the threshold for pruning
+            abs_weight = weight.abs()
+            threshold = torch.quantile(abs_weight, pruning_ratio)
+            # Zero out weights below the threshold
+            mask = abs_weight &gt; threshold
+            module.weight.data.mul_(mask)
+    return pruned_model
+
+# Prune 20% of the weights
+pruned_model= prune_weights(model, pruning_ratio=0.2)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>print_size_of_model(pruned_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(pruned_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>time_model_evaluation(pruned_model, configs, tokenizer)</code></pre></div><div class="nb-cell nb-md"># Pruning with Dynamic Quantization</div><div class="nb-cell"><pre class="nb-code"><code>import torch.nn as nn
+
+def prune_weights(model, pruning_ratio):
+    pruned_model=model
+    # Function to prune weights of the model
+    for name, module in pruned_model.named_modules():
+        if isinstance(module, nn.Linear):
+            weight = module.weight.data
+            # Compute the threshold for pruning
+            abs_weight = weight.abs()
+            threshold = torch.quantile(abs_weight, pruning_ratio)
+            # Zero out weights below the threshold
+            mask = abs_weight &gt; threshold
+            module.weight.data.mul_(mask)
+    pruned_quantized_model = torch.quantization.quantize_dynamic(
+    pruned_model, {torch.nn.Linear}, dtype=torch.qint8
+    )
+    
+    return pruned_quantized_model
+
+# Prune 20% of the weights
+pruned_quantized_model= prune_weights(pruned_model, pruning_ratio=0.2)
+print(pruned_quantized_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>print_size_of_model(pruned_quantized_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable([&quot;Modules&quot;, &quot;Parameters&quot;])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f&quot;Total Trainable Params: {total_params}&quot;)
+    return total_params
+    
+count_parameters(pruned_quantized_model)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>time_model_evaluation(pruned_quantized_model, configs, tokenizer)</code></pre></div><div class="nb-cell"><pre class="nb-code"><code>&quot;&quot;&quot;
+Add this code to the END of your Kaggle notebook to export the model.
+
+This will export your pruned + quantized BERT model to ONNX format
+for use in your Android app.
+&quot;&quot;&quot;
+
+import torch
+import os
+
+print(&quot;=&quot; * 60)
+print(&quot;  Exporting BERT Model to ONNX for Android&quot;)
+print(&quot;=&quot; * 60)
+print()
+
+# ============================================================================
+# IMPORTANT: Change this variable name to match your notebook!
+# ============================================================================
+# Look for the variable that contains your final compressed model.
+# It might be called:
+#   - pruned_quantized_model
+#   - quantized_model
+#   - pruned_model
+#   - model
+# 
+# Find the last cell where you applied quantization, and use that variable name.
+
+# YOUR MODEL VARIABLE NAME HERE:
+model_to_export = pruned_model  # ← CHANGE THIS IF NEEDED
+
+# ============================================================================
+# Export Process
+# ============================================================================
+
+print(&quot;[1/4] Preparing model for export...&quot;)
+
+# Ensure model is in evaluation mode and on CPU
+model_to_export = model_to_export.cpu()
+model_to_export.eval()
+
+# IMPORTANT: Set return_dict=False to get simple tuple output
+# This prevents the &quot;NoneType cannot be traced&quot; error
+model_to_export.config.return_dict = False
+
+print(&quot;✅ Model ready for export&quot;)
+print()
+
+# ============================================================================
+print(&quot;[2/4] Creating dummy inputs...&quot;)
+
+# BERT expects 3 inputs: input_ids, attention_mask, token_type_ids
+batch_size = 1
+seq_length = 128
+
+dummy_input_ids = torch.randint(0, 30522, (batch_size, seq_length), dtype=torch.long)
+dummy_attention_mask = torch.ones(batch_size, seq_length, dtype=torch.long)
+dummy_token_type_ids = torch.zeros(batch_size, seq_length, dtype=torch.long)
+
+print(&quot;✅ Dummy inputs created&quot;)
+print()
+
+# ============================================================================
+print(&quot;[3/4] Exporting to ONNX format...&quot;)
+
+output_filename = &#x27;bert_pruned_quantized.onnx&#x27;
+
+try:
+    torch.onnx.export(
+        model_to_export,
+        (dummy_input_ids, dummy_attention_mask, dummy_token_type_ids),
+        output_filename,
+        input_names=[&#x27;input_ids&#x27;, &#x27;attention_mask&#x27;, &#x27;token_type_ids&#x27;],
+        output_names=[&#x27;logits&#x27;],
+        dynamic_axes={
+            &#x27;input_ids&#x27;: {0: &#x27;batch&#x27;, 1: &#x27;sequence&#x27;},
+            &#x27;attention_mask&#x27;: {0: &#x27;batch&#x27;, 1: &#x27;sequence&#x27;},
+            &#x27;token_type_ids&#x27;: {0: &#x27;batch&#x27;, 1: &#x27;sequence&#x27;},
+            &#x27;logits&#x27;: {0: &#x27;batch&#x27;}
+        },
+        opset_version=14,
+        do_constant_folding=True,
+        verbose=False
+    )
+except Exception as e:
+    print(f&quot;❌ ONNX export failed with error:&quot;)
+    print(f&quot;   {str(e)}&quot;)
+    print()
+    print(&quot;Trying alternative export method...&quot;)
+    print()
+    
+    # Alternative: Script the model using TorchScript first
+    print(&quot;Attempting TorchScript conversion first...&quot;)
+    
+    # Create a simple wrapper that only returns logits
+    import torch.nn as nn
+    
+    class SimpleLogitsWrapper(nn.Module):
+        def __init__(self, bert_model):
+            super().__init__()
+            self.bert = bert_model.bert  # Get the BERT encoder
+            self.classifier = bert_model.classifier  # Get the classification head
+            
+        def forward(self, input_ids, attention_mask, token_type_ids):
+            # Get BERT outputs
+            outputs = self.bert(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                token_type_ids=token_type_ids
+            )
+            
+            # Get pooled output (CLS token representation)
+            if isinstance(outputs, tuple):
+                pooled_output = outputs[1]  # pooled output is second element
+            else:
+                pooled_output = outputs.pooler_output
+            
+            # Apply classifier
+            logits = self.classifier(pooled_output)
+            return logits
+    
+    print(&quot;Creating simple wrapper model...&quot;)
+    wrapped_model = SimpleLogitsWrapper(model_to_export)
+    wrapped_model.eval()
+    
+    # Test the wrapper
+    print(&quot;Testing wrapper model...&quot;)
+    with torch.no_grad():
+        test_output = wrapped_model(dummy_input_ids, dummy_attention_mask, dummy_token_type_ids)
+        print(f&quot;   Wrapper output shape: {test_output.shape}&quot;)
+    
+    # Export the wrapped model
+    print(&quot;Exporting wrapped model to ONNX...&quot;)
+    torch.onnx.export(
+        wrapped_model,
+        (dummy_input_ids, dummy_attention_mask, dummy_token_type_ids),
+        output_filename,
+        input_names=[&#x27;input_ids&#x27;, &#x27;attention_mask&#x27;, &#x27;token_type_ids&#x27;],
+        output_names=[&#x27;logits&#x27;],
+        dynamic_axes={
+            &#x27;input_ids&#x27;: {0: &#x27;batch&#x27;, 1: &#x27;sequence&#x27;},
+            &#x27;attention_mask&#x27;: {0: &#x27;batch&#x27;, 1: &#x27;sequence&#x27;},
+            &#x27;token_type_ids&#x27;: {0: &#x27;batch&#x27;, 1: &#x27;sequence&#x27;},
+            &#x27;logits&#x27;: {0: &#x27;batch&#x27;}
+        },
+        opset_version=14,
+        do_constant_folding=True,
+        verbose=False
+    )
+
+print(f&quot;✅ Model exported: {output_filename}&quot;)
+print()
+
+# ============================================================================
+print(&quot;[4/4] Checking exported file...&quot;)
+
+if os.path.exists(output_filename):
+    file_size_mb = os.path.getsize(output_filename) / (1024 * 1024)
+    print(f&quot;✅ File exists: {output_filename}&quot;)
+    print(f&quot;   Size: {file_size_mb:.2f} MB&quot;)
+    
+    # Provide download instructions
+    print()
+    print(&quot;=&quot; * 60)
+    print(&quot;  ✅ Export Complete!&quot;)
+    print(&quot;=&quot; * 60)
+    print()
+    print(&quot;Next Steps:&quot;)
+    print(&quot;  1. Look in the &#x27;Output&#x27; tab on the right →&quot;)
+    print(f&quot;  2. Find &#x27;{output_filename}&#x27;&quot;)
+    print(&quot;  3. Click the download icon (⬇️)&quot;)
+    print(&quot;  4. Save the file to your computer&quot;)
+    print()
+    print(&quot;Then copy it to:&quot;)
+    print(&quot;  C:\\Users\\User\\Desktop\\Thesis\\Mindforge\\app\\src\\main\\assets\\&quot;)
+    print()
+    print(&quot;Finally:&quot;)
+    print(&quot;  • Rebuild your Android app&quot;)
+    print(&quot;  • Run it!&quot;)
+    print(&quot;  • Check logs for: &#x27;✅ BERT model loaded successfully!&#x27;&quot;)
+    print()
+    
+    # Show model details
+    print(&quot;Model Details:&quot;)
+    print(f&quot;  • Base: bert-base-uncased (fine-tuned on MRPC)&quot;)
+    print(f&quot;  • Compression: 20% weighted pruning + 8-bit quantization&quot;)
+    print(f&quot;  • Format: ONNX (opset 14)&quot;)
+    print(f&quot;  • Size: {file_size_mb:.2f} MB&quot;)
+    print(f&quot;  • Expected accuracy: 85-90%&quot;)
+    print()
+    
+else:
+    print(&quot;❌ Export failed - file not found&quot;)
+    print(&quot;   Check the output above for errors&quot;)
+    print()
+</code></pre></div></body></html>
