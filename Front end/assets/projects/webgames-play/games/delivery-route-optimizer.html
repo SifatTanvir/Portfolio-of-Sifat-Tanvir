@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delivery route optimizer | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .dro { font-family: system-ui, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; color: #1e293b; min-height: calc(100vh - 52px); }
+    .dro-nav { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.06); position: sticky; top: 52px; z-index: 8; }
+    .dro-nav svg { width: 2rem; height: 2rem; color: #6366f1; flex-shrink: 0; }
+    .dro-nav span { font-size: 1.35rem; font-weight: 800; color: #0f172a; }
+    .dro-banner { background: #16a34a; color: #fff; text-align: center; padding: 0.65rem 1rem; font-weight: 700; display: none; }
+    .dro-banner.on { display: block; }
+    .dro-hero { position: relative; background: #3730a3; color: #fff; padding: 3rem 1.25rem; text-align: center; overflow: hidden; }
+    .dro-hero::before { content: ""; position: absolute; inset: 0; opacity: 0.1; background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h-2zM28 12c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h-2zM46 14c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .dro-hero-inner { position: relative; max-width: 42rem; margin: 0 auto; }
+    .dro-hero h1 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.25rem); font-weight: 800; letter-spacing: -0.02em; }
+    .dro-hero p { margin: 1rem 0 0; color: #c7d2fe; font-size: 1rem; line-height: 1.55; }
+    .dro-main { max-width: 1120px; margin: 0 auto; padding: 2rem 1rem 3rem; display: grid; gap: 1.5rem; }
+    @media (min-width: 1024px) { .dro-main { grid-template-columns: 1fr 320px; align-items: start; } }
+    .dro-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border: 1px solid #e2e8f0; padding: 1.25rem; }
+    .dro-card h2 { margin: 0 0 1rem; font-size: 1.1rem; color: #0f172a; }
+    .constraint-grid { display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .constraint-grid { grid-template-columns: repeat(3, 1fr); } }
+    .constraint { padding: 0.75rem; background: #fee2e2; color: #991b1b; border-radius: 8px; border: 1px solid #fecaca; font-size: 0.8125rem; line-height: 1.45; }
+    .constraint strong { display: block; margin-bottom: 0.25rem; font-size: 0.875rem; }
+    .pkg-scroll { max-height: 34rem; overflow-y: auto; padding-right: 0.35rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .pkg-row { padding: 0.75rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; display: grid; gap: 0.5rem; }
+    @media (min-width: 640px) { .pkg-row { grid-template-columns: 1fr 1.2fr 1fr; align-items: center; } }
+    .pkg-name { font-weight: 600; font-size: 0.9rem; }
+    .pkg-addr { font-size: 0.8125rem; color: #64748b; }
+    .pkg-meta { font-size: 0.8125rem; text-align: left; }
+    @media (min-width: 640px) { .pkg-meta { text-align: right; } }
+    .pkg-meta .hi { font-weight: 700; color: #dc2626; display: block; margin-bottom: 0.15rem; }
+    .dro-side { display: flex; flex-direction: column; gap: 1.5rem; }
+    @media (min-width: 1024px) { .dro-side { position: sticky; top: 120px; } }
+    .seq-help { font-size: 0.8125rem; color: #64748b; margin: 0 0 0.75rem; }
+    .seq-list { display: flex; flex-direction: column; gap: 0.5rem; max-height: 24rem; overflow-y: auto; padding-right: 0.25rem; }
+    .seq-item { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.5rem 0.65rem; background: #f1f5f9; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .seq-item .num { font-weight: 800; color: #4f46e5; width: 1.75rem; text-align: center; flex-shrink: 0; }
+    .seq-item .nm { font-weight: 600; font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .seq-btns { display: flex; gap: 0.25rem; flex-shrink: 0; }
+    .seq-btns button { width: 2rem; height: 2rem; border: none; border-radius: 999px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+    .seq-btns button:hover:not(:disabled) { background: #e2e8f0; }
+    .seq-btns button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .seq-btns svg { width: 1rem; height: 1rem; color: #334155; }
+    .veh fieldset { border: none; padding: 0; margin: 0; }
+    .veh label { display: flex; gap: 0.75rem; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+    .veh label.is-sel { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99,102,241,.25); }
+    .veh label .t { font-weight: 700; color: #0f172a; display: block; }
+    .veh label .d { font-size: 0.8125rem; color: #64748b; }
+    .btn-sim { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem; border: none; border-radius: 8px; background: #4f46e5; color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; }
+    .btn-sim:hover:not(:disabled) { background: #4338ca; }
+    .btn-sim:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-sim svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+    .sim-out { margin-top: 1rem; padding: 1rem; background: #f1f5f9; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.9rem; min-height: 2.5rem; display: none; }
+    .sim-out.on { display: block; animation: droFade .45s ease-out; }
+    @keyframes droFade { from { opacity: 0; } to { opacity: 1; } }
+    .dro-foot { background: #1e293b; color: #94a3b8; text-align: center; padding: 1.5rem 1rem; font-size: 0.75rem; margin-top: 2rem; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="dro">
+    <div class="dro-nav">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 015 3h10a1 1 0 01.707.293l2 2a1 1 0 010 1.414l-2 2a1 1 0 01-.707.293H5a1 1 0 01-.707-.293l-2-2a1 1 0 010-1.414l2-2z" clip-rule="evenodd" /></svg>
+      <span>LogicFlow Dispatch</span>
+    </div>
+    <div class="dro-banner" id="winBanner">Password: <span style="font-family:ui-monospace;background:rgba(0,0,0,.2);padding:.15rem .5rem;border-radius:4px">ROUTEOPTIMIZED</span></div>
+
+    <section class="dro-hero">
+      <div class="dro-hero-inner">
+        <h1>Daily delivery route planner</h1>
+        <p>Optimize today’s stops: read the alerts, pick a vehicle that fits every package size, and order stops to minimize back-and-forth across zones.</p>
+      </div>
+    </section>
+
+    <div class="dro-main">
+      <div class="dro-col">
+        <div class="dro-card">
+          <h2>Constraints &amp; conditions</h2>
+          <div class="constraint-grid" id="constraints"></div>
+        </div>
+        <div class="dro-card">
+          <h2>Today’s packages (<span id="pkgCount">0</span>)</h2>
+          <div class="pkg-scroll" id="pkgList"></div>
+        </div>
+      </div>
+      <aside class="dro-side">
+        <div class="dro-card">
+          <h2>Set route plan</h2>
+          <p class="seq-help">Order packages for delivery. #1 is the first stop. Use arrows to reorder.</p>
+          <div class="seq-list" id="sequence"></div>
+        </div>
+        <div class="dro-card veh">
+          <h2>Select vehicle</h2>
+          <fieldset id="vehField"></fieldset>
+        </div>
+        <div class="dro-card">
+          <h2>Simulate route</h2>
+          <button type="button" class="btn-sim" id="btnSim" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11.91,1.81a2,2,0,0,0-1.82,0L4.32,5.25A2,2,0,0,0,3,7.06V16.5A1.5,1.5,0,0,0,4.5,18H6a1,1,0,0,0,1-1V13a1,1,0,0,1,1-1H9.5a1,1,0,0,1,1,1v4a1,1,0,0,0,1,1h1.5a1.5,1.5,0,0,0,1.5-1.5V7.06a2,2,0,0,0-1.32-1.81ZM10,11H7V8.86l3-1.72Zm2-4.14L15.68,8.6A1,1,0,0,1,15,10.32V12H12Z" /></svg>
+            <span>Simulate route</span>
+          </button>
+          <div class="sim-out" id="simOut"></div>
+        </div>
+      </aside>
+    </div>
+    <footer class="dro-foot">© <span id="yr"></span> LogicFlow Dispatch Inc. · demonstration only</footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+    var PACKAGE_POOL = [
+      { name: 'Industrial Components', address: '88 Industrial Way', size: 'Large', timeWindow: 'Anytime', isHighPriority: false, zone: 'South' },
+      { name: 'Fresh Produce Box', address: '123 Main St', size: 'Medium', timeWindow: '9am - 12pm', isHighPriority: true, zone: 'Downtown' },
+      { name: 'Legal Documents', address: '45 Court Sq', size: 'Small', timeWindow: '2pm - 5pm', isHighPriority: true, zone: 'North' },
+      { name: 'Server Rack', address: '21 Tech Tower', size: 'XL', timeWindow: 'Anytime', isHighPriority: false, zone: 'East' },
+      { name: 'Medical Supplies', address: '77 Health Ave', size: 'Medium', timeWindow: '10am - 1pm', isHighPriority: true, zone: 'West' },
+      { name: 'Book Collection', address: '32 Knowledge Ln', size: 'Large', timeWindow: 'Anytime', isHighPriority: false, zone: 'North' },
+      { name: 'Art Supplies', address: '15 Creative Ct', size: 'Small', timeWindow: '1pm - 4pm', isHighPriority: false, zone: 'Downtown' },
+      { name: 'Office Furniture', address: '100 Business Blvd', size: 'XL', timeWindow: '9am - 5pm', isHighPriority: false, zone: 'South' },
+      { name: 'Catering Order', address: '500 Commerce St', size: 'Medium', timeWindow: '11am - 1pm', isHighPriority: true, zone: 'East' },
+      { name: 'Flower Delivery', address: '9 Gardenia Rd', size: 'Small', timeWindow: 'Anytime', isHighPriority: false, zone: 'West' },
+    ];
+
+    var VEHICLE_POOL = [
+      { id: 101, name: 'Electric Cargo Bike', maxSize: 'Medium', description: 'Eco-friendly, best for Downtown.' },
+      { id: 102, name: 'Standard Delivery Van', maxSize: 'Large', description: 'Reliable for most package sizes.' },
+      { id: 103, name: 'Heavy Duty Truck', maxSize: 'XL', description: 'Required for XL packages.' },
+    ];
+
+    var CONSTRAINT_POOL = [
+      { id: 'c1', type: 'Weather', description: 'Heavy rain expected after 2 PM, causing major delays.', affects: 'All' },
+      { id: 'c2', type: 'Traffic', description: 'Parade route closes all roads in Downtown from 11 AM to 2 PM.', affects: 'Downtown' },
+      { id: 'c3', type: 'Vehicle', description: 'The Electric Cargo Bike is currently recharging, unavailable until 1 PM.', affects: 'Bike' },
+      { id: 'c4', type: 'Traffic', description: 'Bridge maintenance causing single-lane traffic to the North District.', affects: 'North' },
+    ];
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    var numPackages = 5 + Math.floor(Math.random() * 4);
+    var todaysPackages = shuffle(PACKAGE_POOL).slice(0, numPackages).map(function (p, i) {
+      return { id: i + 1, name: p.name, address: p.address, size: p.size, timeWindow: p.timeWindow, isHighPriority: p.isHighPriority, zone: p.zone };
+    });
+    var vehicles = shuffle(VEHICLE_POOL);
+    var constraints = shuffle(CONSTRAINT_POOL).slice(0, 3);
+
+    var sequence = todaysPackages.map(function (p) { return p; });
+    var selectedVehicleId = null;
+    var isSuccess = false;
+
+    var sizeMap = { Small: 1, Medium: 2, Large: 3, XL: 4 };
+
+    function calculateEfficiency() {
+      var score = 100;
+      var selectedVehicle = vehicles.find(function (v) { return v.id === selectedVehicleId; });
+      if (!selectedVehicle) return { score: 0 };
+
+      var maxPackageSize = Math.max.apply(null, sequence.map(function (p) { return sizeMap[p.size]; }));
+      if (sizeMap[selectedVehicle.maxSize] < maxPackageSize) score -= 50;
+      else if (sizeMap[selectedVehicle.maxSize] > maxPackageSize + 1) score -= 15;
+
+      var zoneHops = 0;
+      for (var i = 1; i < sequence.length; i++) {
+        if (sequence[i].zone !== sequence[i - 1].zone) zoneHops++;
+      }
+      var zones = {};
+      sequence.forEach(function (p) { zones[p.zone] = true; });
+      var idealHops = Object.keys(zones).length - 1;
+      if (zoneHops > idealHops + 1) score -= (zoneHops - idealHops) * 5;
+
+      return { score: Math.max(0, score) };
+    }
+
+    function renderConstraints() {
+      var el = document.getElementById('constraints');
+      el.innerHTML = '';
+      constraints.forEach(function (c) {
+        var d = document.createElement('div');
+        d.className = 'constraint';
+        d.innerHTML = '<strong>' + c.type + ' alert</strong>' + escapeHtml(c.description);
+        el.appendChild(d);
+      });
+    }
+
+    function escapeHtml(s) {
+      var div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    function renderPkgList() {
+      document.getElementById('pkgCount').textContent = String(todaysPackages.length);
+      var el = document.getElementById('pkgList');
+      el.innerHTML = '';
+      todaysPackages.forEach(function (p) {
+        var row = document.createElement('div');
+        row.className = 'pkg-row';
+        var hi = p.isHighPriority ? '<span class="hi">High priority</span>' : '';
+        row.innerHTML =
+          '<div class="pkg-name">' + escapeHtml(p.name) + '</div>' +
+          '<div class="pkg-addr">' + escapeHtml(p.address) + ', ' + escapeHtml(p.zone) + '</div>' +
+          '<div class="pkg-meta">' + hi + '<strong>Size:</strong> ' + escapeHtml(p.size) + '<br><strong>Window:</strong> ' + escapeHtml(p.timeWindow) + '</div>';
+        el.appendChild(row);
+      });
+    }
+
+    function renderVehicles() {
+      var fs = document.getElementById('vehField');
+      fs.innerHTML = '';
+      vehicles.forEach(function (v) {
+        var lab = document.createElement('label');
+        lab.className = selectedVehicleId === v.id ? 'is-sel' : '';
+        var inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.name = 'vehicle';
+        inp.value = String(v.id);
+        inp.checked = selectedVehicleId === v.id;
+        var wrap = document.createElement('div');
+        wrap.innerHTML = '<span class="t">' + escapeHtml(v.name) + '</span><span class="d">' + escapeHtml(v.description) + '</span>';
+        lab.appendChild(inp);
+        lab.appendChild(wrap);
+        inp.addEventListener('change', function () {
+          selectedVehicleId = v.id;
+          fs.querySelectorAll('label').forEach(function (L, idx) {
+            L.classList.toggle('is-sel', vehicles[idx].id === selectedVehicleId);
+          });
+          document.getElementById('btnSim').disabled = false;
+        });
+        fs.appendChild(lab);
+      });
+    }
+
+    function moveSeq(index, dir) {
+      if (dir === 'up' && index === 0) return;
+      if (dir === 'down' && index === sequence.length - 1) return;
+      var next = sequence.slice();
+      var item = next.splice(index, 1)[0];
+      next.splice(dir === 'up' ? index - 1 : index + 1, 0, item);
+      sequence = next;
+      renderSequence();
+    }
+
+    function renderSequence() {
+      var el = document.getElementById('sequence');
+      el.innerHTML = '';
+      sequence.forEach(function (p, index) {
+        var row = document.createElement('div');
+        row.className = 'seq-item';
+        var up = document.createElement('button');
+        up.type = 'button';
+        up.setAttribute('aria-label', 'Move up');
+        up.disabled = index === 0;
+        up.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>';
+        up.onclick = function () { moveSeq(index, 'up'); };
+
+        var down = document.createElement('button');
+        down.type = 'button';
+        down.setAttribute('aria-label', 'Move down');
+        down.disabled = index === sequence.length - 1;
+        down.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>';
+        down.onclick = function () { moveSeq(index, 'down'); };
+
+        var btns = document.createElement('div');
+        btns.className = 'seq-btns';
+        btns.appendChild(up);
+        btns.appendChild(down);
+
+        var left = document.createElement('div');
+        left.style.display = 'flex';
+        left.style.alignItems = 'center';
+        left.style.minWidth = '0';
+        left.style.flex = '1';
+        left.innerHTML = '<span class="num">' + (index + 1) + '</span><span class="nm" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</span>';
+
+        row.appendChild(left);
+        row.appendChild(btns);
+        el.appendChild(row);
+      });
+    }
+
+    document.getElementById('btnSim').onclick = function () {
+      var r = calculateEfficiency();
+      var out = document.getElementById('simOut');
+      out.classList.add('on');
+      if (r.score > 90) {
+        isSuccess = true;
+        document.getElementById('winBanner').classList.add('on');
+        out.textContent = 'Optimal route found! Efficiency score: ' + r.score + '%';
+      } else {
+        out.textContent = 'Route simulated. Efficiency score: ' + r.score + '%.';
+      }
+    };
+
+    renderConstraints();
+    renderPkgList();
+    renderSequence();
+    renderVehicles();
+  </script>
+</body>
+
+</html>

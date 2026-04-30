@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Game of color | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .grid3 { display: grid; grid-template-columns: repeat(3, 72px); gap: 10px; justify-content: center; margin: 1rem 0; }
+    .cell { width: 72px; height: 72px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; box-shadow: 0 4px 14px rgba(0,0,0,.35); }
+    .cell.r { background: #ef4444; }
+    .cell.g { background: #22c55e; }
+    .cell.b { background: #3b82f6; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <main class="wg-main">
+    <h1 class="wg-h1">Game of color</h1>
+    <p class="wg-lead">Count how many red, green, and blue squares appear in the grid.</p>
+    <div id="play">
+      <div class="wg-card">
+        <div class="grid3" id="grid"></div>
+      </div>
+      <div class="wg-card">
+        <div class="row3">
+          <div><label>🔴 Red</label><input class="wg-input" type="number" min="0" max="9" id="ir"></div>
+          <div><label>🟢 Green</label><input class="wg-input" type="number" min="0" max="9" id="ig"></div>
+          <div><label>🔵 Blue</label><input class="wg-input" type="number" min="0" max="9" id="ib"></div>
+        </div>
+        <button type="button" class="wg-btn" id="check" style="margin-top:1rem;width:100%">Check</button>
+      </div>
+    </div>
+    <div id="res" hidden></div>
+  </main>
+  <script>
+    var colors = ['r', 'g', 'b'];
+    var list = [];
+    for (var i = 0; i < 9; i++) list.push(colors[Math.floor(Math.random() * 3)]);
+    var counts = { r: 0, g: 0, b: 0 };
+    list.forEach(function (c) { counts[c]++; });
+    var g = document.getElementById('grid');
+    list.forEach(function (c) {
+      var d = document.createElement('div');
+      d.className = 'cell ' + c;
+      d.textContent = c === 'r' ? '🔴' : c === 'g' ? '🟢' : '🔵';
+      g.appendChild(d);
+    });
+    document.getElementById('check').onclick = function () {
+      var r = parseInt(document.getElementById('ir').value, 10) || 0;
+      var gr = parseInt(document.getElementById('ig').value, 10) || 0;
+      var bl = parseInt(document.getElementById('ib').value, 10) || 0;
+      var ok = r === counts.r && gr === counts.g && bl === counts.b;
+      document.getElementById('play').hidden = true;
+      document.getElementById('res').hidden = false;
+      document.getElementById('res').innerHTML = ok
+        ? '<div class="wg-success">Perfect! Password: <strong>RBGGameOfColor</strong></div><p><a href="../games/color-count.html">New grid</a></p>'
+        : '<div class="wg-error">Counts were red ' + counts.r + ', green ' + counts.g + ', blue ' + counts.b + '. <a href="../games/color-count.html">Try again</a></div>';
+    };
+  </script>
+</body>
+
+</html>

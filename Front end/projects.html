@@ -27,13 +27,6 @@
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: Kelly
-  * Template URL: https://bootstrapmade.com/kelly-free-bootstrap-cv-resume-html-template/
-  * Updated: Aug 07 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body class="projects-page">
@@ -62,12 +55,13 @@
       </nav>
 
       <div class="header-social-links">
-        <a href="#" class="github"><i class="bi bi-github"></i></a>
-        <a href="#" class="google-scholar" aria-label="Google Scholar" title="Google Scholar"><i class="bi bi-mortarboard"></i></a>
-        <a href="#" class="ieee" aria-label="IEEE" title="IEEE"><span class="ieee-mark">IEEE</span></a>
-        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        <a href="https://www.linkedin.com/in/sifat-tanvir-91a7801a0/" class="linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="https://github.com/SifatTanvir" class="github" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="bi bi-github"></i></a>
+        <a href="https://scholar.google.com/citations?user=g95o4UoAAAAJ&hl=en" class="google-scholar" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar" title="Google Scholar"><i class="bi bi-mortarboard"></i></a>
+        <a href="https://www.kaggle.com/sifattanvir" class="kaggle" target="_blank" rel="noopener noreferrer" aria-label="Kaggle" title="Kaggle"><span class="kaggle-mark" aria-hidden="true">K</span></a>
+        <a href="https://ieeexplore.ieee.org/author/37088763334" class="ieee" target="_blank" rel="noopener noreferrer" aria-label="IEEE Xplore author profile" title="IEEE Xplore"><span class="ieee-mark">IEEE</span></a>
+        <a href="https://www.facebook.com/sifattanvirsami/" class="facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/sifat_freakin_tanvir/" class="instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><i class="bi bi-instagram"></i></a>
       </div>
 
     </div>
@@ -156,11 +150,325 @@
           </div>
           <div id="project-panel-android" class="project-panel" role="tabpanel" aria-labelledby="tab-android" aria-hidden="true">
             <h3 class="project-panel-title">Falling Object Catcher</h3>
-            <p class="text-muted mb-0">Add your content inside this panel.</p>
+            <p class="mb-3">Arcade-style Android game: catch good items, avoid bad ones, with a starfield backdrop and touch-and-drag controls — built with Jetpack Compose and Material 3.</p>
+            <p class="mb-3">
+              <a class="btn btn-primary" href="assets/projects/android/falling-object-catcher.apk" download="falling-object-catcher.apk"><i class="bi bi-download me-1" aria-hidden="true"></i>Download APK</a>
+            </p>
+
+            <h4 class="project-llm-subheading"><span aria-hidden="true">🛠️</span> Tech stack</h4>
+            <ul class="mb-3">
+              <li><strong>Kotlin</strong> — primary language</li>
+              <li><strong>Jetpack Compose</strong> — modern declarative UI toolkit</li>
+              <li><strong>Material3</strong> — Material Design 3 components</li>
+              <li><strong>ViewModel</strong> — state management with lifecycle awareness</li>
+              <li><strong>Coroutines &amp; Flow</strong> — asynchronous game loop</li>
+            </ul>
+
+            <h4 class="project-llm-subheading"><span aria-hidden="true">📱</span> Features</h4>
+            <ul class="mb-3">
+              <li>Smooth 60 FPS gameplay</li>
+              <li>Touch and drag controls</li>
+              <li>Colorful arcade-style visuals</li>
+              <li>Animated starfield background</li>
+              <li>Visual feedback for good/bad items</li>
+              <li>Game over screen with restart option</li>
+            </ul>
+
+            <h4 class="project-llm-subheading"><span aria-hidden="true">📋</span> Requirements</h4>
+            <ul class="mb-3">
+              <li>Android Studio Arctic Fox (2020.3.1) or newer</li>
+              <li>Kotlin 1.9.20</li>
+              <li>Android SDK 24+ (target 34)</li>
+              <li>JDK 17</li>
+            </ul>
+
+            <div class="project-android-doc">
+            <h4 class="project-llm-subheading"><span aria-hidden="true">📖</span> Game rules</h4>
+            <div class="project-llm-prose">
+              <p><strong>Core loop.</strong> Objects fall; the basket moves horizontally. A catch registers when an object is horizontally over the basket and vertically in the catch band (about 82–95% of screen height).</p>
+              <p>Your score counts good catches (cash 💵 is scored like any other good item, not as a separate “dollar” tally).</p>
+            </div>
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Good items</h5>
+            <p class="small text-muted mb-1">Adds score (and combo logic where applicable).</p>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Emoji</th><th scope="col">Type</th><th scope="col">Notes</th></tr></thead>
+                <tbody>
+                  <tr><td>🍎</td><td>Apple</td><td>Red</td></tr>
+                  <tr><td>🍕</td><td>Pizza</td><td>Yellow</td></tr>
+                  <tr><td>🍊</td><td>Orange</td><td>Yellow</td></tr>
+                  <tr><td>🍾</td><td>Water bottle</td><td>Green (bottle emoji in code)</td></tr>
+                  <tr><td>🍌</td><td>Banana</td><td>Yellow</td></tr>
+                  <tr><td>💵</td><td>Cash</td><td>Green</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mb-2"><strong>Scoring (non–Color Match).</strong> Base +1 per good catch. With an active <em>Perfect</em> combo, each good catch adds points equal to the current consecutive count (e.g. 7 in a row on the same type → +7 that catch).</p>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Bad items</h5>
+            <p class="small text-muted mb-1">Lose a life unless immune.</p>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Emoji</th><th scope="col">Type</th></tr></thead>
+                <tbody>
+                  <tr><td>💣</td><td>Grenade</td></tr>
+                  <tr><td>🔪</td><td>Knife</td></tr>
+                  <tr><td>🔫</td><td>Gun</td></tr>
+                  <tr><td>💀</td><td>Skull</td></tr>
+                  <tr><td>🔥</td><td>Fire</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mb-2"><strong>Lives.</strong> You start with 3. Catching a bad item costs one life; at zero lives it is game over. <strong>Immunity (🛡️):</strong> when active, the next bad hit uses up the shield instead of a life (positive catch sound). If you take a bad hit with no shield, you lose a life, your consecutive good streak resets to zero, and Perfect and Variety combos reset.</p>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Buffs</h5>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Emoji</th><th scope="col">Type</th><th scope="col">Effect</th></tr></thead>
+                <tbody>
+                  <tr><td>❤️</td><td>Heart</td><td>+1 life, capped at 3 (Classic-only spawn rule).</td></tr>
+                  <tr><td>🛡️</td><td>Immunity</td><td>Next bad catch blocked (no life loss).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mb-2"><strong>Heart spawn (Classic only).</strong> After 10 consecutive good catches, the next spawn can be a heart; then that streak counter resets to 0. Only good catches raise the counter; a bad catch resets it.</p>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Nerfs</h5>
+            <p class="small text-muted mb-1">Classic only for spawn and effect; they use the same “bad” catch sound.</p>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Emoji</th><th scope="col">Type</th><th scope="col">Effect</th></tr></thead>
+                <tbody>
+                  <tr><td>🚀</td><td>Speed boost</td><td>Faster falls while active (base speed 0.008 → 0.012).</td></tr>
+                  <tr><td>✂️</td><td>Basket shrink</td><td>Narrower basket: width fraction 0.22 → 0.18.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mb-2">Each nerf type has a 5% spawn chance when that nerf is not already active (Classic).</p>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Currency</h5>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Emoji</th><th scope="col">Type</th><th scope="col">Effect</th></tr></thead>
+                <tbody>
+                  <tr><td>💎</td><td>Gemstone</td><td>+1 toward your gemstone total, saved when the run ends. Does not add to the main score. Uses a dedicated pickup sound.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="mb-2"><strong>Gemstone spawn (before normal spawn):</strong> base 0.5%; 1% if Perfect streak ≥ 30 or variety completions ≥ 15; 2% if both. The UI can react when a gemstone actually spawns.</p>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Mode-specific notes</h5>
+            <ul class="mb-3">
+              <li><strong>Color Match:</strong> Basket color vs object (incl. multi-color rules). Match → score like success; mismatch → −1 life. No buff/nerf spawns; Perfect/Variety disabled. Basket color rotates every 5&nbsp;s among 🔴🟡🟢⚫⚪. Multi-color: 🔥 matches red or yellow; 🔪 black or white; 🚀 red or white (Color Match only).</li>
+              <li><strong>Survival:</strong> Difficulty rises every 60&nbsp;s (faster falls, higher bad spawn capped at 60%). Spawn rate increases with level (delay floor ~400&nbsp;ms with jitter). 15% of “bad lane” spawns can be 🛡️ instead of a true bad object.</li>
+              <li><strong>Classic / Time Attack / Mystery:</strong> ~75% good spawn; of the remainder, 20% chance of 🛡️ instead of a true bad item.</li>
+              <li><strong>Mystery:</strong> Objects show “?” until they are far enough down the screen (about 65% of the way), then reveal. The lives row never shows more than three hearts.</li>
+            </ul>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Combos (disabled in Color Match)</h5>
+            <ul class="mb-3">
+              <li><strong>Perfect (same good type in a row):</strong> The streak grows when you repeat the same good emoji; switching to another good resets the streak to 1 on the new type. After five or more same-type good catches in a row, the combo is “active”; while active, each good catch adds points equal to the current streak length. A bad hit that costs a life resets Perfect (and Variety). The UI can show “NX” when active.</li>
+              <li><strong>Variety:</strong> The game tracks which of the six good types you have caught at least once. Catch all six before a bad hit clears the list. Re-catching a type you already have still counts toward completion. Finishing the full set awards +50 points, bumps the variety completion count, shows a short bonus, then clears so you can run it again. The label shows completions as “V : N”.</li>
+              <li><strong>Stats:</strong> Max perfect streak stored for leaderboard/stats persistence.</li>
+            </ul>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Other systems</h5>
+            <ul class="mb-3">
+              <li>Leaderboard (top 3) on game over by score.</li>
+              <li>Statistics / DB: emoji counts, variety totals, max perfect, play time, good spawned/caught, bad caught, top scores per mode.</li>
+              <li>Save slots: load/save; finishing a run from a slot deletes that save.</li>
+              <li><strong>Time Attack:</strong> 120&nbsp;s timer (time at zero ends the run). You have a very large life count, but each bad catch still reduces lives in the background, so it is effectively a cushion, not invincibility. Spawns speed up as time runs out. Same object mix as Classic and Mystery (not the Color Match or Survival tables).</li>
+            </ul>
+
+            <h4 class="project-llm-subheading"><span aria-hidden="true">🎮</span> Game modes</h4>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Mode</th><th scope="col">Emoji</th><th scope="col">Summary</th></tr></thead>
+                <tbody>
+                  <tr><td>Classic</td><td>🎮</td><td>3 lives, full object mix, hearts after 10-good streak, nerfs, combos, gemstone, speed/shrink when active.</td></tr>
+                  <tr><td>Time Attack</td><td>⏱️</td><td>120&nbsp;s timer; ~999 lives; spawn accelerates; same mix as Classic/Mystery.</td></tr>
+                  <tr><td>Mystery</td><td>🎲</td><td>Same catch/spawn rules; “?” until reveal; lives UI like Classic.</td></tr>
+                  <tr><td>Survival</td><td>💀</td><td>3 lives; difficulty ramps every 60&nbsp;s; bad cap; faster spawns; 🛡️ substitutes 15% of bad-lane spawns.</td></tr>
+                  <tr><td>Color Match</td><td>🎨</td><td>Match basket to object; 5 colors; no combos; no buff/nerf in spawn; good + bad pool only.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4 class="project-llm-subheading"><span aria-hidden="true">🎨</span> Customization (hub &amp; shop)</h4>
+            <p class="mb-2">Hub sections: <strong>CUSTOMIZATION</strong> 🎨, <strong>BASKET SKINS</strong> 🧺, <strong>THEMES</strong> 🌈, and <strong>MUSIC</strong> 🎵. Earn gemstones simply playing the game and unlock customizations for free!</p>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Basket skins</h5>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Skin</th><th scope="col">Emoji</th><th scope="col">Cost (💎)</th></tr></thead>
+                <tbody>
+                  <tr><td>Classic Basket</td><td>🧺</td><td>0</td></tr>
+                  <tr><td>Treasure Chest</td><td>💎</td><td>100</td></tr>
+                  <tr><td>Gift Box</td><td>🎁</td><td>80</td></tr>
+                  <tr><td>Shopping Cart</td><td>🛒</td><td>120</td></tr>
+                  <tr><td>Bucket</td><td>🪣</td><td>60</td></tr>
+                  <tr><td>Bowl</td><td>🥣</td><td>50</td></tr>
+                  <tr><td>Cooking Pot</td><td>🍲</td><td>90</td></tr>
+                  <tr><td>Briefcase</td><td>💼</td><td>100</td></tr>
+                  <tr><td>Toolbox</td><td>🧰</td><td>110</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Themes</h5>
+            <p class="small text-muted mb-1">Background gradient + particle style (stars, bubbles, snow, leaves, petals, glow, pixels — per theme).</p>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Theme</th><th scope="col">Emoji</th><th scope="col">Cost</th></tr></thead>
+                <tbody>
+                  <tr><td>Default</td><td>🎮</td><td>0</td></tr>
+                  <tr><td>Space</td><td>🚀</td><td>80</td></tr>
+                  <tr><td>Ocean</td><td>🌊</td><td>80</td></tr>
+                  <tr><td>Snow</td><td>❄️</td><td>80</td></tr>
+                  <tr><td>Nature</td><td>🌿</td><td>80</td></tr>
+                  <tr><td>Sakura Garden</td><td>🌸</td><td>80</td></tr>
+                  <tr><td>Volcano</td><td>🌋</td><td>80</td></tr>
+                  <tr><td>Techno</td><td>🤖</td><td>80</td></tr>
+                  <tr><td>Neon</td><td>💡</td><td>80</td></tr>
+                  <tr><td>Retro Arcade</td><td>👾</td><td>80</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Music</h5>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <thead><tr><th scope="col">Track</th><th scope="col">Emoji</th><th scope="col">Cost</th></tr></thead>
+                <tbody>
+                  <tr><td>Classic</td><td>🎵</td><td>0</td></tr>
+                  <tr><td>Battle</td><td>⚔️</td><td>100</td></tr>
+                  <tr><td>Crew</td><td>👥</td><td>80</td></tr>
+                  <tr><td>Echo</td><td>🔊</td><td>90</td></tr>
+                  <tr><td>Elite</td><td>⭐</td><td>150</td></tr>
+                  <tr><td>Foreboding</td><td>👻</td><td>110</td></tr>
+                  <tr><td>Forest Walk</td><td>🌲</td><td>70</td></tr>
+                  <tr><td>Graveyard</td><td>⚰️</td><td>120</td></tr>
+                  <tr><td>Love</td><td>💕</td><td>60</td></tr>
+                  <tr><td>Neverland</td><td>🧚</td><td>130</td></tr>
+                  <tr><td>Resurgence</td><td>🔥</td><td>140</td></tr>
+                  <tr><td>Samurai</td><td>⚔️</td><td>150</td></tr>
+                  <tr><td>Slayer</td><td>🗡️</td><td>160</td></tr>
+                  <tr><td>The Weekly Fair</td><td>🎪</td><td>85</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h5 class="fs-6 fw-bold mt-3 mb-2">Avatar (profiles &amp; clothing)</h5>
+            <p class="mb-2">Up to five profiles (numbered 1–5). Gender: Boy or Girl, with separate character art in the UI.</p>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <caption class="small text-muted">Cap</caption>
+                <thead><tr><th scope="col">Option</th><th scope="col">Emoji</th><th scope="col">Cost</th></tr></thead>
+                <tbody>
+                  <tr><td>No Cap</td><td>❌</td><td>0</td></tr>
+                  <tr><td>Cap</td><td>🧢</td><td>30</td></tr>
+                  <tr><td>Cowboy</td><td>🤠</td><td>50</td></tr>
+                  <tr><td>Top hat</td><td>🎩</td><td>60</td></tr>
+                  <tr><td>Crown</td><td>👑</td><td>100</td></tr>
+                  <tr><td>Graduation</td><td>🎓</td><td>50</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <caption class="small text-muted">Shirt</caption>
+                <thead><tr><th scope="col">Option</th><th scope="col">Emoji</th><th scope="col">Cost</th></tr></thead>
+                <tbody>
+                  <tr><td>Basic</td><td>👕</td><td>0</td></tr>
+                  <tr><td>Hoodie</td><td>🧥</td><td>60</td></tr>
+                  <tr><td>Tank</td><td>🎽</td><td>30</td></tr>
+                  <tr><td>Jacket</td><td>🧥</td><td>70</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mb-3">
+              <table class="table table-sm table-bordered align-middle">
+                <caption class="small text-muted">Pants</caption>
+                <thead><tr><th scope="col">Option</th><th scope="col">Emoji</th><th scope="col">Cost</th></tr></thead>
+                <tbody>
+                  <tr><td>Jeans</td><td>👖</td><td>0</td></tr>
+                  <tr><td>Shorts</td><td>🩳</td><td>30</td></tr>
+                  <tr><td>Cargo</td><td>👖</td><td>45</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive mb-4">
+              <table class="table table-sm table-bordered align-middle">
+                <caption class="small text-muted">Shoes</caption>
+                <thead><tr><th scope="col">Option</th><th scope="col">Emoji</th><th scope="col">Cost</th></tr></thead>
+                <tbody>
+                  <tr><td>Sneakers</td><td>👟</td><td>0</td></tr>
+                  <tr><td>Boots</td><td>🥾</td><td>50</td></tr>
+                  <tr><td>Sandals</td><td>🩴</td><td>25</td></tr>
+                  <tr><td>Dress</td><td>👞</td><td>55</td></tr>
+                </tbody>
+              </table>
+            </div>
+            </div>
+
+            <h4 class="project-llm-subheading">Screenshots</h4>
+            <div class="project-deck-wrap mb-3">
+              <div class="swiper init-swiper project-android-swiper">
+                <script type="application/json" class="swiper-config">
+                  {
+                    "loop": true,
+                    "speed": 500,
+                    "slidesPerView": 1,
+                    "spaceBetween": 16,
+                    "observer": true,
+                    "observeParents": true,
+                    "pagination": { "el": ".android-swiper-pagination", "clickable": true },
+                    "navigation": { "nextEl": ".android-swiper-button-next", "prevEl": ".android-swiper-button-prev" }
+                  }
+                </script>
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050712.png" class="project-deck-img" alt="Falling Object Catcher — main view" loading="lazy"></div>
+                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050847.png" class="project-deck-img" alt="Falling Object Catcher — gameplay" loading="lazy"></div>
+                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050900.png" class="project-deck-img" alt="Falling Object Catcher — in game" loading="lazy"></div>
+                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050911.png" class="project-deck-img" alt="Falling Object Catcher — action" loading="lazy"></div>
+                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050921.png" class="project-deck-img" alt="Falling Object Catcher — session" loading="lazy"></div>
+                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_051057.png" class="project-deck-img" alt="Falling Object Catcher — game over" loading="lazy"></div>
+                </div>
+                <div class="swiper-pagination android-swiper-pagination"></div>
+                <div class="swiper-button-prev android-swiper-button-prev"></div>
+                <div class="swiper-button-next android-swiper-button-next"></div>
+              </div>
+            </div>
+
+            <h4 class="project-llm-subheading">Gameplay Footage</h4>
+           <div class="project-android-video">
+              <video class="w-100 rounded border" controls preload="metadata" playsinline poster="assets/projects/android/Screenshot_20260501_050712.png">
+                <source src="assets/projects/android/Screen_recording_20260501_050948.webm" type="video/webm">
+                Your browser does not support embedded video; download the WebM from the project assets folder.
+              </video>
+            </div>
           </div>
           <div id="project-panel-webgames" class="project-panel" role="tabpanel" aria-labelledby="tab-webgames" aria-hidden="true">
             <h3 class="project-panel-title">Webgames</h3>
-            <p class="text-muted mb-0">Add your content inside this panel.</p>
+            <p class="mb-3">Self-contained mini-apps (HTML/CSS/JS). These are hard for AI models to solve. Open the hub or jump straight into a game. Upstream repo: <a href="https://github.com/SifatTanvir/Webgames" target="_blank" rel="noopener noreferrer">Webgames on GitHub</a>.</p>
+            <p class="mb-3"><a class="btn btn-primary" href="assets/projects/webgames-play/index.html">Open webgames hub</a></p>
+            <div class="webgame-hub-tiles row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 mb-4">
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/memory-match.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🃏</span><span class="webgame-hub-tile__title">Memory match</span><span class="webgame-hub-tile__hint">Pair symbols</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/reaction-time.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">⚡</span><span class="webgame-hub-tile__title">Reaction time</span><span class="webgame-hub-tile__hint">Tap on green</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/word-bridge.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🌉</span><span class="webgame-hub-tile__title">Word bridge</span><span class="webgame-hub-tile__hint">Lexical ladder</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/medical-notes-summarizer.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">📋</span><span class="webgame-hub-tile__title">Medical notes summarizer</span><span class="webgame-hub-tile__hint">Chart &amp; insight</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/delivery-route-optimizer.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🗺️</span><span class="webgame-hub-tile__title">Delivery route optimizer</span><span class="webgame-hub-tile__hint">Vehicle &amp; order</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/phishing-detector.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🛡️</span><span class="webgame-hub-tile__title">Phishing detector</span><span class="webgame-hub-tile__hint">Inbox &amp; override</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/cultural-clarity.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🌍</span><span class="webgame-hub-tile__title">Cultural clarity</span><span class="webgame-hub-tile__hint">Chat &amp; insight</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/scam-detection.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🔎</span><span class="webgame-hub-tile__title">Scam detection</span><span class="webgame-hub-tile__hint">Flags &amp; filters</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/neon-target.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🎯</span><span class="webgame-hub-tile__title">Neon targets</span><span class="webgame-hub-tile__hint">20-second rush</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/math-challenge.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🧮</span><span class="webgame-hub-tile__title">Math challenge</span><span class="webgame-hub-tile__hint">7 questions</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/color-count.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🎨</span><span class="webgame-hub-tile__title">Game of color</span><span class="webgame-hub-tile__hint">3×3 grid</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/cipher-riddles.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🔐</span><span class="webgame-hub-tile__title">Cipher riddles</span><span class="webgame-hub-tile__hint">5 clues</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/symbol-decoder.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">📡</span><span class="webgame-hub-tile__title">Symbol decoder</span><span class="webgame-hub-tile__hint">Transmission log</span></a></div>
+              <div class="col"><a class="webgame-hub-tile" href="assets/projects/webgames-play/games/pc-builder.html"><span class="webgame-hub-tile__emoji" aria-hidden="true">🖥️</span><span class="webgame-hub-tile__title">PC builder</span><span class="webgame-hub-tile__hint">Matching parts</span></a></div>
+            </div>
+
           </div>
         </div>
 
@@ -177,19 +485,13 @@
         <p>© <span>Copyright</span> <strong class="px-1 sitename">Sifat Tanvir</strong> <span>All Rights Reserved<br></span></p>
       </div>
       <div class="social-links d-flex justify-content-center">
-        <a href="" class="github"><i class="bi bi-github"></i></a>
-        <a href="" class="google-scholar" aria-label="Google Scholar" title="Google Scholar"><i class="bi bi-mortarboard"></i></a>
-        <a href="" class="ieee" aria-label="IEEE" title="IEEE"><span class="ieee-mark">IEEE</span></a>
-        <a href="" class="facebook"><i class="bi bi-facebook"></i></a>
-        <a href="" class="instagram"><i class="bi bi-instagram"></i></a>
-        <a href="" class="linkedin"><i class="bi bi-linkedin"></i></a>
-      </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> · <a href="https://themewagon.com/">ThemeWagon</a>
+        <a href="https://www.linkedin.com/in/sifat-tanvir-91a7801a0/" class="linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="https://github.com/SifatTanvir" class="github" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="bi bi-github"></i></a>
+        <a href="https://scholar.google.com/citations?user=g95o4UoAAAAJ&hl=en" class="google-scholar" target="_blank" rel="noopener noreferrer" aria-label="Google Scholar" title="Google Scholar"><i class="bi bi-mortarboard"></i></a>
+        <a href="https://www.kaggle.com/sifattanvir" class="kaggle" target="_blank" rel="noopener noreferrer" aria-label="Kaggle" title="Kaggle"><span class="kaggle-mark" aria-hidden="true">K</span></a>
+        <a href="https://ieeexplore.ieee.org/author/37088763334" class="ieee" target="_blank" rel="noopener noreferrer" aria-label="IEEE Xplore author profile" title="IEEE Xplore"><span class="ieee-mark">IEEE</span></a>
+        <a href="https://www.facebook.com/sifattanvirsami/" class="facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/sifat_freakin_tanvir/" class="instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><i class="bi bi-instagram"></i></a>
       </div>
     </div>
 

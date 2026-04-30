@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PC builder | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .shell { display: flex; flex-wrap: wrap; min-height: calc(100vh - 52px); }
+    .sum { width: 100%; max-width: 260px; padding: 1rem; background: var(--wg-surface); border-right: 1px solid rgba(255,255,255,.08); }
+    .stage { flex: 1; padding: 1rem; display: flex; align-items: flex-start; justify-content: center; }
+    .card { max-width: 480px; width: 100%; background: var(--wg-card); border-radius: var(--wg-radius); padding: 1.25rem; border: 1px solid rgba(255,255,255,.1); }
+    label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
+    .pergrid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin: .5rem 0 1rem; }
+    .pergrid button { padding: .6rem; border-radius: 8px; border: 1px solid rgba(255,255,255,.15); background: var(--wg-surface); color: inherit; font: inherit; cursor: pointer; }
+    .pergrid button.on { background: rgba(225,29,72,.25); border-color: #fb7185; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="shell">
+    <aside class="sum">
+      <h2 style="font-size:1rem;margin:0 0 1rem">Build summary</h2>
+      <ul style="margin:0;padding-left:1.1rem;font-size:.9rem;color:var(--wg-muted)" id="sum"></ul>
+    </aside>
+    <div class="stage">
+      <div class="card" id="card"></div>
+    </div>
+  </div>
+  <script>
+    var CPUs = [{ id: 'i5', name: 'Intel i5-13600K', socket: 'LGA1700' }, { id: 'i7', name: 'Intel i7-14700K', socket: 'LGA1700' }, { id: 'r5', name: 'Ryzen 5 7600', socket: 'AM5' }];
+    var MOBs = [{ id: 'z790', name: 'ASUS Z790-Plus', socket: 'LGA1700' }, { id: 'b650', name: 'MSI B650 Tomahawk', socket: 'AM5' }];
+    var GPUS = ['RTX 4070 Super', 'RX 7800 XT', 'RTX 4090'];
+    var RAMS = ['32 GB DDR5-6000', '64 GB DDR5-5600'];
+    var PERS = ['27" Monitor', 'Mechanical Keyboard', 'Wireless Mouse', '7.1 Headset'];
+    var REQ = { cpu: 'r5', mobo: 'b650', gpu: 'RX 7800 XT', ram: '64 GB DDR5-5600', per: ['27" Monitor', 'Mechanical Keyboard', 'Wireless Mouse'] };
+    var cpu = '', mobo = '', gpu = '', ram = '', per = [], stage = 0, order = false;
+
+    function cpuO() { return CPUs.find(function (c) { return c.id === cpu; }); }
+    function mobO() { return MOBs.find(function (m) { return m.id === mobo; }); }
+    function match() { return cpuO() && mobO() && cpuO().socket === mobO().socket; }
+    function coreOk() { return cpu === REQ.cpu && mobo === REQ.mobo && gpu === REQ.gpu && ram === REQ.ram; }
+    function perOk() { return REQ.per.length === per.length && REQ.per.every(function (p) { return per.indexOf(p) !== -1; }); }
+
+    function updSum() {
+      document.getElementById('sum').innerHTML =
+        '<li>CPU: ' + (cpuO() ? cpuO().name : '—') + '</li>' +
+        '<li>Motherboard: ' + (mobO() ? mobO().name : '—') + '</li>' +
+        '<li>GPU: ' + (gpu || '—') + '</li>' +
+        '<li>RAM: ' + (ram || '—') + '</li>' +
+        '<li>Peripherals: ' + (per.length ? per.join(', ') : '—') + '</li>';
+    }
+
+    function sel(name, val, opts) {
+      var h = '<label>' + name + '</label><select class="wg-select" data-k="' + name + '"><option value="">— pick —</option>';
+      opts.forEach(function (o) { h += '<option value="' + o.v + '"' + (o.v === val ? ' selected' : '') + '>' + o.t + '</option>'; });
+      return h + '</select>';
+    }
+
+    function render() {
+      updSum();
+      var el = document.getElementById('card');
+      if (stage === 0) {
+        el.innerHTML = '<h2 style="margin:0 0 1rem">1. Core parts</h2>' +
+          sel('CPU', cpu, CPUs.map(function (c) { return { v: c.id, t: c.name }; })) +
+          sel('Motherboard', mobo, MOBs.map(function (m) { return { v: m.id, t: m.name }; })) +
+          sel('GPU', gpu, GPUS.map(function (g) { return { v: g, t: g }; })) +
+          sel('RAM', ram, RAMS.map(function (r) { return { v: r, t: r }; })) +
+          '<button type="button" class="wg-btn" style="margin-top:1rem;width:100%" id="n0">Check selections →</button>';
+        el.querySelectorAll('select').forEach(function (s) {
+          s.onchange = function () {
+            var k = s.getAttribute('data-k');
+            if (k === 'CPU') cpu = s.value;
+            if (k === 'Motherboard') mobo = s.value;
+            if (k === 'GPU') gpu = s.value;
+            if (k === 'RAM') ram = s.value;
+            updSum();
+          };
+        });
+        el.querySelector('#n0').onclick = function () {
+          if (!cpu || !mobo || !gpu || !ram) { alert('Choose all core parts.'); return; }
+          stage = 1;
+          render();
+        };
+      } else if (stage === 1) {
+        el.innerHTML = '<h2 style="margin:0 0 1rem">2. Compatibility</h2>' +
+          '<p style="margin:0 0 1rem;font-size:.95rem">' + (match() ? '✓ CPU and motherboard sockets match.' : '✗ Mismatch: CPU is ' + (cpuO() && cpuO().socket) + ', board is ' + (mobO() && mobO().socket) + '.') + '</p>' +
+          (match() ? '<button type="button" class="wg-btn" id="n1">Peripherals →</button>' : '<button type="button" class="wg-btn wg-btn--ghost" id="b0">← Back</button>');
+        if (match()) el.querySelector('#n1').onclick = function () { stage = 2; render(); };
+        else el.querySelector('#b0').onclick = function () { stage = 0; render(); };
+      } else if (stage === 2) {
+        var pg = '<div class="pergrid">';
+        PERS.forEach(function (p, idx) {
+          pg += '<button type="button" data-idx="' + idx + '" class="' + (per.indexOf(p) !== -1 ? 'on' : '') + '">' + p + '</button>';
+        });
+        pg += '</div>';
+        el.innerHTML = '<h2 style="margin:0 0 1rem">3. Peripherals</h2>' + pg +
+          '<button type="button" class="wg-btn" style="width:100%" id="n2">Review order →</button>';
+        el.querySelectorAll('.pergrid button').forEach(function (b) {
+          b.onclick = function () {
+            var p = PERS[+b.getAttribute('data-idx')];
+            var i = per.indexOf(p);
+            if (i === -1) per.push(p); else per.splice(i, 1);
+            b.classList.toggle('on', per.indexOf(p) !== -1);
+          };
+        });
+        el.querySelector('#n2').onclick = function () {
+          if (!per.length) { alert('Pick at least one peripheral.'); return; }
+          stage = 3;
+          render();
+        };
+      } else {
+        el.innerHTML = '<h2 style="margin:0 0 1rem">4. Confirm</h2><ul style="margin:0 0 1rem;padding-left:1.2rem;color:var(--wg-muted)">' +
+          '<li>CPU: ' + cpuO().name + '</li><li>Board: ' + mobO().name + '</li><li>GPU: ' + gpu + '</li><li>RAM: ' + ram + '</li><li>Extras: ' + per.join(', ') + '</li></ul>' +
+          (order ? (match() && coreOk() && perOk()
+            ? '<div class="wg-success">Order placed! Password: <strong>Configuration</strong></div>'
+            : '<div class="wg-error">This build does not match the secret brief. Hint: AM5 mid-tier CPU, matching board, RX 7800 XT, 64 GB RAM, three specific peripherals.</div>')
+            : '<button type="button" class="wg-btn" id="go">Place order</button>');
+        var go = el.querySelector('#go');
+        if (go) go.onclick = function () { order = true; render(); };
+      }
+    }
+    render();
+  </script>
+</body>
+
+</html>

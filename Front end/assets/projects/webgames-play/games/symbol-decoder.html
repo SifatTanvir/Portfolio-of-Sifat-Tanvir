@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Symbol decoder | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    body.wg-page { --lab-bg: #111827; --lab-cyan: #22d3ee; --lab-cyan-dim: rgba(34, 211, 238, 0.35); }
+    .lab { min-height: calc(100vh - 52px); background: var(--lab-bg); color: var(--lab-cyan); font-family: ui-monospace, "Cascadia Code", monospace; }
+    .lab-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 0.75rem 1rem; background: rgba(0, 0, 0, 0.35); border-bottom: 1px solid var(--lab-cyan-dim); position: sticky; top: 52px; z-index: 5; }
+    .lab-head h1 { margin: 0; font-size: 1rem; letter-spacing: 0.12em; color: #fff; }
+    .lab-main { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+    .lab-card { background: rgba(0, 0, 0, 0.25); border: 1px solid var(--lab-cyan-dim); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; }
+    .lab-card h2, .lab-card h3 { color: #fff; margin: 0 0 0.5rem; font-size: 1.1rem; }
+    .lab-intro { text-align: center; color: rgba(165, 243, 252, 0.85); font-size: 0.9rem; line-height: 1.55; }
+    .grid2 { display: grid; gap: 1rem; }
+    @media (min-width: 900px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+    .log { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+    .log-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; background: rgba(31, 41, 55, 0.7); padding: 0.5rem 0.65rem; border-radius: 8px; }
+    .log-t { font-weight: 700; color: #06b6d4; min-width: 3.5rem; }
+    .sym-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.35rem 0.5rem; background: rgba(0, 0, 0, 0.35); border-radius: 8px; }
+    .dots { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; justify-content: center; min-width: 2.5rem; min-height: 2.5rem; }
+    .dots i { width: 6px; height: 6px; border-radius: 50%; background: #67e8f9; display: block; }
+    .sym-svg { width: 2.5rem; height: 2.5rem; fill: #67e8f9; }
+    .sym-color { width: 2.5rem; height: 2.5rem; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.2); }
+    .pal-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .pal-btn { position: relative; width: 5.5rem; padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(34, 211, 238, 0.25); background: rgba(31, 41, 55, 0.9); cursor: pointer; color: inherit; font: inherit; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+    .pal-btn:hover:not(:disabled) { background: rgba(22, 78, 99, 0.5); }
+    .pal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pal-btn.sel { outline: 2px solid #22d3ee; outline-offset: 2px; }
+    .pal-btn .lbl { font-size: 0.65rem; color: rgba(103, 232, 249, 0.75); }
+    .chk { position: absolute; top: 2px; right: 2px; width: 1rem; height: 1rem; background: #22d3ee; border-radius: 50%; font-size: 0.65rem; line-height: 1rem; text-align: center; color: #111; font-weight: 800; }
+    .build { display: flex; justify-content: center; align-items: center; gap: 1rem; min-height: 5rem; background: rgba(17, 24, 39, 0.8); border-radius: 8px; padding: 0.5rem; }
+    .slot { width: 3rem; height: 3rem; border: 2px dashed rgba(6, 182, 212, 0.35); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .meaning-in { width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 2px solid rgba(6, 182, 212, 0.4); background: rgba(17, 24, 39, 0.8); color: #e0f2fe; font-family: inherit; font-size: 0.95rem; }
+    .meaning-in:focus { outline: none; border-color: #22d3ee; }
+    .lab-foot { text-align: center; font-size: 0.7rem; color: rgba(103, 232, 249, 0.45); padding: 1.5rem 1rem; border-top: 1px solid var(--lab-cyan-dim); margin-top: 2rem; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="lab">
+    <div class="lab-head">
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:2rem;height:2rem;color:#22d3ee" aria-hidden="true"><path d="M4.5 4.5a.75.75 0 00-1.5 0v15a.75.75 0 001.5 0v-3.382a3.018 3.018 0 012.262-2.912 3.036 3.036 0 012.06.033 3.036 3.036 0 012.06.034 3.018 3.018 0 012.262 2.912v3.382a.75.75 0 001.5 0v-3.382a3.018 3.018 0 012.262-2.912 3.036 3.036 0 012.06-.033 3.036 3.036 0 012.06-.034 3.018 3.018 0 012.262 2.912v3.382a.75.75 0 001.5 0v-15a.75.75 0 00-1.5 0v3.382a3.018 3.018 0 01-2.262 2.912 3.036 3.036 0 01-2.06-.033 3.036 3.036 0 01-2.06-.034 3.018 3.018 0 01-2.262-2.912V4.5a.75.75 0 00-1.5 0v3.382a3.018 3.018 0 01-2.262 2.912 3.036 3.036 0 01-2.06-.033 3.036 3.036 0 01-2.06-.034A3.018 3.018 0 016 7.882V4.5z" /></svg>
+        <h1>XENO-LINGUISTICS LAB · Symbol decoder</h1>
+      </div>
+      <div id="pwd" hidden style="background:rgba(34,211,238,.12);border:1px solid var(--lab-cyan-dim);color:#fff;padding:.4rem .85rem;border-radius:8px;font-size:.9rem"><strong>Password:</strong> <span style="letter-spacing:.12em">PatternCracked</span></div>
+    </div>
+
+    <main class="lab-main">
+      <section class="lab-card">
+        <h2 style="text-align:center;margin-bottom:.5rem">Decode transmission sequence</h2>
+        <p class="lab-intro">Analyze the incoming log. Each row advances a numeric pattern while shape and color cycle. Build the <strong>next</strong> triad and type its meaning exactly as: <code style="color:#a5f3fc">Sequence &lt;n&gt;: &lt;ColorName&gt; &lt;ShapeName&gt;</code> (names appear under shape and color chips).</p>
+      </section>
+
+      <div class="grid2">
+        <div class="lab-card">
+          <h3>Incoming message log</h3>
+          <div class="log" id="log"></div>
+        </div>
+        <div class="lab-card">
+          <h3>Decoding workbench</h3>
+          <div id="palettes"></div>
+        </div>
+      </div>
+
+      <section class="lab-card">
+        <h3 style="text-align:center;margin-bottom:1rem">Construct &amp; transmit reply</h3>
+        <div class="grid2" style="align-items:start">
+          <div>
+            <h4 style="color:#a5f3fc;font-size:.85rem;margin:0 0 .5rem;text-align:center">Constructed message</h4>
+            <div class="build" id="build"></div>
+          </div>
+          <div>
+            <label for="meaning" style="color:#a5f3fc;font-weight:700;display:block;margin-bottom:.35rem">Translated meaning</label>
+            <input id="meaning" class="meaning-in" type="text" placeholder="Sequence 7: Nirun Zyphoid" autocomplete="off">
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:1.25rem">
+          <button type="button" class="wg-btn" id="send" style="padding:.75rem 2rem;font-size:1rem">Transmit reply</button>
+        </div>
+        <p id="fb" style="text-align:center;margin-top:1rem;min-height:1.25rem;color:#fda4af"></p>
+      </section>
+    </main>
+    <footer class="lab-foot">Interstellar Communications Agency · Protocol 7G</footer>
+  </div>
+
+  <script>
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    var ALL_SHAPES = [
+      { id: 's1', data: 'M12 2L2 22h20L12 2z' },
+      { id: 's2', data: 'M2 2h20v20H2V2z' },
+      { id: 's3', data: 'M12 2a10 10 0 100 20 10 10 0 000-20z' },
+      { id: 's4', data: 'M12 2l10 10-10 10L2 12 12 2z' },
+    ];
+    var ALL_COLORS = [
+      { id: 'c1', data: '#f43f5e' },
+      { id: 'c2', data: '#3b82f6' },
+      { id: 'c3', data: '#22c55e' },
+      { id: 'c4', data: '#eab308' },
+      { id: 'c5', data: '#f97316' },
+    ];
+    var ALL_NUMBERS = [];
+    for (var ni = 0; ni < 8; ni++) ALL_NUMBERS.push({ id: 'n' + (ni + 1), data: ni + 1 });
+
+    var SHAPE_NAMES = ['Zyphoid', 'Krell', 'Vexel', 'Plorbon'];
+    var COLOR_NAMES = ['Nirun', 'Glox', 'Cydan', 'Flaris', 'Rylix'];
+
+    var shuffledShapes = shuffle(ALL_SHAPES);
+    var shuffledColors = shuffle(ALL_COLORS);
+    var startNum = 1 + Math.floor(Math.random() * 3);
+    var increment = 1 + Math.floor(Math.random() * 2);
+    var numTransmissions = 5 + Math.floor(Math.random() * 3);
+
+    var transmissions = [];
+    for (var i = 0; i < numTransmissions; i++) {
+      var currentNumValue = startNum + i * increment;
+      transmissions.push({
+        sequenceNumber: i + 1,
+        symbols: {
+          number: ALL_NUMBERS[(currentNumValue - 1) % ALL_NUMBERS.length],
+          shape: shuffledShapes[i % shuffledShapes.length],
+          color: shuffledColors[i % shuffledColors.length],
+        },
+      });
+    }
+
+    var nextIdx = numTransmissions;
+    var nextNumberValue = startNum + nextIdx * increment;
+    var nextNumberSymbol = ALL_NUMBERS[(nextNumberValue - 1) % ALL_NUMBERS.length];
+    var nextShapeSymbol = shuffledShapes[nextIdx % shuffledShapes.length];
+    var nextColorSymbol = shuffledColors[nextIdx % shuffledColors.length];
+
+    var shapeNameMap = {};
+    shuffledShapes.forEach(function (s, idx) { shapeNameMap[s.id] = SHAPE_NAMES[idx]; });
+    var colorNameMap = {};
+    shuffledColors.forEach(function (c, idx) { colorNameMap[c.id] = COLOR_NAMES[idx]; });
+
+    var correctAnswer = {
+      numberId: nextNumberSymbol.id,
+      shapeId: nextShapeSymbol.id,
+      colorId: nextColorSymbol.id,
+    };
+    var correctMeaning = 'Sequence ' + nextNumberValue + ': ' + colorNameMap[nextColorSymbol.id] + ' ' + shapeNameMap[nextShapeSymbol.id];
+
+    function renderNumber(sym) {
+      var n = sym.data;
+      var d = document.createElement('div');
+      d.className = 'dots';
+      for (var k = 0; k < n; k++) d.appendChild(document.createElement('i'));
+      return d;
+    }
+
+    function renderShape(sym) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('class', 'sym-svg');
+      var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', sym.data);
+      svg.appendChild(p);
+      return svg;
+    }
+
+    function renderColor(sym) {
+      var el = document.createElement('div');
+      el.className = 'sym-color';
+      el.style.backgroundColor = sym.data;
+      return el;
+    }
+
+    function renderSymbolic(sym, type) {
+      if (type === 'number') return renderNumber(sym);
+      if (type === 'shape') return renderShape(sym);
+      return renderColor(sym);
+    }
+
+    var log = document.getElementById('log');
+    transmissions.forEach(function (t) {
+      var row = document.createElement('div');
+      row.className = 'log-row';
+      row.innerHTML = '<span class="log-t">T-' + String(t.sequenceNumber).padStart(2, '0') + ':</span>';
+      var inner = document.createElement('div');
+      inner.className = 'sym-row';
+      inner.appendChild(renderSymbolic(t.symbols.number, 'number'));
+      inner.appendChild(renderSymbolic(t.symbols.shape, 'shape'));
+      inner.appendChild(renderSymbolic(t.symbols.color, 'color'));
+      row.appendChild(inner);
+      log.appendChild(row);
+    });
+
+    var constructed = {};
+    var submitted = false;
+
+    function palSection(title, palette, symbolType) {
+      var wrap = document.createElement('div');
+      wrap.style.marginBottom = '1rem';
+      wrap.innerHTML = '<h4 style="color:#a5f3fc;font-size:.85rem;margin:0 0 .35rem">' + title + '</h4>';
+      var btns = document.createElement('div');
+      btns.className = 'pal-btns';
+      palette.forEach(function (sym) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'pal-btn';
+        b.appendChild(renderSymbolic(sym, symbolType));
+        if (symbolType !== 'number') {
+          var lbl = document.createElement('span');
+          lbl.className = 'lbl';
+          lbl.textContent = symbolType === 'shape' ? shapeNameMap[sym.id] : colorNameMap[sym.id];
+          b.appendChild(lbl);
+        }
+        b.addEventListener('click', function () {
+          if (submitted) return;
+          constructed[symbolType] = sym;
+          btns.querySelectorAll('.pal-btn').forEach(function (x) { x.classList.remove('sel'); x.querySelectorAll('.chk').forEach(function (c) { c.remove(); }); });
+          b.classList.add('sel');
+          var ch = document.createElement('span');
+          ch.className = 'chk';
+          ch.textContent = '✓';
+          b.appendChild(ch);
+          paintBuild();
+        });
+        btns.appendChild(b);
+      });
+      wrap.appendChild(btns);
+      return wrap;
+    }
+
+    var palHost = document.getElementById('palettes');
+    palHost.appendChild(palSection('Select number (dot count)', ALL_NUMBERS, 'number'));
+    palHost.appendChild(palSection('Select shape', shuffledShapes, 'shape'));
+    palHost.appendChild(palSection('Select color', shuffledColors, 'color'));
+
+    var build = document.getElementById('build');
+    function paintBuild() {
+      build.innerHTML = '';
+      ['number', 'shape', 'color'].forEach(function (key) {
+        var slot = document.createElement('div');
+        slot.className = 'slot';
+        if (constructed[key]) slot.appendChild(renderSymbolic(constructed[key], key));
+        build.appendChild(slot);
+      });
+    }
+    paintBuild();
+
+    document.getElementById('send').onclick = function () {
+      if (submitted) return;
+      var numOk = constructed.number && constructed.number.id === correctAnswer.numberId;
+      var shOk = constructed.shape && constructed.shape.id === correctAnswer.shapeId;
+      var coOk = constructed.color && constructed.color.id === correctAnswer.colorId;
+      var txt = document.getElementById('meaning').value.trim().toLowerCase();
+      var meanOk = txt === correctMeaning.toLowerCase();
+      var can = constructed.number && constructed.shape && constructed.color && document.getElementById('meaning').value.trim() !== '';
+      if (!can) return;
+      submitted = true;
+      document.getElementById('meaning').disabled = true;
+      document.getElementById('send').textContent = 'Transmission sent';
+      document.getElementById('send').disabled = true;
+      palHost.querySelectorAll('.pal-btn').forEach(function (b) { b.disabled = true; });
+      var fb = document.getElementById('fb');
+      if (numOk && shOk && coOk && meanOk) {
+        fb.textContent = '';
+        document.getElementById('pwd').hidden = false;
+      } else {
+        fb.textContent = 'Verification failed — constructed triad or translated meaning is wrong. Reload the page for a new puzzle.';
+      }
+    };
+  </script>
+</body>
+
+</html>

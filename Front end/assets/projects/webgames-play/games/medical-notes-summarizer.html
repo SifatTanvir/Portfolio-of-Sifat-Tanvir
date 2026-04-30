@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Medical notes summarizer | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .med { font-family: system-ui, "Segoe UI", Roboto, sans-serif; background: #f1f5f9; color: #1e293b; min-height: calc(100vh - 52px); }
+    .med-nav { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); position: sticky; top: 52px; z-index: 8; }
+    .med-nav svg { width: 1.5rem; height: 1.5rem; color: #fff; }
+    .med-nav .logo { background: #2563eb; padding: 0.5rem; border-radius: 8px; display: flex; }
+    .med-nav span { font-size: 1.25rem; font-weight: 800; color: #0f172a; }
+    .med-banner { background: #16a34a; color: #fff; text-align: center; padding: 0.75rem; font-weight: 700; display: none; }
+    .med-banner.on { display: block; }
+    .hero { position: relative; height: min(45vh, 380px); color: #fff; overflow: hidden; }
+    .hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.7s ease; background-size: cover; background-position: center; }
+    .hero-slide.on { opacity: 1; }
+    .hero-slide::after { content: ""; position: absolute; inset: 0; background: rgba(15, 23, 42, 0.55); }
+    .hero-inner { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 1.5rem; }
+    .hero h1 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 800; letter-spacing: -0.02em; }
+    .hero p { margin: 1rem 0 0; max-width: 36rem; color: #e2e8f0; font-size: 1rem; line-height: 1.5; }
+    .hero-ctrl { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 2.75rem; height: 2.75rem; border-radius: 50%; border: none; background: rgba(255,255,255,.2); color: #fff; cursor: pointer; backdrop-filter: blur(4px); font-size: 1.25rem; line-height: 1; opacity: 0; transition: opacity .2s; }
+    .hero:hover .hero-ctrl { opacity: 1; }
+    .hero-ctrl.prev { left: 1rem; }
+    .hero-ctrl.next { right: 1rem; }
+    .chart-strip { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 1rem 1.25rem; }
+    .chart-strip h2 { margin: 0 0 0.5rem; font-size: 1.35rem; color: #0f172a; }
+    .chart-meta { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.875rem; }
+    .chart-meta span { color: #64748b; font-weight: 600; }
+    .med-main { max-width: 1120px; margin: 0 auto; padding: 2rem 1rem 3rem; display: grid; gap: 1.5rem; }
+    @media (min-width: 1024px) { .med-main { grid-template-columns: 1fr 320px; align-items: start; } }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border: 1px solid #e2e8f0; padding: 1.25rem; }
+    .card h2, .card h3 { margin: 0 0 1rem; font-size: 1.1rem; color: #0f172a; }
+    .tabs { display: flex; gap: 0.5rem; border-bottom: 1px solid #e2e8f0; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tabs button { padding: 0.65rem 0.5rem; border: none; background: none; font: inherit; font-weight: 600; font-size: 0.875rem; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tabs button.on { color: #2563eb; border-bottom-color: #2563eb; }
+    .note-body { font-size: 0.9rem; line-height: 1.65; color: #334155; }
+    .subgrid { display: grid; gap: 1.5rem; }
+    @media (min-width: 640px) { .subgrid { grid-template-columns: 1fr 1fr; } }
+    .card ul { margin: 0; padding-left: 1.1rem; font-size: 0.875rem; color: #334155; }
+    .card ul.plain { list-style: none; padding: 0; }
+    .card ul.plain li { padding: 0.5rem 0.65rem; background: #f8fafc; border-radius: 6px; margin-bottom: 0.35rem; }
+    .timeline-day { margin-bottom: 1rem; }
+    .timeline-day strong { color: #0f172a; display: block; margin-bottom: 0.35rem; }
+    .side .opt { display: flex; align-items: flex-start; gap: 0.65rem; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+    .side .opt.is-sel { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,.2); }
+    .side .opt input { margin-top: 0.2rem; }
+    .side .opt span { font-size: 0.8125rem; color: #334155; line-height: 1.45; }
+    .side fieldset { border: none; padding: 0; margin: 0; }
+    .side fieldset:disabled .opt { opacity: 0.65; cursor: not-allowed; }
+    .submit-wrap { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
+    .btn-submit { width: 100%; padding: 0.85rem; border: none; border-radius: 8px; background: #4f46e5; color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; }
+    .btn-submit:hover:not(:disabled) { background: #4338ca; }
+    .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+    .med-foot { background: #1e293b; color: #94a3b8; text-align: center; padding: 1.5rem 1rem; font-size: 0.75rem; margin-top: 2rem; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="med">
+    <div class="med-nav">
+      <div class="logo" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
+      </div>
+      <span>MediSynth AI Summarizer</span>
+    </div>
+    <div class="med-banner" id="winBanner">Password: <span style="font-family:ui-monospace;background:rgba(0,0,0,.2);padding:.15rem .5rem;border-radius:4px">DIAGNOSISDECODED</span></div>
+
+    <section class="hero" id="hero">
+      <div class="hero-slide on" data-i="0" style="background-image:linear-gradient(135deg,#1e3a5f 0%,#0f766e 100%)"></div>
+      <div class="hero-slide" data-i="1" style="background-image:linear-gradient(135deg,#312e81 0%,#1d4ed8 100%)"></div>
+      <div class="hero-slide" data-i="2" style="background-image:linear-gradient(135deg,#134e4a 0%,#0e7490 100%)"></div>
+      <div class="hero-inner">
+        <h1>AI-Powered Clinical Insight</h1>
+        <p>Synthesize complex patient notes into clear timelines and insights.</p>
+      </div>
+      <button type="button" class="hero-ctrl prev" id="heroPrev" aria-label="Previous slide">‹</button>
+      <button type="button" class="hero-ctrl next" id="heroNext" aria-label="Next slide">›</button>
+    </section>
+
+    <section class="chart-strip">
+      <h2>Patient chart: <span id="ptName"></span></h2>
+      <div class="chart-meta">
+        <div><span>Age:</span> <span id="ptAge" style="color:#0f172a"></span></div>
+        <div><span>Blood group:</span> <span id="ptBg" style="color:#0f172a"></span></div>
+        <div><span>MRN:</span> <span id="ptMrn" style="color:#0f172a"></span></div>
+      </div>
+    </section>
+
+    <div class="med-main">
+      <div class="med-col">
+        <div class="card">
+          <h2>Unstructured progress notes</h2>
+          <div class="tabs" id="dayTabs"></div>
+          <div class="note-body" id="noteContent"></div>
+        </div>
+        <div class="subgrid">
+          <div class="card">
+            <h3>Active orders</h3>
+            <ul class="plain" id="orders"></ul>
+          </div>
+          <div class="card">
+            <h3>Recent vitals</h3>
+            <ul class="plain" id="vitals"></ul>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Case timeline</h2>
+          <div id="timeline"></div>
+        </div>
+      </div>
+      <aside class="card side" style="position:sticky;top:120px;align-self:start">
+        <h2>Analysis &amp; submission</h2>
+        <h3 style="font-size:0.95rem;margin:0 0 0.5rem">Observation overview</h3>
+        <fieldset id="fsObs">
+          <label class="opt"><input type="radio" name="obs" value="Deterioration"> <span>Deterioration</span></label>
+          <label class="opt"><input type="radio" name="obs" value="Improvement"> <span>Improvement</span></label>
+        </fieldset>
+        <h3 style="font-size:0.95rem;margin:1.25rem 0 0.5rem">Select key clinical insight</h3>
+        <fieldset id="fsInsight"></fieldset>
+        <div class="submit-wrap">
+          <button type="button" class="btn-submit" id="submitBtn" disabled>Submit insight</button>
+          <p id="submitMsg" style="text-align:center;margin-top:0.75rem;font-size:0.875rem;color:#64748b;min-height:1.25rem"></p>
+        </div>
+      </aside>
+    </div>
+    <footer class="med-foot">MediSynth AI · demonstration only · © <span id="yr"></span></footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+    var CASES = [
+      {
+        id: 1,
+        notes: [
+          { day: 'Day 1', content: "Patient presents with persistent cough and low-grade fever (38.1°C). Reports fatigue. Lungs clear. Suspecting community-acquired pneumonia. Ordered chest X-ray and CBC. Started patient on oral Azithromycin empirically." },
+          { day: 'Day 2', content: "Follow-up. Cough unchanged, fever higher (38.5°C). Chest X-ray negative for infiltrates. CBC shows elevated eosinophils. Patient mentions feeling 'itchy'. Hypothesis shifting away from bacterial infection." },
+          { day: 'Day 3', content: "Urgent follow-up. Patient developed a diffuse maculopapular rash overnight. Cough now with wheezing. Given new rash and eosinophilia, adverse drug reaction to Azithromycin is the leading hypothesis. Discontinued Azithromycin. Prescribed corticosteroids." },
+        ],
+        correctInsight: "The patient's worsening symptoms, new rash, and eosinophilia strongly indicate an allergic drug reaction to the initial antibiotic, not a worsening infection.",
+        distractorInsights: [
+          "The patient has a viral infection that coincidentally occurred while taking antibiotics.",
+          "The initial pneumonia diagnosis was correct, but the bacteria was resistant to Azithromycin.",
+          "The patient's fatigue and malaise are the primary symptoms and should be investigated further.",
+        ],
+        timelineData: [
+          { day: 'Day 1', points: ["Presents with cough & fever.", "Pneumonia suspected; Azithromycin started."] },
+          { day: 'Day 2', points: ["Symptoms persist; X-ray negative.", "Labs show high eosinophils."] },
+          { day: 'Day 3', points: ["Develops rash & wheezing.", "Drug reaction suspected; Azithromycin stopped."] },
+        ],
+        correctObservation: 'Deterioration',
+      },
+      {
+        id: 2,
+        notes: [
+          { day: 'Day 1', content: "52 y/o male presents with intermittent chest pain, described as 'pressure'. EKG shows non-specific ST changes. Initial Troponin is negative. Pain is substernal, non-pleuritic. Differential includes GERD, musculoskeletal pain, and unstable angina. Given aspirin, started on a proton-pump inhibitor (PPI)." },
+          { day: 'Day 2', content: "Pain persists despite PPI. Second Troponin at 6 hours is now slightly elevated. Patient reports pain is worse with exertion, noted when walking to the bathroom. Seems less likely to be GERD. Cardiology consulted. Plan to hold in observation and trend Troponins." },
+          { day: 'Day 3', content: "Third Troponin is significantly elevated. EKG now shows clear ST elevation in anterior leads. Diagnosis of acute myocardial infarction (STEMI). Patient transferred emergently to cath lab for percutaneous coronary intervention (PCI). The initial presentation was subtle." },
+        ],
+        correctInsight: "The patient's condition evolved from a non-specific presentation to a clear acute myocardial infarction, confirmed by rising troponin levels and EKG changes.",
+        distractorInsights: [
+          "The patient's chest pain was primarily caused by severe Gastroesophageal Reflux Disease (GERD).",
+          "The initial EKG was the most important diagnostic test and should have been trusted.",
+          "Musculoskeletal strain is the most likely cause of the persistent chest pressure.",
+        ],
+        timelineData: [
+          { day: 'Day 1', points: ["Intermittent chest pain.", "Initial EKG/Troponin non-diagnostic.", "Treated for GERD vs. angina."] },
+          { day: 'Day 2', points: ["Pain persists.", "Troponin becomes slightly elevated.", "Cardiology consulted."] },
+          { day: 'Day 3', points: ["Troponin significantly elevated.", "EKG shows STEMI.", "Sent for urgent cardiac catheterization."] },
+        ],
+        correctObservation: 'Deterioration',
+      },
+    ];
+
+    function shuffle(a) {
+      var x = a.slice();
+      for (var i = x.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = x[i]; x[i] = x[j]; x[j] = t;
+      }
+      return x;
+    }
+
+    var bloodGroups = ['A+', 'O-', 'B+', 'AB+', 'A-', 'O+', 'B-'];
+    var patient = {
+      name: ['John Doe', 'Jane Smith', 'Peter Jones'][Math.floor(Math.random() * 3)],
+      age: 45 + Math.floor(Math.random() * 10),
+      mrn: 'MRN' + (100000 + Math.floor(Math.random() * 900000)),
+      bloodGroup: bloodGroups[Math.floor(Math.random() * bloodGroups.length)],
+    };
+    var activeCase = CASES[Math.floor(Math.random() * CASES.length)];
+    var insights = shuffle([activeCase.correctInsight].concat(activeCase.distractorInsights));
+
+    document.getElementById('ptName').textContent = patient.name;
+    document.getElementById('ptAge').textContent = String(patient.age);
+    document.getElementById('ptBg').textContent = patient.bloodGroup;
+    document.getElementById('ptMrn').textContent = patient.mrn;
+
+    var orders = [
+      'Complete Blood Count (CBC) - Pending',
+      'Basic Metabolic Panel (BMP) - Results in Chart',
+      'Continuous Pulse Oximetry',
+      'Diet: Regular as tolerated',
+    ];
+    var vitals = [
+      { name: 'Heart Rate', value: (70 + Math.floor(Math.random() * 15)) + ' bpm' },
+      { name: 'Blood Pressure', value: '12' + Math.floor(Math.random() * 10) + '/8' + Math.floor(Math.random() * 10) + ' mmHg' },
+      { name: 'SpO2', value: (95 + Math.floor(Math.random() * 5)) + '%' },
+    ];
+    orders.forEach(function (o) {
+      var li = document.createElement('li');
+      li.textContent = o;
+      document.getElementById('orders').appendChild(li);
+    });
+    vitals.forEach(function (v) {
+      var li = document.createElement('li');
+      li.style.display = 'flex';
+      li.style.justifyContent = 'space-between';
+      li.innerHTML = '<span>' + v.name + '</span><strong>' + v.value + '</strong>';
+      document.getElementById('vitals').appendChild(li);
+    });
+
+    var activeTab = 'Day 1';
+    var tabs = document.getElementById('dayTabs');
+    var noteContent = document.getElementById('noteContent');
+    function showNote() {
+      var n = activeCase.notes.find(function (x) { return x.day === activeTab; });
+      noteContent.textContent = n ? n.content : '';
+    }
+    activeCase.notes.forEach(function (note) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = note.day;
+      b.className = note.day === activeTab ? 'on' : '';
+      b.addEventListener('click', function () {
+        activeTab = note.day;
+        tabs.querySelectorAll('button').forEach(function (x, i) {
+          x.classList.toggle('on', activeCase.notes[i].day === activeTab);
+        });
+        showNote();
+      });
+      tabs.appendChild(b);
+    });
+    showNote();
+
+    var tl = document.getElementById('timeline');
+    activeCase.timelineData.forEach(function (block) {
+      var d = document.createElement('div');
+      d.className = 'timeline-day';
+      var ul = document.createElement('ul');
+      block.points.forEach(function (p) {
+        var li = document.createElement('li');
+        li.textContent = p;
+        ul.appendChild(li);
+      });
+      d.innerHTML = '<strong>' + block.day + '</strong>';
+      d.appendChild(ul);
+      tl.appendChild(d);
+    });
+
+    var fsInsight = document.getElementById('fsInsight');
+    insights.forEach(function (text, idx) {
+      var lab = document.createElement('label');
+      lab.className = 'opt';
+      var inp = document.createElement('input');
+      inp.type = 'radio';
+      inp.name = 'insight';
+      inp.value = text;
+      var sp = document.createElement('span');
+      sp.textContent = text;
+      lab.appendChild(inp);
+      lab.appendChild(sp);
+      fsInsight.appendChild(lab);
+    });
+
+    var heroIdx = 0;
+    var slides = document.querySelectorAll('.hero-slide');
+    function setHero(i) {
+      heroIdx = (i + slides.length) % slides.length;
+      slides.forEach(function (s, j) { s.classList.toggle('on', j === heroIdx); });
+    }
+    document.getElementById('heroPrev').onclick = function () { setHero(heroIdx - 1); };
+    document.getElementById('heroNext').onclick = function () { setHero(heroIdx + 1); };
+    setInterval(function () { setHero(heroIdx + 1); }, 5000);
+
+    function syncSelStyles() {
+      document.querySelectorAll('.side .opt input[type="radio"]').forEach(function (inp) {
+        var lab = inp.closest('.opt');
+        if (lab) lab.classList.toggle('is-sel', inp.checked);
+      });
+    }
+    function updateSubmitEnabled() {
+      var btn = document.getElementById('submitBtn');
+      if (submitted) return;
+      var obs = document.querySelector('input[name="obs"]:checked');
+      var ins = document.querySelector('input[name="insight"]:checked');
+      btn.disabled = !obs || !ins;
+    }
+    document.getElementById('fsObs').addEventListener('change', function () { syncSelStyles(); updateSubmitEnabled(); });
+    document.getElementById('fsInsight').addEventListener('change', function () { syncSelStyles(); updateSubmitEnabled(); });
+
+    var submitted = false;
+    document.getElementById('submitBtn').onclick = function () {
+      if (submitted) return;
+      var obs = document.querySelector('input[name="obs"]:checked');
+      var ins = document.querySelector('input[name="insight"]:checked');
+      if (!obs || !ins) return;
+      submitted = true;
+      document.getElementById('fsObs').disabled = true;
+      document.getElementById('fsInsight').disabled = true;
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('submitBtn').textContent = 'Submitted';
+      var ok = ins.value === activeCase.correctInsight && obs.value === activeCase.correctObservation;
+      document.getElementById('submitMsg').textContent = 'Thank you for your submission.';
+      if (ok) document.getElementById('winBanner').classList.add('on');
+      else document.getElementById('submitMsg').textContent = 'Submission recorded. Reload to try another randomized chart.';
+    };
+  </script>
+</body>
+
+</html>

@@ -1,14 +1,5 @@
-/**
-* Template Name: Kelly
-* Template URL: https://bootstrapmade.com/kelly-free-bootstrap-cv-resume-html-template/
-* Updated: Aug 07 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
-
 /*--------------------------------------------------------------
 # Font & Color Variables
-# Help: https://bootstrapmade.com/color-system/
 --------------------------------------------------------------*/
 /* Fonts */
 :root {
@@ -198,6 +189,17 @@ h6 {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.06em;
+  line-height: 1;
+  vertical-align: middle;
+  transform: translateY(-1px);
+}
+
+.header .header-social-links a.kaggle .kaggle-mark {
+  display: inline-block;
+  font-family: var(--heading-font);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
   line-height: 1;
   vertical-align: middle;
   transform: translateY(-1px);
@@ -524,10 +526,12 @@ h6 {
   line-height: 1;
 }
 
-.footer .credits {
-  margin-top: 10px;
-  font-size: 13px;
-  text-align: center;
+.footer .social-links a.kaggle .kaggle-mark {
+  font-family: var(--heading-font);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
 /*--------------------------------------------------------------
@@ -1413,6 +1417,28 @@ section,
   margin-bottom: 0.75rem;
 }
 
+/* Android tab: extra air between major sections */
+.projects #project-panel-android > h4.project-llm-subheading ~ h4.project-llm-subheading {
+  margin-top: 2.5rem;
+}
+
+.projects #project-panel-android .project-android-doc {
+  padding-top: 1.5rem;
+}
+
+.projects #project-panel-android .project-android-doc > h4.project-llm-subheading:not(:first-child) {
+  margin-top: 2.5rem;
+}
+
+.projects #project-panel-android .project-android-doc > h5.fs-6.fw-bold {
+  margin-top: 2rem;
+}
+
+.projects #project-panel-android > .project-android-doc + h4.project-llm-subheading,
+.projects #project-panel-android > .project-deck-wrap + h4.project-llm-subheading {
+  margin-top: 2.5rem;
+}
+
 .projects .project-llm-prose p {
   margin-bottom: 1rem;
   line-height: 1.65;
@@ -1428,6 +1454,45 @@ section,
 .projects .project-embed-frame--notebook {
   height: min(70vh, 720px);
   min-height: 320px;
+}
+
+.projects .webgame-hub-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 1rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 85%);
+  background: var(--background-color);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.projects .webgame-hub-tile:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  color: inherit;
+}
+
+.projects .webgame-hub-tile__emoji {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.projects .webgame-hub-tile__title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--heading-color);
+}
+
+.projects .webgame-hub-tile__hint {
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--default-color), transparent 25%);
 }
 
 .projects .project-deck-wrap {
@@ -1505,6 +1570,58 @@ section,
 .projects .project-deck-swiper .project-deck-swiper-button-prev::after,
 .projects .project-deck-swiper .project-deck-swiper-button-next::after {
   font-size: 1.25rem;
+}
+
+.projects .project-android-swiper {
+  padding: 0.75rem 2.75rem 2rem;
+}
+
+.projects .project-android-swiper .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(65vh, 560px);
+  overflow: hidden;
+}
+
+.projects .project-android-swiper .project-deck-img {
+  max-width: 100%;
+  max-height: min(65vh, 560px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.projects .project-android-swiper .android-swiper-pagination .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 1;
+}
+
+.projects .project-android-swiper .android-swiper-pagination .swiper-pagination-bullet-active {
+  background: var(--accent-color);
+}
+
+.projects .project-android-swiper .android-swiper-button-prev,
+.projects .project-android-swiper .android-swiper-button-next {
+  color: #fff;
+}
+
+.projects .project-android-swiper .android-swiper-button-prev::after,
+.projects .project-android-swiper .android-swiper-button-next::after {
+  font-size: 1.25rem;
+}
+
+.projects .project-android-video {
+  max-width: min(100%, 380px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.projects .project-android-video video {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .projects .project-embed-frame iframe {

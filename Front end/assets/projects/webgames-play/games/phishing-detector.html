@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phishing detector | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .phi { height: calc(100vh - 52px); background: #f3f4f6; color: #1f2937; font-family: system-ui, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; overflow: hidden; }
+    .phi-win { display: none; flex-shrink: 0; background: #16a34a; color: #fff; padding: 0.65rem 1rem; align-items: center; justify-content: center; gap: 0.75rem; z-index: 9; }
+    .phi-win.on { display: flex; }
+    .phi-win code { font-family: ui-monospace, monospace; font-size: 1rem; background: rgba(0,0,0,.25); padding: 0.2rem 0.5rem; border-radius: 6px; letter-spacing: 0.06em; }
+    .phi-head { flex-shrink: 0; display: flex; align-items: center; gap: 1rem; padding: 0 1rem; height: 4rem; background: #fff; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
+    .phi-brand { display: flex; align-items: center; gap: 0.65rem; }
+    .phi-brand svg { width: 1.5rem; height: 1.5rem; color: #2563eb; flex-shrink: 0; }
+    .phi-brand span { font-size: 1.1rem; font-weight: 800; color: #1f2937; }
+    .phi-search-wrap { flex: 1; min-width: 140px; max-width: 36rem; margin: 0 auto; position: relative; }
+    .phi-search-wrap svg { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); width: 1.15rem; height: 1.15rem; color: #9ca3af; pointer-events: none; }
+    .phi-search { width: 100%; box-sizing: border-box; padding: 0.5rem 0.75rem 0.5rem 2.25rem; border: 1px solid transparent; border-radius: 8px; background: #f3f4f6; font: inherit; font-size: 0.875rem; }
+    .phi-search:focus { outline: none; background: #fff; border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
+    .phi-ava-user { width: 2.5rem; height: 2.5rem; border-radius: 999px; background: linear-gradient(135deg, #1e40af, #7c3aed); color: #fff; font-size: 0.65rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .phi-mob-folders { display: flex; gap: 0.25rem; padding: 0.35rem 0.5rem; background: #e5e7eb; border-bottom: 1px solid #d1d5db; overflow-x: auto; flex-shrink: 0; }
+    @media (min-width: 768px) { .phi-mob-folders { display: none; } }
+    .phi-mob-folders button { flex: 1; min-width: 4.5rem; padding: 0.4rem 0.5rem; border: none; border-radius: 6px; background: transparent; font: inherit; font-size: 0.75rem; font-weight: 600; color: #4b5563; cursor: pointer; white-space: nowrap; }
+    .phi-mob-folders button.on { background: #dbeafe; color: #1d4ed8; }
+    .phi-body { flex: 1; display: flex; min-height: 0; }
+    .phi-side { display: none; width: 16rem; flex-shrink: 0; background: #f9fafb; border-right: 1px solid #e5e7eb; padding: 1rem; flex-direction: column; gap: 0.25rem; }
+    @media (min-width: 768px) { .phi-side { display: flex; } }
+    .phi-fbtn { display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0.75rem; border: none; border-radius: 8px; background: transparent; font: inherit; font-size: 0.875rem; color: #4b5563; cursor: pointer; text-align: left; width: 100%; }
+    .phi-fbtn:hover { background: #e5e7eb; }
+    .phi-fbtn.on { background: #dbeafe; color: #1d4ed8; font-weight: 700; }
+    .phi-fbtn .badge { margin-left: auto; font-size: 0.65rem; font-weight: 800; min-width: 1.25rem; height: 1.25rem; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: #d1d5db; color: #374151; }
+    .phi-fbtn.on .badge { background: #2563eb; color: #fff; }
+    .phi-fbtn svg { width: 1.15rem; height: 1.15rem; flex-shrink: 0; }
+    .phi-list { width: 100%; max-width: 100%; border-right: 1px solid #e5e7eb; background: #fff; overflow-y: auto; flex-shrink: 0; }
+    @media (min-width: 768px) { .phi-list { width: 38%; max-width: 22rem; } }
+    @media (min-width: 1024px) { .phi-list { width: 33%; max-width: 24rem; } }
+    .phi-li { display: flex; gap: 0.65rem; padding: 1rem; border-bottom: 1px solid #e5e7eb; cursor: pointer; align-items: flex-start; }
+    .phi-li:hover { box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .phi-li.on { background: #eff6ff; }
+    .phi-li input[type="checkbox"] { margin-top: 0.2rem; flex-shrink: 0; }
+    .phi-dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; flex-shrink: 0; margin-top: 0.35rem; background: #3b82f6; }
+    .phi-dot.read { background: transparent; }
+    .phi-li-meta { min-width: 0; flex: 1; }
+    .phi-li-top { display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline; }
+    .phi-li .sn { font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .phi-li .sn.bold { font-weight: 700; color: #111827; }
+    .phi-li .sn.norm { font-weight: 500; color: #374151; }
+    .phi-li .ts { font-size: 0.7rem; color: #9ca3af; flex-shrink: 0; }
+    .phi-li .sub { font-size: 0.8125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.15rem; }
+    .phi-li .sub.bold { font-weight: 600; color: #111827; }
+    .phi-li .sub.norm { color: #1f2937; }
+    .phi-li .prev { font-size: 0.75rem; color: #6b7280; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 0.15rem; }
+    .phi-main { flex: 1; display: flex; flex-direction: column; min-width: 0; background: #fff; min-height: 0; }
+    .phi-read { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem; }
+    .phi-read h1 { margin: 0 0 1rem; font-size: 1.35rem; color: #111827; line-height: 1.25; }
+    .phi-from { display: flex; align-items: center; gap: 0.75rem; padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; }
+    .phi-from .av { width: 2.5rem; height: 2.5rem; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; color: #fff; flex-shrink: 0; }
+    .phi-from .nm { font-weight: 600; }
+    .phi-from .em { font-size: 0.8125rem; color: #6b7280; }
+    .phi-mail-body { margin-top: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: #374151; max-width: 42rem; }
+    .phi-mail-body p { margin: 0 0 0.85rem; }
+    .phi-mail-body h2 { margin: 1rem 0 0.5rem; font-size: 1rem; font-weight: 700; color: #111827; }
+    .phi-mail-body a.link { color: #2563eb; text-decoration: underline; }
+    .phi-mail-body .btn-fake { display: inline-block; margin-top: 1rem; background: #2563eb; color: #fff; font-weight: 700; padding: 0.65rem 1.25rem; border-radius: 8px; text-decoration: none; pointer-events: none; }
+    .phi-mail-body .mono { font-family: ui-monospace, monospace; background: #e5e7eb; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.85em; }
+    .phi-mail-body .att { color: #2563eb; text-decoration: underline; cursor: default; }
+    .phi-empty { padding: 2.5rem 1rem; text-align: center; color: #6b7280; }
+    .phi-empty h3 { margin: 0 0 0.35rem; font-size: 1.05rem; color: #374151; }
+    .phi-panel { flex-shrink: 0; padding: 1.25rem 1.5rem; background: #f9fafb; border-top: 1px solid #e5e7eb; }
+    .phi-panel h2 { margin: 0 0 0.35rem; font-size: 1.1rem; color: #1f2937; }
+    .phi-panel > p { margin: 0 0 1rem; font-size: 0.8125rem; color: #6b7280; }
+    .phi-grid2 { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .phi-grid2 { grid-template-columns: 1fr 1fr; } }
+    .phi-panel label { display: block; font-size: 0.8125rem; font-weight: 600; color: #374151; }
+    .phi-panel textarea, .phi-panel input[type="text"] { width: 100%; box-sizing: border-box; margin-top: 0.35rem; padding: 0.5rem 0.65rem; border: 1px solid #d1d5db; border-radius: 6px; font: inherit; font-size: 0.875rem; }
+    .phi-panel textarea:focus, .phi-panel input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,.2); }
+    .phi-actions { margin-top: 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .phi-report { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border: none; border-radius: 8px; background: #dc2626; color: #fff; font: inherit; font-weight: 600; font-size: 0.875rem; cursor: pointer; }
+    .phi-report:hover:not(:disabled) { background: #b91c1c; }
+    .phi-report:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
+    .phi-report svg { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
+    .phi-msg { font-size: 0.8125rem; font-weight: 600; text-align: right; flex: 1; min-width: 10rem; }
+    .phi-msg.ok { color: #16a34a; }
+    .phi-msg.neu { color: #4b5563; }
+    .phi-placeholder { flex: 1; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 0.9rem; }
+    .phi-foot { flex-shrink: 0; padding: 0.65rem; text-align: center; font-size: 0.65rem; color: #9ca3af; background: #1f2937; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="phi" id="app">
+    <div class="phi-win" id="winBar" role="status">
+      <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;flex-shrink:0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+      <span>Mission success! Password: <code>PH4SHC4UGHT</code></span>
+    </div>
+    <header class="phi-head">
+      <div class="phi-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a12.02 12.02 0 009 3.04a12.02 12.02 0 009-3.04 12.02 12.02 0 00-2.382-9.984z" /></svg>
+        <span>Threat Intel AI</span>
+      </div>
+      <div class="phi-search-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        <input type="search" class="phi-search" id="search" placeholder="Search mail" autocomplete="off">
+      </div>
+      <div class="phi-ava-user" title="Agent profile" aria-hidden="true">C7</div>
+    </header>
+
+    <div class="phi-mob-folders" id="mobFolders"></div>
+
+    <div class="phi-body">
+      <aside class="phi-side" id="sideNav"></aside>
+      <div class="phi-list" id="listCol"></div>
+      <div class="phi-main">
+        <div class="phi-read" id="readCol"></div>
+        <div class="phi-panel" id="reportPanel" hidden></div>
+      </div>
+    </div>
+    <footer class="phi-foot">© <span id="yr"></span> Threat Intel AI interface · simulation only</footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+    var OVERRIDE = 'PhishCaught';
+
+    var INBOX_RAW = [
+      {
+        id: 'e1',
+        sender: 'SecureNet Portal',
+        senderAddress: 'admin@secuire-net.com',
+        subject: 'URGENT: Security Breach Detected - Immediate Action Required',
+        preview: 'We have detected suspicious login activity…',
+        searchBlob: 'secuire security breach verify portal',
+        timestamp: '2m ago',
+        isPhishing: true,
+        avHue: 220,
+        body: '<p>Dear Valued User,</p><p>We have detected suspicious login activity on your account from an unrecognized device in a different geographical location. For your security, we have temporarily suspended your account.</p><p>To restore access, you must verify your identity and reset your credentials immediately. Please click the link below to proceed.</p><p><a class="link" href="#" onclick="return false">https://portal.secuire-net.com/verify-identity</a></p><p style="font-size:0.8125rem;color:#6b7280">If you do not take action within 2 hours, your account will be permanently disabled.</p>',
+      },
+      {
+        id: 'e2',
+        sender: 'IT Department',
+        senderAddress: 'it-alerts@my-corp-domain.com',
+        subject: 'Planned System Maintenance and Password Policy Update',
+        preview: 'Heads up: upcoming maintenance and policy…',
+        searchBlob: 'it maintenance password portal override',
+        timestamp: '1h ago',
+        isPhishing: false,
+        avHue: 160,
+        body: '<h2>Heads up: Upcoming maintenance</h2><p>Please be advised that we will be conducting scheduled system maintenance this Saturday from 2:00 AM to 4:00 AM EST. During this time, access to internal services may be intermittent.</p><h2>Action required: Password policy change</h2><p>In our continuous effort to enhance security, we are updating our password policy. All employees are required to update their credentials by the end of the month by visiting the official employee portal.</p><p>As part of this high-security protocol, any sensitive changes will now require a manual override code. Please note the new universal security override code for your records: <strong class="mono">PhishCaught</strong>.</p><p>Thank you,<br>The IT Team</p>',
+      },
+      {
+        id: 'e3',
+        sender: 'Alice from Finance',
+        senderAddress: 'alice.j.finance@work-internal.co',
+        subject: 'Unpaid Invoice [INV-9384C]',
+        preview: 'Outstanding invoice #INV-9384C for Q3…',
+        searchBlob: 'alice finance invoice zip attachment',
+        timestamp: '4h ago',
+        isPhishing: true,
+        avHue: 320,
+        body: '<p>Hi Team,</p><p>Hope you\'re having a good week.</p><p>Please find attached the outstanding invoice #INV-9384C for Q3 software licensing. The payment is now overdue.</p><p>To avoid any service disruption, could you please process this at your earliest convenience? The accounts payable department requires this to be settled by EOD Friday.</p><p><strong>Attachment:</strong> <span class="att">Invoice_Details_9384C.zip</span></p><p>Thanks,<br>Alice</p>',
+      },
+      {
+        id: 'e4',
+        sender: 'Innovate Conference',
+        senderAddress: 'events@innovatecon.org',
+        subject: 'Your Early Bird Discount is Expiring!',
+        preview: 'Final reminder — early bird discount ends in 48 hours…',
+        searchBlob: 'innovate conference register discount',
+        timestamp: '1d ago',
+        isPhishing: false,
+        avHue: 40,
+        body: '<h2>Don\'t miss out!</h2><p>This is a final reminder that your exclusive early bird discount for InnovateCon 2025 expires in just 48 hours!</p><p>Join industry leaders, tech pioneers, and visionaries for three days of groundbreaking sessions and networking. Lock in your special rate before it\'s gone forever.</p><p><span class="btn-fake">Register now &amp; save 30%</span></p><p style="font-size:0.8125rem">Act now! Prices will go up after the deadline.</p>',
+      },
+      {
+        id: 'e5',
+        sender: 'Human Resources',
+        senderAddress: 'hr@my-corp-domain.com',
+        subject: 'Important Update to Company Health & Wellness Policy',
+        preview: 'Expanded mental health coverage and gym reimbursement…',
+        searchBlob: 'hr health wellness policy portal',
+        timestamp: '2d ago',
+        isPhishing: false,
+        avHue: 280,
+        body: '<p>Dear Employees,</p><p>We are pleased to announce an update to our Health &amp; Wellness policy, effective next month. These changes include expanded mental health coverage and a new gym membership reimbursement program.</p><p>Full details of the updated policy can be found on the HR section of the employee portal. We encourage everyone to review the document to understand the new benefits available.</p><p><a class="link" href="#" onclick="return false">Click here to access the Employee Portal</a></p><p>Best,<br>The HR Department</p>',
+      },
+    ];
+
+    var SENT_RAW = [
+      {
+        id: 's1',
+        sender: 'Me',
+        senderAddress: 'agent-7@threatintel.ai',
+        subject: 'Re: Project Phoenix Launch',
+        preview: 'Thanks for the update. I\'ve reviewed the launch plan…',
+        searchBlob: 'phoenix launch sync',
+        timestamp: '5h ago',
+        isPhishing: false,
+        avHue: 200,
+        body: '<p>Thanks for the update. I\'ve reviewed the launch plan and it looks solid. Let\'s sync up tomorrow at 10 AM to finalize the details.</p>',
+      },
+      {
+        id: 's2',
+        sender: 'Me',
+        senderAddress: 'agent-7@threatintel.ai',
+        subject: 'Quarterly Security Report',
+        preview: 'Q2 security analysis attached…',
+        searchBlob: 'quarterly security report vulnerabilities',
+        timestamp: '3d ago',
+        isPhishing: false,
+        avHue: 200,
+        body: '<p>Hi Team, please find the Q2 security analysis attached. The executive summary highlights a 15% reduction in critical vulnerabilities. Great work, everyone.</p>',
+      },
+    ];
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    var shuffledInbox = shuffle(INBOX_RAW);
+    var correctIds = { e1: true, e3: true };
+
+    var folder = 'inbox';
+    var searchQuery = '';
+    var activeEmail = shuffledInbox[0] || null;
+    var selected = {};
+    var readIds = {};
+    if (activeEmail) readIds[activeEmail.id] = true;
+    var justification = '';
+    var overrideCode = '';
+    var firstAttempt = true;
+    var showSuccess = false;
+    var reportMsg = '';
+
+    var FOLDERS = [
+      { id: 'inbox', label: 'Inbox', count: shuffledInbox.length },
+      { id: 'sent', label: 'Sent', count: null },
+      { id: 'spam', label: 'Spam', count: null },
+      { id: 'trash', label: 'Trash', count: null },
+    ];
+
+    function initials(sender) {
+      var parts = sender.replace(/[^a-zA-Z ]/g, '').trim().split(/\s+/);
+      var a = (parts[0] && parts[0][0]) || '?';
+      var b = (parts[1] && parts[1][0]) || (parts[0] && parts[0][1]) || '';
+      return (a + b).toUpperCase();
+    }
+
+    function avatarStyle(hue) {
+      return 'background:linear-gradient(135deg,hsl(' + hue + ',70%,42%),hsl(' + ((hue + 40) % 360) + ',65%,35%))';
+    }
+
+    function sourceList() {
+      if (folder === 'inbox') return shuffledInbox;
+      if (folder === 'sent') return SENT_RAW;
+      return [];
+    }
+
+    function filteredEmails() {
+      var src = sourceList();
+      if (!searchQuery.trim()) return src;
+      var q = searchQuery.toLowerCase();
+      return src.filter(function (e) {
+        return e.sender.toLowerCase().indexOf(q) >= 0 ||
+          e.subject.toLowerCase().indexOf(q) >= 0 ||
+          (e.searchBlob && e.searchBlob.indexOf(q) >= 0) ||
+          e.preview.toLowerCase().indexOf(q) >= 0;
+      });
+    }
+
+    function countSelected() {
+      var n = 0;
+      for (var k in selected) if (selected[k]) n++;
+      return n;
+    }
+
+    function toggleSelect(id, ev) {
+      if (ev) ev.stopPropagation();
+      if (selected[id]) {
+        delete selected[id];
+      } else {
+        if (countSelected() >= 2) return;
+        selected[id] = true;
+      }
+      renderList();
+      renderReportPanel();
+    }
+
+    function selectEmail(e) {
+      activeEmail = e;
+      readIds[e.id] = true;
+      renderList();
+      renderReader();
+    }
+
+    function setFolder(f) {
+      folder = f;
+      searchQuery = '';
+      document.getElementById('search').value = '';
+      activeEmail = null;
+      renderSide();
+      renderMobFolders();
+      var list = filteredEmails();
+      if (list.length) selectEmail(list[0]);
+      else {
+        activeEmail = null;
+        renderList();
+        renderReader();
+      }
+      renderReportPanel();
+    }
+
+    function folderBtn(f, isSide) {
+      var on = folder === f.id;
+      var countBadge = f.count != null ? '<span class="badge">' + f.count + '</span>' : '';
+      var icons = {
+        inbox: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>',
+        sent: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>',
+        spam: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+        trash: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>',
+      };
+      var icon = icons[f.id] || '';
+      if (isSide) {
+        return '<button type="button" class="phi-fbtn' + (on ? ' on' : '') + '" data-f="' + f.id + '">' + icon + f.label + countBadge + '</button>';
+      }
+      return '<button type="button" class="' + (on ? 'on' : '') + '" data-f="' + f.id + '">' + f.label + (f.count != null ? ' (' + f.count + ')' : '') + '</button>';
+    }
+
+    function renderSide() {
+      var el = document.getElementById('sideNav');
+      el.innerHTML = FOLDERS.map(function (f) { return folderBtn(f, true); }).join('');
+      el.querySelectorAll('[data-f]').forEach(function (btn) {
+        btn.onclick = function () { setFolder(btn.getAttribute('data-f')); };
+      });
+    }
+
+    function renderMobFolders() {
+      var el = document.getElementById('mobFolders');
+      el.innerHTML = FOLDERS.map(function (f) { return folderBtn(f, false); }).join('');
+      el.querySelectorAll('[data-f]').forEach(function (btn) {
+        btn.onclick = function () { setFolder(btn.getAttribute('data-f')); };
+      });
+    }
+
+    function renderList() {
+      var el = document.getElementById('listCol');
+      var rows = filteredEmails();
+      if (!rows.length) {
+        el.innerHTML = '<div class="phi-empty"><h3>' + (searchQuery.trim() ? 'No results for "' + escapeHtml(searchQuery) + '"' : 'This folder is empty.') + '</h3><p style="padding:0;margin:0;font-size:0.8125rem">' + (searchQuery.trim() ? 'Try a different search term.' : '') + '</p></div>';
+        return;
+      }
+      el.innerHTML = '<ul style="list-style:none;margin:0;padding:0">' + rows.map(function (email) {
+        var isRead = readIds[email.id] || folder !== 'inbox';
+        var bold = !isRead ? ' bold' : ' norm';
+        var chk = selected[email.id] ? ' checked' : '';
+        var on = activeEmail && activeEmail.id === email.id ? ' on' : '';
+        return '<li class="phi-li' + on + '" data-id="' + email.id + '">' +
+          '<input type="checkbox"' + chk + ' data-cb="' + email.id + '" aria-label="Select for report">' +
+          '<div class="phi-dot' + (isRead ? ' read' : '') + '" aria-hidden="true"></div>' +
+          '<div class="phi-li-meta">' +
+          '<div class="phi-li-top"><span class="sn' + bold + '">' + escapeHtml(email.sender) + '</span><span class="ts">' + escapeHtml(email.timestamp) + '</span></div>' +
+          '<div class="sub' + bold + '">' + escapeHtml(email.subject) + '</div>' +
+          '<div class="prev">' + escapeHtml(email.preview) + '</div></div></li>';
+      }).join('') + '</ul>';
+
+      el.querySelectorAll('.phi-li').forEach(function (li) {
+        var id = li.getAttribute('data-id');
+        li.onclick = function (ev) {
+          if (ev.target.closest('[data-cb]')) return;
+          var em = rows.find(function (r) { return r.id === id; });
+          if (em) selectEmail(em);
+        };
+      });
+      el.querySelectorAll('[data-cb]').forEach(function (cb) {
+        cb.onclick = function (ev) {
+          ev.stopPropagation();
+          toggleSelect(cb.getAttribute('data-cb'), ev);
+        };
+      });
+    }
+
+    function escapeHtml(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function escapeAttr(s) {
+      return escapeHtml(s).replace(/"/g, '&quot;');
+    }
+
+    function renderReader() {
+      var el = document.getElementById('readCol');
+      if (!activeEmail) {
+        el.innerHTML = '<div class="phi-placeholder">Select an item to read.</div>';
+        return;
+      }
+      var e = activeEmail;
+      el.innerHTML = '<h1>' + escapeHtml(e.subject) + '</h1><div class="phi-from"><div class="av" style="' + avatarStyle(e.avHue) + '">' + initials(e.sender) + '</div><div><div class="nm">' + escapeHtml(e.sender) + '</div><div class="em">' + escapeHtml(e.senderAddress) + '</div></div></div><div class="phi-mail-body">' + e.body + '</div>';
+    }
+
+    function renderReportPanel() {
+      var panel = document.getElementById('reportPanel');
+      if (folder !== 'inbox') {
+        panel.hidden = true;
+        panel.innerHTML = '';
+        return;
+      }
+      panel.hidden = false;
+      var disabled = countSelected() !== 2 || !justification.trim() || !overrideCode.trim();
+      panel.innerHTML = '<h2>Submit threat report</h2><p>Select the messages you identify as phishing, add justification, and enter the security override code from the legitimate IT notice.</p>' +
+        '<div class="phi-grid2"><div><label for="just">Justification</label><textarea id="just" rows="3" placeholder="Explain your reasoning…">' + escapeHtml(justification) + '</textarea></div>' +
+        '<div><label for="ov">Security override code</label><input type="text" id="ov" placeholder="From IT email" value="' + escapeAttr(overrideCode) + '"></div></div>' +
+        '<div class="phi-actions"><button type="button" class="phi-report" id="btnReport"' + (disabled ? ' disabled' : '') + '><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 3.001-1.742 3.001H4.42c-1.53 0-2.493-1.667-1.743-3.001l5.58-9.92zM10 13a1 1 0 100-2 1 1 0 000 2zm-1-4a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>Submit report</button>' +
+        (reportMsg ? '<p class="phi-msg ' + (showSuccess ? 'ok' : 'neu') + '" id="repMsg">' + escapeHtml(reportMsg) + '</p>' : '<p class="phi-msg neu" id="repMsg" style="min-height:1.25rem"></p>') + '</div>';
+
+      var ta = document.getElementById('just');
+      var ov = document.getElementById('ov');
+      ta.oninput = function () { justification = ta.value; syncReportBtn(); };
+      ov.oninput = function () { overrideCode = ov.value; syncReportBtn(); };
+      document.getElementById('btnReport').onclick = submitReport;
+      syncReportBtn();
+    }
+
+    function syncReportBtn() {
+      var btn = document.getElementById('btnReport');
+      if (!btn) return;
+      btn.disabled = countSelected() !== 2 || !justification.trim() || !overrideCode.trim();
+    }
+
+    function submitReport() {
+      if (!firstAttempt) {
+        reportMsg = 'A report for this batch has already been submitted.';
+        showSuccess = false;
+        renderReportPanel();
+        return;
+      }
+      var codeOk = overrideCode.trim().toLowerCase() === OVERRIDE.toLowerCase();
+      var n = countSelected();
+      var selOk = n === 2 && selected['e1'] && selected['e3'];
+      firstAttempt = false;
+      if (selOk && codeOk) {
+        showSuccess = true;
+        reportMsg = 'Success! Threat analysis confirmed and logged.';
+        document.getElementById('winBar').classList.add('on');
+      } else {
+        showSuccess = false;
+        reportMsg = 'Report submitted for analysis. Thank you for your vigilance.';
+      }
+      renderReportPanel();
+    }
+
+    document.getElementById('search').oninput = function () {
+      searchQuery = document.getElementById('search').value;
+      var list = filteredEmails();
+      if (!list.length) {
+        activeEmail = null;
+      } else if (!activeEmail || list.every(function (x) { return x.id !== activeEmail.id; })) {
+        activeEmail = list[0];
+        readIds[activeEmail.id] = true;
+      }
+      renderList();
+      renderReader();
+    };
+
+    renderSide();
+    renderMobFolders();
+    renderList();
+    renderReader();
+    renderReportPanel();
+  </script>
+</body>
+
+</html>

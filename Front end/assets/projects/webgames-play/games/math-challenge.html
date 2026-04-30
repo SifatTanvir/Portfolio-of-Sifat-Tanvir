@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Math challenge | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .quiz { text-align: center; }
+    .qbig { font-size: clamp(1.5rem, 5vw, 2.25rem); font-weight: 800; margin: 1rem 0; color: var(--wg-accent2); }
+    .dots { display: flex; justify-content: center; gap: 6px; margin: 1rem 0; }
+    .dots i { width: 10px; height: 10px; border-radius: 50%; background: #334155; }
+    .dots i.on { background: #22c55e; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <main class="wg-main quiz">
+    <h1 class="wg-h1">Math challenge</h1>
+    <p class="wg-lead" id="hint"></p>
+    <div id="start" class="wg-card">
+      <label for="user">Your username</label>
+      <input id="user" class="wg-input" style="margin-top:.5rem;text-align:center" autocomplete="username">
+      <p class="wg-lead" style="margin-top:1rem;font-size:.9rem">Use the username shown in the hint above exactly (case-sensitive) to receive the password when you finish all 7 questions.</p>
+      <button type="button" class="wg-btn" id="go" style="margin-top:1rem">Start</button>
+    </div>
+    <div id="play" hidden>
+      <div class="dots" id="dots"></div>
+      <div class="qbig" id="qtext"></div>
+      <input type="number" step="any" id="ans" class="wg-input" style="max-width:220px;margin:0 auto;display:block;text-align:center" placeholder="Answer">
+      <button type="button" class="wg-btn" id="submit" style="margin-top:1rem">Submit</button>
+    </div>
+    <div id="end" hidden></div>
+  </main>
+  <script>
+    var NAMES = ['tuktuk02', 'genius37', 'maninblack'];
+    var targetUser = NAMES[Math.floor(Math.random() * NAMES.length)];
+    document.getElementById('hint').textContent = 'Start the game with username: ' + targetUser + '. Then solve 7 equations.';
+
+    function evalParts(parts) {
+      var n = +parts[0];
+      for (var i = 1; i < parts.length; i += 2) {
+        var op = parts[i];
+        var m = +parts[i + 1];
+        if (op === '+') n += m;
+        else n -= m;
+      }
+      return n;
+    }
+    function makeQ() {
+      var parts = [2 + Math.floor(Math.random() * 20)];
+      var count = 2 + Math.floor(Math.random() * 2);
+      for (var i = 0; i < count; i++) {
+        parts.push(Math.random() < 0.5 ? '+' : '-', 2 + Math.floor(Math.random() * 15));
+      }
+      var expr = parts.join(' ');
+      return { text: expr + ' = ?', val: Math.round(evalParts(parts) * 100) / 100 };
+    }
+    var qs = [], idx = 0, user = '';
+    function renderDots() {
+      var d = document.getElementById('dots');
+      d.innerHTML = '';
+      for (var i = 0; i < 7; i++) {
+        var el = document.createElement('i');
+        if (i <= idx) el.className = 'on';
+        d.appendChild(el);
+      }
+    }
+    document.getElementById('go').onclick = function () {
+      user = document.getElementById('user').value.trim();
+      if (!user) return;
+      qs = [];
+      for (var j = 0; j < 7; j++) qs.push(makeQ());
+      idx = 0;
+      document.getElementById('start').hidden = true;
+      document.getElementById('play').hidden = false;
+      document.getElementById('qtext').textContent = qs[0].text;
+      renderDots();
+    };
+    document.getElementById('submit').onclick = function () {
+      var a = parseFloat(document.getElementById('ans').value);
+      if (isNaN(a)) return;
+      if (Math.abs(a - qs[idx].val) < 0.01) {
+        if (idx === 6) {
+          document.getElementById('play').hidden = true;
+          var ok = user === targetUser;
+          document.getElementById('end').hidden = false;
+          document.getElementById('end').innerHTML = ok
+            ? '<div class="wg-success">Perfect! Password: <strong>MATH-GENIUS-2025</strong></div>'
+            : '<div class="wg-card">All correct — but the username did not match the hint, so no password. <a href="../games/math-challenge.html">Try again</a>.</div>';
+        } else {
+          idx++;
+          document.getElementById('ans').value = '';
+          document.getElementById('qtext').textContent = qs[idx].text;
+          renderDots();
+        }
+      } else {
+        document.getElementById('play').hidden = true;
+        document.getElementById('end').hidden = false;
+        document.getElementById('end').innerHTML = '<div class="wg-error">Not quite. <a href="../games/math-challenge.html">Play again</a></div>';
+      }
+    };
+  </script>
+</body>
+
+</html>

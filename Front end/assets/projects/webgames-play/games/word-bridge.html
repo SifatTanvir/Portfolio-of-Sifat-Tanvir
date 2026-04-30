@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Word bridge | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .wb { min-height: calc(100vh - 52px); background: #f9fafb; color: #1f2937; font-family: system-ui, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; }
+    .wb-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 1rem; height: 4rem; background: rgba(255,255,255,.88); backdrop-filter: blur(10px); border-bottom: 1px solid #e5e7eb; position: sticky; top: 52px; z-index: 8; }
+    .wb-brand { display: flex; align-items: center; gap: 0.5rem; }
+    .wb-brand svg { width: 2rem; height: 2rem; color: #4f46e5; flex-shrink: 0; }
+    .wb-brand h1 { margin: 0; font-size: 1.15rem; font-weight: 800; color: #111827; }
+    .wb-nav button { border: none; background: transparent; color: #4b5563; font: inherit; font-size: 0.875rem; font-weight: 600; padding: 0.5rem 0.75rem; border-radius: 8px; cursor: pointer; }
+    .wb-nav button:hover { background: #f3f4f6; }
+    .wb-win { display: none; text-align: center; padding: 1rem 1rem 1.25rem; background: #dcfce7; color: #166534; border-top: 1px solid #bbf7d0; border-bottom: 1px solid #bbf7d0; }
+    .wb-win.on { display: block; animation: wbFade .4s ease-out; }
+    .wb-win .code { margin-top: 0.5rem; font-family: ui-monospace, monospace; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.15em; background: #bbf7d0; color: #14532d; padding: 0.5rem 1.25rem; border-radius: 10px; display: inline-block; }
+    @keyframes wbFade { from { opacity: 0; } to { opacity: 1; } }
+    .wb-main { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1rem 3rem; width: 100%; flex: 1; }
+    .wb-hero { text-align: center; margin-bottom: 2.5rem; }
+    .wb-hero h2 { margin: 0 0 0.5rem; font-size: clamp(1.75rem, 5vw, 2.75rem); font-weight: 800; color: #7f1d1d; }
+    .wb-hero p { margin: 0 auto; max-width: 36rem; font-size: 1.05rem; color: #6b7280; line-height: 1.55; }
+    .wb-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .wb-grid { grid-template-columns: 2fr 1fr; } }
+    .wb-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 1.25rem 1.5rem; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .wb-card h3 { margin: 0 0 1rem; font-size: 1.25rem; color: #111827; }
+    .wb-chain { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .wb-chip { background: #e0e7ff; color: #3730a3; font-family: ui-monospace, monospace; font-size: 1.35rem; font-weight: 700; padding: 0.65rem 1rem; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+    .wb-arrow { color: #9ca3af; font-size: 1.35rem; user-select: none; }
+    .wb-warn { margin-top: 1.25rem; padding: 1rem; background: #fef9c3; border-left: 4px solid #eab308; color: #854d0e; border-radius: 0 8px 8px 0; }
+    .wb-warn h4 { margin: 0 0 0.35rem; font-size: 1rem; }
+    .wb-warn p { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+    .wb-target { text-align: center; }
+    .wb-target .lbl { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+    .wb-target .lbl.start { color: #4f46e5; }
+    .wb-target .lbl.end { color: #7c3aed; }
+    .wb-target .word { font-family: ui-monospace, monospace; font-size: 2rem; font-weight: 800; color: #111827; margin: 0.25rem 0; }
+    .wb-target .mid { color: #d1d5db; font-size: 1.5rem; margin: 0.25rem 0; }
+    .wb-controls h4 { margin: 0 0 0.75rem; font-size: 1rem; color: #111827; }
+    .wb-in { width: 100%; box-sizing: border-box; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .wb-in:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.2); }
+    .wb-in:disabled { opacity: 0.6; background: #f3f4f6; }
+    .wb-row { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+    .wb-btn-add { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.35rem; padding: 0.75rem; border: none; border-radius: 8px; background: #4f46e5; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .wb-btn-add:hover:not(:disabled) { background: #4338ca; }
+    .wb-btn-add:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
+    .wb-btn-del { padding: 0.75rem; border: none; border-radius: 8px; background: #e5e7eb; color: #374151; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .wb-btn-del:hover:not(:disabled) { background: #d1d5db; }
+    .wb-btn-del:disabled { opacity: 0.45; cursor: not-allowed; }
+    .wb-btn-del svg, .wb-btn-add svg { width: 1.25rem; height: 1.25rem; }
+    .wb-err { margin-top: 0.5rem; font-size: 0.8125rem; color: #dc2626; min-height: 1.25rem; }
+    .wb-btn-submit { width: 100%; margin-top: 0.5rem; padding: 1rem; border: none; border-radius: 8px; background: #16a34a; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+    .wb-btn-submit:hover:not(:disabled) { background: #15803d; }
+    .wb-btn-submit:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
+    .wb-bottom { margin-top: 3rem; display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .wb-bottom { grid-template-columns: 1fr 1fr; } }
+    .wb-rules h3 { display: flex; align-items: flex-start; gap: 0.35rem; font-size: 1.1rem; margin: 0 0 0.75rem; color: #111827; }
+    .wb-rules ul { margin: 0; padding-left: 1.25rem; color: #6b7280; font-size: 0.9rem; line-height: 1.6; }
+    .wb-rules .dict { margin-top: 1rem; }
+    .wb-rules .dict h4 { margin: 0 0 0.5rem; font-size: 0.875rem; color: #374151; }
+    .wb-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .wb-tags code { font-size: 0.7rem; background: #f3f4f6; color: #4b5563; padding: 0.2rem 0.45rem; border-radius: 4px; font-family: ui-monospace, monospace; }
+    .wb-banned h3 { margin: 0 0 0.75rem; font-size: 1.1rem; color: #111827; }
+    .wb-banned .cat { color: #dc2626; font-weight: 700; }
+    .wb-banned .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .wb-banned span { font-family: ui-monospace, monospace; font-size: 0.8125rem; background: #fee2e2; color: #991b1b; padding: 0.35rem 0.65rem; border-radius: 999px; }
+    .wb-foot { background: #fff; border-top: 1px solid #e5e7eb; padding: 1rem; text-align: center; font-size: 0.7rem; color: #9ca3af; margin-top: auto; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="wb">
+    <div class="wb-nav">
+      <div class="wb-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h6l2-2h2l-2 2z" /></svg>
+        <h1>Word Weaver</h1>
+      </div>
+      <button type="button" id="btnNew">New puzzle</button>
+    </div>
+    <div class="wb-win" id="winBanner">
+      <p style="margin:0;font-weight:600">Final password</p>
+      <div class="code">WORDBRIDGED</div>
+    </div>
+
+    <main class="wb-main">
+      <section class="wb-hero">
+        <h2>Lexical bridge challenge</h2>
+        <p>Transform the starting word into the target word, one letter at a time. Each step must be a valid dictionary word. Submit the <strong>exact optimal chain</strong> for this puzzle.</p>
+      </section>
+
+      <div class="wb-grid">
+        <div class="wb-card">
+          <h3>Your transformation chain</h3>
+          <div class="wb-chain" id="chain"></div>
+          <div class="wb-warn" id="failMsg" hidden>
+            <h4>Submission processed</h4>
+            <p>The submitted chain was not the optimal solution. The password remains hidden.</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1.25rem">
+          <div class="wb-card wb-target">
+            <p class="lbl start">Start</p>
+            <p class="word" id="startW"></p>
+            <p class="mid">↓</p>
+            <p class="lbl end">Target</p>
+            <p class="word" id="endW"></p>
+          </div>
+          <div class="wb-card wb-controls">
+            <h4>Controls</h4>
+            <input type="text" class="wb-in" id="wordIn" placeholder="Next word" autocomplete="off" autocapitalize="characters" spellcheck="false">
+            <div class="wb-row">
+              <button type="button" class="wb-btn-add" id="btnAdd" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                Add word
+              </button>
+              <button type="button" class="wb-btn-del" id="btnDel" title="Remove last word" aria-label="Remove last word">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.237-2.37.465a.75.75 0 00-.53 1.143 6.061 6.061 0 01-1.6 1.628.75.75 0 001.143.53L4.44 6.37A5.25 5.25 0 018.75 5.25h2.5A5.25 5.25 0 0115.56 6.37l1.628 1.6a.75.75 0 001.143-.53 6.061 6.061 0 01-1.6-1.628.75.75 0 00-.53-1.143c-.79-.228-1.575-.388-2.37-.465v-.443A2.75 2.75 0 0011.25 1h-2.5zM10 12.5a.75.75 0 01.75.75v.01a.75.75 0 01-1.5 0V13.25a.75.75 0 01.75-.75zM10 8a.75.75 0 00-1.5 0v1.5a.75.75 0 001.5 0V8z" clip-rule="evenodd" /></svg>
+              </button>
+            </div>
+            <p class="wb-err" id="err"></p>
+          </div>
+          <button type="button" class="wb-btn-submit" id="btnSubmit" disabled>Submit final chain</button>
+        </div>
+      </div>
+
+      <div class="wb-bottom">
+        <section class="wb-card wb-rules" id="rules">
+          <h3>
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;color:#6366f1;flex-shrink:0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
+            Rules of transformation
+          </h3>
+          <ul>
+            <li>You must change exactly one letter at each step.</li>
+            <li>Each intermediate step must be a valid word from the dictionary below.</li>
+            <li>The final word in your chain must match the target word.</li>
+            <li>Your submitted chain must match the shortest official solution for this puzzle.</li>
+          </ul>
+          <div class="dict">
+            <h4>Dictionary words</h4>
+            <div class="wb-tags" id="dictTags"></div>
+          </div>
+        </section>
+        <section class="wb-card wb-banned" id="bannedSec">
+          <h3>Banned words <span class="cat" id="bannedCat"></span></h3>
+          <div class="tags" id="bannedTags"></div>
+        </section>
+      </div>
+    </main>
+    <footer class="wb-foot">© <span id="yr"></span> LexiCorp Dynamics · demonstration only</footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+    var PUZZLES = [
+      {
+        startWord: 'COLD',
+        endWord: 'WARM',
+        solution: ['COLD', 'CORD', 'WORD', 'WARD', 'WARM'],
+        bannedCategory: 'Colors',
+        bannedWords: ['GOLD', 'PINK', 'CYAN', 'LIME', 'CARD'],
+      },
+      {
+        startWord: 'HEAD',
+        endWord: 'TAIL',
+        solution: ['HEAD', 'HEAL', 'TEAL', 'TELL', 'TALL', 'TAIL'],
+        bannedCategory: 'Animals',
+        bannedWords: ['SEAL', 'DEER', 'BEAR', 'WOLF', 'HELL', 'HELD', 'HEEL'],
+      },
+    ];
+
+    var DICT_LIST = [
+      'COLD', 'CORD', 'CARD', 'WARD', 'WARM', 'WORD', 'SEAL', 'DEER', 'BEAR', 'WOLF', 'HELL', 'HELD', 'HEEL',
+      'HEAD', 'HEAL', 'TEAL', 'TELL', 'TALL', 'TAIL', 'GOLD', 'PINK', 'CYAN', 'LIME',
+      'HALL', 'HAIL',
+    ];
+    var DICT = {};
+    DICT_LIST.forEach(function (w) { DICT[w] = true; });
+    var DICT_SORTED = Object.keys(DICT).sort();
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    var puzzle = PUZZLES[Math.floor(Math.random() * PUZZLES.length)];
+    var bannedOrder = shuffle(puzzle.bannedWords);
+    var bannedSet = {};
+    puzzle.bannedWords.forEach(function (w) { bannedSet[w] = true; });
+
+    var chain = [puzzle.startWord];
+    var submitted = false;
+    var success = false;
+
+    var elChain = document.getElementById('chain');
+    var elIn = document.getElementById('wordIn');
+    var elErr = document.getElementById('err');
+    var elAdd = document.getElementById('btnAdd');
+    var elDel = document.getElementById('btnDel');
+    var elSubmit = document.getElementById('btnSubmit');
+    var elFail = document.getElementById('failMsg');
+    var elWin = document.getElementById('winBanner');
+
+    document.getElementById('startW').textContent = puzzle.startWord;
+    document.getElementById('endW').textContent = puzzle.endWord;
+    elIn.maxLength = puzzle.startWord.length;
+    document.getElementById('bannedCat').textContent = '(' + puzzle.bannedCategory + ')';
+
+    var dictTags = document.getElementById('dictTags');
+    DICT_SORTED.forEach(function (w) {
+      var c = document.createElement('code');
+      c.textContent = w;
+      dictTags.appendChild(c);
+    });
+    bannedOrder.forEach(function (w) {
+      var s = document.createElement('span');
+      s.textContent = w;
+      document.getElementById('bannedTags').appendChild(s);
+    });
+
+    function renderChain() {
+      elChain.innerHTML = '';
+      chain.forEach(function (word, index) {
+        var chip = document.createElement('span');
+        chip.className = 'wb-chip';
+        chip.textContent = word;
+        elChain.appendChild(chip);
+        if (index < chain.length - 1) {
+          var ar = document.createElement('span');
+          ar.className = 'wb-arrow';
+          ar.textContent = '→';
+          elChain.appendChild(ar);
+        }
+      });
+      elDel.disabled = chain.length <= 1 || submitted || success;
+      updateSubmit();
+    }
+
+    function chainsEqual(a, b) {
+      if (a.length !== b.length) return false;
+      for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+      return true;
+    }
+
+    function validateInput() {
+      var raw = elIn.value.trim();
+      if (!raw) {
+        elErr.textContent = '';
+        return false;
+      }
+      var newWord = raw.toUpperCase();
+      var last = chain[chain.length - 1];
+      var len = puzzle.startWord.length;
+
+      if (newWord.length !== len) {
+        elErr.textContent = 'Word must be ' + len + ' letters long.';
+        return false;
+      }
+      var diff = 0;
+      for (var i = 0; i < last.length; i++) {
+        if (last[i] !== newWord[i]) diff++;
+      }
+      if (diff !== 1) {
+        elErr.textContent = 'Must change exactly one letter.';
+        return false;
+      }
+      if (bannedSet[newWord]) {
+        elErr.textContent = 'This word is in the banned list.';
+        return false;
+      }
+      if (!DICT[newWord]) {
+        elErr.textContent = 'Not a recognized word in the dictionary.';
+        return false;
+      }
+      elErr.textContent = '';
+      return true;
+    }
+
+    function updateSubmit() {
+      var atEnd = chain[chain.length - 1] === puzzle.endWord;
+      elSubmit.disabled = !atEnd || submitted || success;
+    }
+
+    function syncAddButton() {
+      elAdd.disabled = !validateInput() || submitted || success;
+    }
+
+    elIn.addEventListener('input', function () {
+      syncAddButton();
+    });
+
+    elAdd.addEventListener('click', function () {
+      if (!validateInput() || submitted || success) return;
+      chain.push(elIn.value.trim().toUpperCase());
+      elIn.value = '';
+      elErr.textContent = '';
+      syncAddButton();
+      renderChain();
+    });
+
+    elDel.addEventListener('click', function () {
+      if (chain.length <= 1 || submitted || success) return;
+      chain.pop();
+      elFail.hidden = true;
+      renderChain();
+      syncAddButton();
+    });
+
+    elSubmit.addEventListener('click', function () {
+      if (chain[chain.length - 1] !== puzzle.endWord || submitted || success) return;
+      submitted = true;
+      elIn.disabled = true;
+      elAdd.disabled = true;
+      elDel.disabled = true;
+      elSubmit.disabled = true;
+      if (chainsEqual(chain, puzzle.solution)) {
+        success = true;
+        elWin.classList.add('on');
+      } else {
+        elFail.hidden = false;
+      }
+    });
+
+    document.getElementById('btnNew').addEventListener('click', function () {
+      window.location.reload();
+    });
+
+    renderChain();
+    syncAddButton();
+  </script>
+</body>
+
+</html>

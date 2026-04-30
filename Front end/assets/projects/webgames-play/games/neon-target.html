@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neon targets | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .field { position: relative; width: 100%; max-width: 480px; height: min(55vh, 380px); margin: 1rem auto; background: radial-gradient(ellipse at center, rgba(28,145,136,.15), transparent 70%), var(--wg-surface); border: 2px solid rgba(28,145,136,.4); border-radius: 16px; overflow: hidden; }
+    .tgt { position: absolute; width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #5eead4, #1c9188); border: none; cursor: pointer; box-shadow: 0 0 20px rgba(28,145,136,.6); padding: 0; transition: transform .08s; }
+    .tgt:active { transform: scale(0.92); }
+    .hud { display: flex; justify-content: center; gap: 2rem; font-weight: 700; margin: .5rem 0; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <main class="wg-main">
+    <h1 class="wg-h1">Neon targets</h1>
+    <p class="wg-lead">You have <strong>20 seconds</strong>. Tap each glowing disc as it appears. Misses do not subtract — only hits count.</p>
+    <div class="hud"><span id="t">20.0s</span><span id="sc">Hits: 0</span></div>
+    <div class="field" id="field"></div>
+    <p style="text-align:center;margin-top:1rem">
+      <button type="button" class="wg-btn" id="go">Start run</button>
+    </p>
+    <div id="end" hidden style="text-align:center;margin-top:1rem"></div>
+  </main>
+  <script>
+    var score = 0, left = 20, running = false, raf = null, spawn = null, field = document.getElementById('field'), lastTs = 0;
+
+    function place(btn) {
+      var w = field.clientWidth - 56, h = field.clientHeight - 56;
+      if (w < 8) w = 8;
+      if (h < 8) h = 8;
+      btn.style.left = (8 + Math.random() * w) + 'px';
+      btn.style.top = (8 + Math.random() * h) + 'px';
+    }
+
+    function tick(ts) {
+      if (!running) return;
+      if (!lastTs) lastTs = ts;
+      var dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      left -= dt;
+      if (left <= 0) {
+        stop();
+        return;
+      }
+      document.getElementById('t').textContent = left.toFixed(1) + 's';
+      raf = requestAnimationFrame(tick);
+    }
+
+    function stop() {
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      if (spawn) clearInterval(spawn);
+      lastTs = 0;
+      field.innerHTML = '';
+      document.getElementById('go').disabled = false;
+      document.getElementById('end').hidden = false;
+      document.getElementById('end').innerHTML = '<div class="wg-success">Time up — <strong>' + score + '</strong> hits. <button type="button" class="wg-btn" style="margin-top:.5rem" onclick="location.reload()">Play again</button></div>';
+    }
+
+    function addTarget() {
+      if (!running) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tgt';
+      btn.setAttribute('aria-label', 'Hit');
+      place(btn);
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        score++;
+        document.getElementById('sc').textContent = 'Hits: ' + score;
+        btn.remove();
+      });
+      field.appendChild(btn);
+      setTimeout(function () { if (btn.parentNode) btn.remove(); }, 1400);
+    }
+
+    document.getElementById('go').onclick = function () {
+      document.getElementById('end').hidden = true;
+      document.getElementById('go').disabled = true;
+      lastTs = 0;
+      score = 0;
+      left = 20;
+      document.getElementById('sc').textContent = 'Hits: 0';
+      document.getElementById('t').textContent = '20.0s';
+      field.innerHTML = '';
+      running = true;
+      spawn = setInterval(addTarget, 700 + Math.random() * 500);
+      addTarget();
+      raf = requestAnimationFrame(tick);
+    };
+  </script>
+</body>
+
+</html>

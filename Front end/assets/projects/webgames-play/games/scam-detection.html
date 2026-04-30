@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scam detection | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .msd { min-height: calc(100vh - 52px); background: #f1f5f9; color: #1e293b; font-family: system-ui, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; }
+    .msd-token { display: none; background: #14b8a6; color: #fff; text-align: center; padding: 1rem 1rem 1.25rem; }
+    .msd-token.on { display: block; animation: msdFade .4s ease-out; }
+    .msd-token .code { margin-top: 0.35rem; font-family: ui-monospace, monospace; font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: 800; letter-spacing: 0.12em; background: rgba(0,0,0,.2); padding: 0.5rem 1.25rem; border-radius: 10px; display: inline-block; }
+    @keyframes msdFade { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .msd-head { position: sticky; top: 52px; z-index: 8; background: rgba(255,255,255,.96); backdrop-filter: blur(8px); border-bottom: 1px solid #e2e8f0; }
+    .msd-head-top { max-width: 80rem; margin: 0 auto; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .msd-logo { display: flex; align-items: center; gap: 0.5rem; border: none; background: none; font: inherit; cursor: pointer; color: #0d9488; padding: 0.25rem; }
+    .msd-logo svg { width: 2rem; height: 2rem; flex-shrink: 0; }
+    .msd-logo h1 { margin: 0; font-size: 1.15rem; font-weight: 800; color: #0f172a; }
+    .msd-search-wrap { flex: 1; min-width: 10rem; max-width: 28rem; margin: 0 auto; position: relative; }
+    .msd-search-wrap svg { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); width: 1.1rem; height: 1.1rem; color: #94a3b8; pointer-events: none; }
+    .msd-search { width: 100%; box-sizing: border-box; padding: 0.5rem 1rem 0.5rem 2.25rem; border: 1px solid #e2e8f0; border-radius: 999px; background: #f1f5f9; font: inherit; font-size: 0.875rem; }
+    .msd-search:focus { outline: none; background: #fff; border-color: #5eead4; box-shadow: 0 0 0 3px rgba(20,184,166,.2); }
+    .msd-about-link { font-size: 0.8125rem; font-weight: 700; color: #64748b; background: none; border: none; cursor: pointer; font: inherit; padding: 0.35rem 0.5rem; }
+    .msd-about-link:hover { color: #0d9488; }
+    .msd-cats { display: none; max-width: 80rem; margin: 0 auto; padding: 0 1rem 0.5rem; justify-content: center; gap: 1.25rem; flex-wrap: wrap; border-top: 1px solid #f1f5f9; }
+    @media (min-width: 768px) { .msd-cats { display: flex; } }
+    .msd-cats button { font-size: 0.8125rem; font-weight: 600; color: #64748b; background: none; border: none; border-bottom: 2px solid transparent; padding: 0.35rem 0.15rem; cursor: pointer; font: inherit; }
+    .msd-cats button:hover { color: #0d9488; }
+    .msd-cats button.on { color: #0d9488; border-bottom-color: #0d9488; }
+    .msd-cats button.deals { font-weight: 800; color: #ef4444; }
+    .msd-cats button.deals.on { color: #b91c1c; border-bottom-color: #ef4444; }
+    .msd-main { max-width: 80rem; margin: 0 auto; padding: 2rem 1rem 3rem; width: 100%; flex: 1; }
+    .msd-hero { background: #f0fdfa; border: 2px dashed #5eead4; color: #115e59; border-radius: 12px; padding: 1.25rem 1rem; text-align: center; margin-bottom: 2rem; }
+    .msd-hero h2 { margin: 0 0 0.5rem; font-size: 1.25rem; }
+    .msd-hero p { margin: 0 auto; max-width: 40rem; font-size: 0.9rem; line-height: 1.55; }
+    .msd-layout { display: flex; flex-direction: column; gap: 1.5rem; }
+    @media (min-width: 1024px) { .msd-layout { flex-direction: row; align-items: flex-start; } }
+    .msd-aside { width: 100%; max-width: 100%; }
+    @media (min-width: 1024px) { .msd-aside { width: 25%; flex-shrink: 0; position: sticky; top: 8.5rem; } }
+    .msd-filter { background: #fff; padding: 1.25rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid #e2e8f0; }
+    .msd-filter h3 { margin: 0 0 1rem; font-size: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+    .msd-filter label { display: block; font-size: 0.8125rem; font-weight: 700; color: #475569; margin-bottom: 0.35rem; }
+    .msd-filter select { width: 100%; box-sizing: border-box; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; margin-bottom: 1rem; }
+    .msd-filter select:focus { outline: none; border-color: #14b8a6; box-shadow: 0 0 0 2px rgba(20,184,166,.2); }
+    .msd-range-row { display: flex; justify-content: space-between; font-size: 0.8125rem; font-weight: 600; color: #475569; margin-bottom: 0.35rem; }
+    .msd-range-row span:last-child { font-weight: 500; color: #64748b; }
+    .msd-range { width: 100%; margin-top: 0.25rem; accent-color: #0d9488; }
+    .msd-grid { flex: 1; display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .msd-grid { grid-template-columns: repeat(2, 1fr); } }
+    .msd-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06); border: 2px solid transparent; display: flex; flex-direction: column; transition: box-shadow .2s, border-color .2s; }
+    .msd-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .msd-card.sel { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20,184,166,.25); }
+    .msd-img { height: 12rem; width: 100%; background-size: cover; background-position: center; }
+    .msd-card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
+    .msd-card h3 { margin: 0; font-size: 1rem; font-weight: 800; color: #0f172a; line-height: 1.3; }
+    .msd-card .price { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0.5rem 0; }
+    .msd-card .meta { font-size: 0.7rem; color: #64748b; margin-bottom: 0.75rem; }
+    .msd-card .desc { font-size: 0.8125rem; color: #475569; line-height: 1.5; margin-bottom: 1rem; flex: 1; }
+    .msd-flag { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem; border: none; border-radius: 8px; font: inherit; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: background .15s, color .15s; }
+    .msd-flag.off { background: #e2e8f0; color: #475569; }
+    .msd-flag.off:hover { background: #fecaca; color: #991b1b; }
+    .msd-flag.on { background: #dc2626; color: #fff; }
+    .msd-flag.on:hover { background: #b91c1c; }
+    .msd-flag:disabled { opacity: 0.55; cursor: not-allowed; }
+    .msd-flag svg { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
+    .msd-just { padding: 0 1rem 1rem; border-top: 2px dashed #e2e8f0; margin-top: 0.5rem; padding-top: 1rem; }
+    .msd-just label { font-size: 0.8125rem; font-weight: 600; color: #334155; }
+    .msd-just textarea { width: 100%; box-sizing: border-box; margin-top: 0.35rem; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; font-size: 0.8125rem; min-height: 3.5rem; resize: vertical; }
+    .msd-just textarea:focus { outline: none; border-color: #14b8a6; }
+    .msd-just textarea:disabled { background: #f1f5f9; }
+    .msd-empty { grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; }
+    .msd-empty h3 { margin: 0 0 0.5rem; font-size: 1.1rem; color: #334155; }
+    .msd-submit-wrap { margin-top: 2.5rem; display: flex; justify-content: center; }
+    .msd-submit { padding: 1rem 2.25rem; border: none; border-radius: 10px; background: #0d9488; color: #fff; font: inherit; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 14px rgba(13,148,136,.35); }
+    .msd-submit:hover:not(:disabled) { background: #0f766e; transform: scale(1.02); }
+    .msd-submit:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+    .msd-thanks { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.08); max-width: 36rem; text-align: center; border: 1px solid #e2e8f0; }
+    .msd-thanks h3 { margin: 0 0 0.5rem; font-size: 1.35rem; color: #0f172a; }
+    .msd-thanks p { margin: 0; color: #64748b; line-height: 1.55; }
+    .msd-about { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.08); border: 1px solid #e2e8f0; max-width: 48rem; margin: 0 auto; animation: msdFade .4s ease-out; }
+    .msd-about h2 { margin: 0 0 1rem; font-size: 1.65rem; color: #0f172a; }
+    .msd-about p { color: #475569; line-height: 1.65; margin: 0 0 1rem; }
+    .msd-foot { background: #1e293b; color: #94a3b8; margin-top: auto; padding: 2rem 1rem; text-align: center; font-size: 0.7rem; }
+    .msd-foot p { margin: 0.25rem 0; }
+    .msd-page[hidden] { display: none !important; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="msd">
+    <div class="msd-token" id="tokenBar" role="status">
+      <p style="margin:0;font-weight:600">Token</p>
+      <div class="code">FRAUDDETECTED</div>
+    </div>
+
+    <header class="msd-head">
+      <div class="msd-head-top">
+        <button type="button" class="msd-logo" id="btnHome" aria-label="Marketplace Watch home">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 1a.75.75 0 01.75.75v1.252a12.02 12.02 0 013.515 2.527.75.75 0 01-1.06 1.062A10.52 10.52 0 0010 5.5V17a1 1 0 11-2 0V5.5a10.521 10.521 0 00-3.206 1.091.75.75 0 01-1.06-1.062A12.02 12.02 0 019.25 3.002V1.75A.75.75 0 0110 1z" clip-rule="evenodd" /></svg>
+          <h1>Marketplace Watch</h1>
+        </button>
+        <div class="msd-search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+          <input type="search" class="msd-search" id="searchInp" placeholder="Search for anything…" autocomplete="off">
+        </div>
+        <button type="button" class="msd-about-link" id="btnAbout">About</button>
+      </div>
+      <div class="msd-cats" id="catRow"></div>
+    </header>
+
+    <main class="msd-main">
+      <div id="viewHome">
+        <section class="msd-hero">
+          <h2>Community watch task active</h2>
+          <p>Help keep the marketplace safe. Review listings, flag scams, and add a short justification for each flag you raise. Submit when every flagged item has a reason.</p>
+        </section>
+        <div class="msd-layout">
+          <aside class="msd-aside">
+            <div class="msd-filter">
+              <h3>Filter listings</h3>
+              <label for="catSel">Category</label>
+              <select id="catSel">
+                <option>All Categories</option>
+                <option>Electronics</option>
+                <option>Apparel</option>
+                <option>Collectibles</option>
+                <option>Home &amp; Garden</option>
+                <option>Motors</option>
+                <option>Deals</option>
+              </select>
+              <div class="msd-range-row"><span>Price range</span><span id="priceLbl"></span></div>
+              <input type="range" class="msd-range" id="priceRange" min="0" max="1000" step="5" value="1000">
+            </div>
+          </aside>
+          <section class="msd-grid" id="grid"></section>
+        </div>
+        <div class="msd-submit-wrap" id="submitWrap"></div>
+      </div>
+      <div id="viewAbout" class="msd-page" hidden>
+        <div class="msd-about">
+          <h2>About Marketplace Watch</h2>
+          <p>Marketplace Watch was founded on a simple principle: to create a safer, more transparent online trading environment for everyone. We believe that trust is the cornerstone of any community, and we are dedicated to building tools and systems that empower users to buy and sell with confidence.</p>
+          <p>Our platform integrates community-driven vigilance with smart technology to identify and flag suspicious activity. Every community watch task, like the one you are participating in, helps train our systems and protect fellow users from potential scams. Thank you for being an active part of our mission.</p>
+          <button type="button" class="msd-submit" id="btnFromAbout" style="margin-top:1rem">Back to listings</button>
+        </div>
+      </div>
+    </main>
+    <footer class="msd-foot">
+      <p>© <span id="yr"></span> Marketplace Watch Inc.</p>
+      <p>Trade safely and report suspicious activity.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+    var ALL = [
+      { id: 1, title: 'Brand New A-Phone 15 Pro Max - Unopened Box!', price: '$250', description: 'URGENT SALE! Won this in a contest but I use Android. Selling cheap must go today. Only serious buyers, payment via wire transfer ONLY. First come first serve.', sellerName: 'QuickSeller24', sellerRating: 4.1, location: 'Citywide', isScam: true, category: 'Electronics', hue: 200 },
+      { id: 5, title: 'Professional Studio Headphones - GREAT DEAL', price: '$90', description: 'Selling headphones. Barely used. Look at picture for details. Please for all question and fast response email me direct at topdeals_seller@fakemail.net, do not message here.', sellerName: 'Deals4U', sellerRating: 3.2, location: 'Northwood', isScam: true, category: 'Deals', hue: 280 },
+      { id: 2, title: 'Vintage Leather Messenger Bag', price: '$85', description: 'High-quality leather bag, great for laptops and documents. Gently used with a nice patina.', sellerName: 'VintageFindsCo', sellerRating: 4.9, location: 'Oakwood', isScam: false, category: 'Apparel', hue: 35 },
+      { id: 3, title: "Rare Collector's Edition Fountain Pen", price: '$220', description: "Limited edition 'Orion' series fountain pen. Comes with original case and certificate.", sellerName: 'CollectorItems', sellerRating: 5, location: 'Maple Creek', isScam: false, category: 'Collectibles', hue: 45 },
+      { id: 4, title: 'Professional Studio Headphones (Used)', price: '$110', description: 'Selling my pair of Audio-Pro headphones. Excellent working condition, just upgrading my setup.', sellerName: 'SoundGuy88', sellerRating: 4.8, location: 'Downtown', isScam: false, category: 'Electronics', hue: 265 },
+      { id: 6, title: 'Classic 1985 Roadster Convertible', price: '$15500', description: 'My weekend driver, a true classic. Runs great, new tires. A real head-turner.', sellerName: 'CarEnthusiast', sellerRating: 4.9, location: 'Sunset Valley', isScam: false, category: 'Motors', hue: 15 },
+      { id: 7, title: 'Hand-Painted Ceramic Pot Set', price: '$45', description: 'Set of 3 ceramic pots, perfect for succulents or herbs. Frost-resistant.', sellerName: 'GardenCreations', sellerRating: 4.7, location: 'Greenleaf', isScam: false, category: 'Home & Garden', hue: 130 },
+      { id: 8, title: 'Designer Brand Winter Coat', price: '$150', description: "Authentic 'Arctic Wolf' brand winter coat. Worn twice. Too small for me now. Great deal!", sellerName: 'Fashionista22', sellerRating: 4.8, location: 'Downtown', isScam: false, category: 'Apparel', hue: 310 },
+      { id: 9, title: 'Gaming Laptop - 1 Year Old', price: '$750', description: 'Powerful gaming laptop, can run all modern games. Selling because I built a desktop.', sellerName: 'GamerTech', sellerRating: 5, location: 'Tech Hub', isScam: false, category: 'Electronics', hue: 190 },
+      { id: 10, title: 'Motorcycle - NEEDS WORK', price: '$1200', description: "Project bike. Engine turns over but won't start. Great for parts or a mechanic.", sellerName: 'HobbyMechanic', sellerRating: 4.5, location: 'Garland', isScam: false, category: 'Motors', hue: 25 },
+    ];
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    function parsePrice(s) {
+      return Number(String(s).replace(/[^0-9.-]+/g, '')) || 0;
+    }
+
+    var listings = shuffle(ALL);
+    var maxPrice = Math.max.apply(null, listings.map(function (l) { return parsePrice(l.price); }));
+
+    var selected = {};
+    var justifications = {};
+    var submitted = false;
+    var success = false;
+    var searchQuery = '';
+    var selectedCategory = 'All Categories';
+    var priceLimit = maxPrice;
+    var view = 'home';
+
+    var CATS = ['Electronics', 'Apparel', 'Collectibles', 'Home & Garden', 'Motors'];
+
+    function imgStyle(hue) {
+      var h2 = (hue + 55) % 360;
+      return 'background-image:linear-gradient(135deg,hsl(' + hue + ',45%,38%) 0%,hsl(' + h2 + ',50%,28%) 50%,hsl(' + hue + ',35%,22%) 100%)';
+    }
+
+    function passesCategory(l) {
+      if (selectedCategory === 'All Categories' || selectedCategory === 'Deals') {
+        if (selectedCategory === 'Deals' && l.category !== 'Deals') return false;
+        return true;
+      }
+      return l.category === selectedCategory;
+    }
+
+    function filtered() {
+      var q = searchQuery.toLowerCase().trim();
+      return listings.filter(function (l) {
+        if (!passesCategory(l)) return false;
+        if (q && l.title.toLowerCase().indexOf(q) < 0 && l.description.toLowerCase().indexOf(q) < 0) return false;
+        return parsePrice(l.price) <= priceLimit;
+      });
+    }
+
+    function correctScamIds() {
+      var s = {};
+      listings.forEach(function (l) { if (l.isScam) s[l.id] = true; });
+      return s;
+    }
+
+    function canSubmit() {
+      var ids = [];
+      for (var id in selected) {
+        if (selected[id]) ids.push(Number(id));
+      }
+      if (ids.length === 0) return false;
+      for (var i = 0; i < ids.length; i++) {
+        var j = justifications[ids[i]];
+        if (!j || !String(j).trim()) return false;
+      }
+      return true;
+    }
+
+    function escapeHtml(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function syncCatUi() {
+      document.getElementById('catSel').value = selectedCategory;
+      document.querySelectorAll('#catRow button').forEach(function (b) {
+        var c = b.getAttribute('data-cat');
+        b.classList.toggle('on', c === selectedCategory);
+      });
+    }
+
+    function renderCatRow() {
+      var el = document.getElementById('catRow');
+      el.innerHTML = CATS.map(function (c) {
+        return '<button type="button" data-cat="' + escapeHtml(c) + '" class="' + (selectedCategory === c ? 'on' : '') + '">' + escapeHtml(c) + '</button>';
+      }).join('') + '<button type="button" data-cat="Deals" class="deals' + (selectedCategory === 'Deals' ? ' on' : '') + '">Deals</button>';
+      el.querySelectorAll('[data-cat]').forEach(function (btn) {
+        btn.onclick = function () {
+          selectedCategory = btn.getAttribute('data-cat');
+          syncCatUi();
+          goHomeView();
+          renderGrid();
+        };
+      });
+    }
+
+    function renderGrid() {
+      var grid = document.getElementById('grid');
+      var rows = filtered();
+      if (!rows.length) {
+        grid.innerHTML = '<div class="msd-empty"><h3>No listings found</h3><p>Try adjusting your search or filters.</p></div>';
+        renderSubmit();
+        return;
+      }
+      grid.innerHTML = '';
+      rows.forEach(function (l) {
+        var sel = !!selected[l.id];
+        var card = document.createElement('article');
+        card.className = 'msd-card' + (sel ? ' sel' : '');
+        var img = document.createElement('div');
+        img.className = 'msd-img';
+        img.style.cssText = imgStyle(l.hue);
+        img.setAttribute('role', 'img');
+        img.setAttribute('aria-label', 'Listing image');
+        var body = document.createElement('div');
+        body.className = 'msd-card-body';
+        body.innerHTML = '<h3>' + escapeHtml(l.title) + '</h3><p class="price">' + escapeHtml(l.price) + '</p><p class="meta">' + escapeHtml(l.location) + ' • Seller: ' + escapeHtml(l.sellerName) + ' (' + l.sellerRating + ' ★)</p><p class="desc">' + escapeHtml(l.description) + '</p>';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'msd-flag ' + (sel ? 'on' : 'off');
+        btn.disabled = submitted;
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-4.392l1.657-.348a6.449 6.449 0 014.271.572 7.948 7.948 0 005.965.524l.338-.057a.75.75 0 00-.533-1.424l-.338.057a6.448 6.448 0 01-4.907-.478 7.95 7.95 0 00-5.645-.523L3.5 7.142V2.75z" /></svg><span>' + (sel ? 'Flagged as scam' : 'Flag listing') + '</span>';
+        btn.onclick = function () {
+          if (submitted) return;
+          if (selected[l.id]) {
+            delete selected[l.id];
+            delete justifications[l.id];
+          } else {
+            selected[l.id] = true;
+          }
+          renderGrid();
+        };
+        body.appendChild(btn);
+        card.appendChild(img);
+        card.appendChild(body);
+        if (sel) {
+          var just = document.createElement('div');
+          just.className = 'msd-just';
+          just.innerHTML = '<label for="j-' + l.id + '">Justification</label>';
+          var ta = document.createElement('textarea');
+          ta.id = 'j-' + l.id;
+          ta.rows = 2;
+          ta.placeholder = 'Explain why this is suspicious…';
+          ta.disabled = submitted;
+          ta.value = justifications[l.id] || '';
+          ta.oninput = function () {
+            justifications[l.id] = ta.value;
+            renderSubmit();
+          };
+          just.appendChild(ta);
+          card.appendChild(just);
+        }
+        grid.appendChild(card);
+      });
+      renderSubmit();
+    }
+
+    function renderSubmit() {
+      var w = document.getElementById('submitWrap');
+      if (submitted) {
+        w.innerHTML = '<div class="msd-thanks"><h3>Thank you for your report!</h3><p>Your submission has been logged. We appreciate you helping to keep our community safe from fraudulent activity.</p></div>';
+        return;
+      }
+      var n = 0;
+      for (var k in selected) if (selected[k]) n++;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'msd-submit';
+      btn.disabled = !canSubmit();
+      btn.textContent = 'Submit final report (' + n + ' flagged)';
+      btn.onclick = function () {
+        if (!canSubmit() || submitted) return;
+        submitted = true;
+        var correct = correctScamIds();
+        var ids = [];
+        for (var id in selected) if (selected[id]) ids.push(Number(id));
+        var perfect = ids.length === Object.keys(correct).length;
+        if (perfect) {
+          for (var i = 0; i < ids.length; i++) {
+            if (!correct[ids[i]]) { perfect = false; break; }
+          }
+        }
+        if (perfect) {
+          success = true;
+          document.getElementById('tokenBar').classList.add('on');
+          window.scrollTo(0, 0);
+        }
+        renderGrid();
+      };
+      w.innerHTML = '';
+      w.appendChild(btn);
+    }
+
+    function updatePriceLabel() {
+      document.getElementById('priceLbl').textContent = '$' + priceLimit.toLocaleString() + ' or less';
+    }
+
+    function goHomeView() {
+      view = 'home';
+      document.getElementById('viewHome').hidden = false;
+      document.getElementById('viewAbout').hidden = true;
+    }
+
+    function goAbout() {
+      view = 'about';
+      document.getElementById('viewHome').hidden = true;
+      document.getElementById('viewAbout').hidden = false;
+    }
+
+    document.getElementById('btnHome').onclick = goHomeView;
+    document.getElementById('btnAbout').onclick = goAbout;
+    document.getElementById('btnFromAbout').onclick = goHomeView;
+
+    document.getElementById('searchInp').oninput = function () {
+      searchQuery = document.getElementById('searchInp').value;
+      renderGrid();
+    };
+
+    document.getElementById('catSel').onchange = function () {
+      selectedCategory = document.getElementById('catSel').value;
+      syncCatUi();
+      renderGrid();
+    };
+
+    var pr = document.getElementById('priceRange');
+    pr.max = String(maxPrice);
+    pr.value = String(maxPrice);
+    pr.oninput = function () {
+      priceLimit = Number(pr.value);
+      updatePriceLabel();
+      renderGrid();
+    };
+
+    renderCatRow();
+    syncCatUi();
+    updatePriceLabel();
+    renderGrid();
+  </script>
+</body>
+
+</html>

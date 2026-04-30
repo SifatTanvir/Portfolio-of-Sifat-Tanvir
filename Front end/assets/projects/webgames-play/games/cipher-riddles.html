@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cipher riddles | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .puzzle { border-bottom: 1px solid rgba(255,255,255,.1); padding: 1.25rem 0; }
+    .puzzle:last-child { border: 0; }
+    .opts { display: grid; gap: .5rem; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-top: .75rem; }
+    .opts button { padding: .6rem .75rem; border-radius: 8px; border: 2px solid rgba(255,255,255,.15); background: var(--wg-surface); color: var(--wg-text); font: inherit; cursor: pointer; }
+    .opts button.sel { border-color: var(--wg-accent2); background: rgba(61,139,253,.2); }
+    .clue { font-style: italic; color: var(--wg-muted); }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <main class="wg-main wg-main--wide">
+    <h1 class="wg-h1">The Cryptographer's challenge</h1>
+    <p class="wg-lead">Pick one answer per riddle, then verify. All five must be correct on the first submit to earn the password (you can reset and try again).</p>
+    <div class="wg-card" id="board"></div>
+    <button type="button" class="wg-btn" id="verify">Verify all answers</button>
+    <div id="msg"></div>
+  </main>
+  <script>
+    var DATA = [
+      { id: 1, clue: 'I have cities, but no houses; forests, but no trees; and water, but no fish. What am I?', a: 'A MAP', opts: ['A MAP', 'A GLOBE', 'A BOOK'] },
+      { id: 2, clue: 'I am always hungry, I must always be fed. The finger I lick will soon turn red. What am I?', a: 'FIRE', opts: ['FIRE', 'A STOVE', 'A BABY'] },
+      { id: 3, clue: 'What has an eye, but cannot see?', a: 'A NEEDLE', opts: ['A NEEDLE', 'A POTATO', 'A MIRROR'] },
+      { id: 4, clue: 'What is full of holes but still holds water?', a: 'A SPONGE', opts: ['A SPONGE', 'A NET', 'A STRAINER'] },
+      { id: 5, clue: 'I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?', a: 'AN ECHO', opts: ['AN ECHO', 'A GHOST', 'A WHISPER'] },
+    ];
+    function shuffle(a) { var x = a.slice(); for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; } return x; }
+    var puzzles = shuffle(DATA).map(function (p) { return { id: p.id, clue: p.clue, answer: p.a, options: shuffle(p.opts) }; });
+    var pick = {};
+    var board = document.getElementById('board');
+    puzzles.forEach(function (p, i) {
+      var wrap = document.createElement('div');
+      wrap.className = 'puzzle';
+      wrap.innerHTML = '<div style="font-weight:700;color:var(--wg-muted)">#' + (i + 1) + '</div><p class="clue">“' + p.clue + '”</p><div class="opts" data-id="' + p.id + '"></div>';
+      var og = wrap.querySelector('.opts');
+      p.options.forEach(function (o) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = o;
+        b.addEventListener('click', function () {
+          if (document.getElementById('msg').dataset.locked === '1') return;
+          og.querySelectorAll('button').forEach(function (x) { x.classList.remove('sel'); });
+          b.classList.add('sel');
+          pick[p.id] = o;
+        });
+        og.appendChild(b);
+      });
+      board.appendChild(wrap);
+    });
+    document.getElementById('verify').onclick = function () {
+      var msg = document.getElementById('msg');
+      if (puzzles.some(function (p) { return !pick[p.id]; })) {
+        msg.innerHTML = '<div class="wg-error">Select an option for every riddle.</div>';
+        return;
+      }
+      var all = puzzles.every(function (p) { return pick[p.id] === p.answer; });
+      msg.dataset.locked = '1';
+      msg.innerHTML = all
+        ? '<div class="wg-success">Secret password: <strong>CIPHERCRACKED</strong></div>'
+        : '<div class="wg-error">At least one answer was wrong. <button type="button" class="wg-btn wg-btn--ghost" id="reset" style="margin-top:.5rem">Reset puzzle</button></div>';
+      if (!all) document.getElementById('reset').onclick = function () { location.reload(); };
+    };
+  </script>
+</body>
+
+</html>

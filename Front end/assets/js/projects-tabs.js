@@ -28,7 +28,7 @@
       panel.setAttribute('aria-hidden', on ? 'false' : 'true');
     });
 
-    if (slug === 'llm') {
+    if (slug === 'llm' || slug === 'webgames') {
       requestAnimationFrame(function () {
         window.dispatchEvent(new Event('resize'));
       });

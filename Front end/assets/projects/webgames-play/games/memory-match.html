@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memory match | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 420px; margin: 1rem auto; }
+    .card { aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 2px solid rgba(255,255,255,.15); background: var(--wg-surface); display: flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 800; color: transparent; user-select: none; transition: transform .15s, background .2s; }
+    .card.flipped, .card.matched { color: var(--wg-text); background: var(--wg-card); }
+    .card.matched { border-color: var(--wg-accent); opacity: .85; cursor: default; }
+    .card:not(.flipped):not(.matched):hover { transform: scale(1.02); border-color: var(--wg-accent); }
+    .stats { text-align: center; color: var(--wg-muted); margin-bottom: .5rem; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <main class="wg-main">
+    <h1 class="wg-h1">Memory match</h1>
+    <p class="wg-lead">Flip two cards at a time. Match all 4 pairs. Fewer moves is better.</p>
+    <p class="stats" id="stats">Moves: 0 · Pairs: 0/4</p>
+    <div class="board" id="board"></div>
+    <p style="text-align:center;margin-top:1rem"><button type="button" class="wg-btn wg-btn--ghost" id="again">New board</button></p>
+    <div id="win" class="wg-success" hidden style="text-align:center;margin-top:1rem">Cleared in <strong id="moves"></strong> moves — nice work.</div>
+  </main>
+  <script>
+    var SYMBOLS = ['λ', 'π', '∑', 'Ω'];
+    var first = null, lock = false, moves = 0, pairs = 0;
+
+    function shuffle(a) {
+      var x = a.slice();
+      for (var i = x.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = x[i]; x[i] = x[j]; x[j] = t; }
+      return x;
+    }
+
+    function build() {
+      document.getElementById('win').hidden = true;
+      first = null; lock = false; moves = 0; pairs = 0;
+      var deck = shuffle(SYMBOLS.concat(SYMBOLS));
+      var b = document.getElementById('board');
+      b.innerHTML = '';
+      deck.forEach(function (sym, i) {
+        var el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'card';
+        el.setAttribute('aria-label', 'Card ' + (i + 1));
+        el.dataset.sym = sym;
+        el.textContent = sym;
+        el.addEventListener('click', onFlip);
+        b.appendChild(el);
+      });
+      upd();
+    }
+
+    function upd() {
+      document.getElementById('stats').textContent = 'Moves: ' + moves + ' · Pairs: ' + pairs + '/4';
+    }
+
+    function onFlip(e) {
+      var el = e.currentTarget;
+      if (lock || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+      el.classList.add('flipped');
+      if (!first) { first = el; return; }
+      lock = true;
+      moves++;
+      upd();
+      var c1 = first;
+      first = null;
+      var a = c1.dataset.sym, b = el.dataset.sym;
+      if (a === b) {
+        pairs++;
+        c1.classList.add('matched');
+        el.classList.add('matched');
+        lock = false;
+        upd();
+        if (pairs === 4) {
+          document.getElementById('moves').textContent = String(moves);
+          document.getElementById('win').hidden = false;
+        }
+      } else {
+        setTimeout(function () {
+          c1.classList.remove('flipped');
+          el.classList.remove('flipped');
+          lock = false;
+        }, 650);
+      }
+    }
+
+    document.getElementById('again').onclick = build;
+    build();
+  </script>
+</body>
+
+</html>

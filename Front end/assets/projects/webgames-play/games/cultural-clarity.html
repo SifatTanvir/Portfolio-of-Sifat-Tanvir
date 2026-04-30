@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cultural clarity | Webgames</title>
+  <link href="../shared.css" rel="stylesheet">
+  <style>
+    .cc { min-height: calc(100vh - 52px); background: #f1f5f9; color: #1e293b; font-family: system-ui, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; }
+    .cc-win { display: none; background: #16a34a; color: #fff; text-align: center; padding: 0.75rem 1rem; font-weight: 700; }
+    .cc-win.on { display: block; animation: ccFade .45s ease-out; }
+    .cc-win code { font-family: ui-monospace, monospace; background: rgba(0,0,0,.2); padding: 0.15rem 0.5rem; border-radius: 6px; }
+    @keyframes ccFade { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    .cc-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); position: sticky; top: 52px; z-index: 8; }
+    .cc-brand { display: flex; align-items: center; gap: 0.65rem; cursor: pointer; border: none; background: none; font: inherit; padding: 0; }
+    .cc-brand svg { width: 2rem; height: 2rem; color: #14b8a6; flex-shrink: 0; }
+    .cc-brand span { font-size: 1.35rem; font-weight: 800; color: #0f172a; }
+    .cc-back { font-weight: 700; color: #0d9488; background: none; border: none; font: inherit; cursor: pointer; padding: 0.35rem 0.5rem; border-radius: 6px; }
+    .cc-back:hover { color: #115e59; background: #ccfbf1; }
+    .cc-back[hidden] { display: none; }
+    .cc-main { flex: 1; }
+    .cc-hero { position: relative; background: #0f766e; color: #fff; padding: 4rem 1.25rem; text-align: center; overflow: hidden; }
+    .cc-hero::before { content: ""; position: absolute; inset: 0; opacity: 0.12; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .cc-hero-inner { position: relative; max-width: 42rem; margin: 0 auto; }
+    .cc-hero h1 { margin: 0; font-size: clamp(1.75rem, 5vw, 2.75rem); font-weight: 800; letter-spacing: -0.02em; }
+    .cc-hero p { margin: 1rem 0 0; color: #99f6e4; font-size: 1.05rem; line-height: 1.55; }
+    .cc-cta { margin-top: 2rem; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.75rem; background: #fff; color: #0f766e; font-weight: 800; border: none; border-radius: 999px; font: inherit; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,.15); }
+    .cc-cta:hover { background: #f0fdfa; transform: scale(1.02); }
+    .cc-cta svg { width: 1.15rem; height: 1.15rem; }
+    .cc-section { padding: 3.5rem 1.25rem; }
+    .cc-section.white { background: #fff; }
+    .cc-section h2 { margin: 0 0 1rem; font-size: 1.65rem; font-weight: 800; color: #0f172a; text-align: center; }
+    .cc-section p.lead { margin: 0 auto; max-width: 36rem; text-align: center; color: #64748b; line-height: 1.6; }
+    .cc-process { max-width: 72rem; margin: 0 auto; display: grid; gap: 2rem; text-align: center; }
+    @media (min-width: 768px) { .cc-process { grid-template-columns: repeat(3, 1fr); } }
+    .cc-process h3 { margin: 0 0 0.5rem; font-size: 1.1rem; font-weight: 700; color: #0f172a; }
+    .cc-process p { margin: 0; color: #64748b; font-size: 0.95rem; line-height: 1.55; }
+    .cc-testi { max-width: 72rem; margin: 0 auto; display: grid; gap: 1.5rem; }
+    @media (min-width: 768px) { .cc-testi { grid-template-columns: 1fr 1fr; } }
+    .cc-quote { background: #fff; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid #e2e8f0; }
+    .cc-quote blockquote { margin: 0; color: #475569; font-size: 0.95rem; line-height: 1.55; }
+    .cc-quote cite { display: block; margin-top: 1rem; font-style: normal; font-weight: 700; color: #0f172a; font-size: 0.9rem; }
+    .cc-review-wrap { max-width: 1120px; margin: 0 auto; padding: 2.5rem 1rem 3rem; animation: ccFade .5s ease-out; }
+    .cc-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+    @media (min-width: 1024px) { .cc-grid { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+    .cc-card { background: #fff; border-radius: 12px; padding: 1.25rem 1.5rem; box-shadow: 0 4px 14px rgba(0,0,0,.06); border: 1px solid #e2e8f0; }
+    .cc-card h2 { margin: 0 0 1rem; font-size: 1.15rem; color: #0f172a; text-align: left; }
+    .cc-thread { max-height: 400px; overflow-y: auto; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+    .cc-row { display: flex; align-items: flex-end; gap: 0.5rem; }
+    .cc-row.user { justify-content: flex-end; }
+    .cc-av { width: 2rem; height: 2rem; border-radius: 999px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; font-weight: 800; color: #fff; }
+    .cc-bubble { max-width: min(100%, 28rem); padding: 0.75rem 1rem; border-radius: 1rem; font-size: 0.875rem; line-height: 1.5; }
+    .cc-bubble.agent { background: #dbeafe; color: #1e293b; border-bottom-left-radius: 0.25rem; }
+    .cc-bubble.user { background: #334155; color: #fff; border-bottom-right-radius: 0.25rem; }
+    .cc-bubble.bad { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ef4444; }
+    .cc-ts { font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem; text-align: right; }
+    .cc-row.agent .cc-ts { text-align: left; }
+    .cc-opt { display: flex; align-items: flex-start; gap: 0.65rem; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+    .cc-opt.is-sel { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,.2); }
+    .cc-opt input { margin-top: 0.2rem; flex-shrink: 0; }
+    .cc-opt span { font-size: 0.8125rem; color: #334155; line-height: 1.45; }
+    fieldset.cc-fs { border: none; padding: 0; margin: 0; }
+    fieldset.cc-fs:disabled .cc-opt { opacity: 0.65; cursor: not-allowed; }
+    .cc-h3 { font-size: 0.8125rem; font-weight: 600; color: #475569; margin: 0 0 0.5rem; }
+    .cc-submit { width: 100%; margin-top: 0.5rem; padding: 0.85rem; border: none; border-radius: 10px; background: #4f46e5; color: #fff; font: inherit; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
+    .cc-submit:hover:not(:disabled) { background: #4338ca; }
+    .cc-submit:disabled { background: #94a3b8; cursor: not-allowed; }
+    .cc-done { margin-top: 1rem; padding: 1rem; background: #f1f5f9; border-radius: 10px; display: flex; align-items: center; gap: 0.65rem; font-weight: 600; color: #334155; font-size: 0.9rem; }
+    .cc-done svg { width: 1.5rem; height: 1.5rem; color: #64748b; flex-shrink: 0; }
+    .cc-foot { background: #1e293b; color: #94a3b8; text-align: center; padding: 1.75rem 1rem; font-size: 0.75rem; margin-top: auto; }
+    .cc-page[hidden] { display: none !important; }
+  </style>
+</head>
+
+<body class="wg-page">
+  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <div class="cc">
+    <div class="cc-win" id="winBar">Success! Password: <code>CLARITYACHIEVED</code></div>
+    <nav class="cc-nav">
+      <button type="button" class="cc-brand" id="btnBrand" aria-label="Clarity Coach home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" /></svg>
+        <span>Clarity Coach</span>
+      </button>
+      <button type="button" class="cc-back" id="btnBack" hidden>← Back to home</button>
+    </nav>
+
+    <div class="cc-main">
+      <div id="pageHome">
+        <section class="cc-hero">
+          <div class="cc-hero-inner">
+            <h1>Cultural clarity coaching</h1>
+            <p>Enhance your global communication. Analyze real support-style chats to spot cultural or linguistic friction and choose clearer wording.</p>
+            <button type="button" class="cc-cta" id="btnStartHero">
+              Start new review
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+            </button>
+          </div>
+        </section>
+        <section class="cc-section white">
+          <h2>Why clear communication matters</h2>
+          <p class="lead">In a global marketplace, clarity builds trust. Small changes in phrasing can lead to meaningful gains in customer satisfaction.</p>
+        </section>
+        <section class="cc-section">
+          <h2>Our process</h2>
+          <div class="cc-process" style="margin-top:2rem">
+            <div><h3>1. Analyze</h3><p>Review a realistic customer interaction transcript.</p></div>
+            <div><h3>2. Identify</h3><p>Find the moment misunderstanding may come from culture or language.</p></div>
+            <div><h3>3. Refine</h3><p>Choose a clearer rewrite and the best insight, then submit.</p></div>
+          </div>
+        </section>
+        <section class="cc-section white">
+          <h2>Ready to improve your skills?</h2>
+          <p class="lead">Take the first step toward more effective global communication.</p>
+          <div style="text-align:center;margin-top:1.5rem">
+            <button type="button" class="cc-cta" id="btnStartMid" style="background:#0d9488;color:#fff">Start new review</button>
+          </div>
+        </section>
+        <section class="cc-section">
+          <h2>Testimonials</h2>
+          <div class="cc-testi" style="margin-top:2rem">
+            <div class="cc-quote"><blockquote>“This approach changed how our team handles international support. Satisfaction scores have never been higher.”</blockquote><cite>Jordan L., Support Lead</cite></div>
+            <div class="cc-quote"><blockquote>“I never realized how much regional phrases confused customers. The insights are simple but powerful.”</blockquote><cite>Casey M., Customer Advocate</cite></div>
+          </div>
+        </section>
+      </div>
+
+      <div id="pageReview" class="cc-page" hidden>
+        <div class="cc-review-wrap">
+          <div class="cc-grid">
+            <div class="cc-card">
+              <h2>Support chat transcript</h2>
+              <div class="cc-thread" id="thread"></div>
+            </div>
+            <div class="cc-card">
+              <h2>Your analysis</h2>
+              <p class="cc-h3" id="revLabel"></p>
+              <fieldset class="cc-fs" id="fsRev"></fieldset>
+              <p class="cc-h3" style="margin-top:1.25rem">2. Select the key cultural insight</p>
+              <fieldset class="cc-fs" id="fsIns"></fieldset>
+              <div id="submitArea"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="cc-foot">© <span id="yr"></span> Global Communication Inc. · simulation only</footer>
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = String(new Date().getFullYear());
+
+    function shuffle(a) {
+      var x = a.slice();
+      for (var i = x.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = x[i]; x[i] = x[j]; x[j] = t;
+      }
+      return x;
+    }
+
+    var agentName = ['Alex', 'Jordan', 'Casey'][Math.floor(Math.random() * 3)];
+    var userName = ['Kenji', 'Yuki', 'Hiro', 'Sato'][Math.floor(Math.random() * 4)];
+    var orderNum = Math.floor(10000 + Math.random() * 90000);
+
+    var CASE_DEFS = [
+      {
+        id: 1,
+        buildMessages: function () {
+          return [
+            { sender: 'User', ts: '10:30 AM', bad: false, text: 'Hello, I ordered a package, number ' + orderNum + '. It has not yet arrived. Can you please check?' },
+            { sender: 'Agent', ts: '10:31 AM', bad: false, text: 'Hi ' + userName + ', let me take a look.' },
+            { sender: 'Agent', ts: '10:32 AM', bad: true, text: "Okay, I see the issue. Looks like the delivery was attempted but failed. We'll have to try again tomorrow. I'll get that squared away for you right now." },
+            { sender: 'User', ts: '10:33 AM', bad: false, text: "Squared away? I am sorry, I do not understand. Is there a problem with my address?" },
+          ];
+        },
+        correctRevision: "I see the issue. The delivery was attempted but failed. I have scheduled a new delivery for you for tomorrow.",
+        distractorRevisions: ["I will handle it.", "The problem is fixed and the package will be redelivered.", "Don't worry, I have taken care of the redelivery for tomorrow."],
+        correctInsight: "Idiomatic expressions like 'squared away' can be confusing for non-native speakers and should be replaced with more direct, literal language.",
+        distractorInsights: ["Using the customer's name is the most important part of building rapport.", "Support agents should never admit there was a problem with a delivery.", "Keeping responses as short as possible is key to efficiency."],
+      },
+      {
+        id: 2,
+        buildMessages: function () {
+          return [
+            { sender: 'User', ts: '02:15 PM', bad: false, text: 'Hello, my monthly subscription just renewed, but I thought I had cancelled it. Is it possible to get a refund?' },
+            { sender: 'Agent', ts: '02:16 PM', bad: false, text: 'I can check on that for you, ' + userName + '.' },
+            { sender: 'Agent', ts: '02:17 PM', bad: true, text: 'No. Our policy is clear that all sales are final once the renewal date has passed. You should have cancelled it sooner.' },
+            { sender: 'User', ts: '02:18 PM', bad: false, text: 'Oh. I see. That is very... direct. Thank you for your time.' },
+          ];
+        },
+        correctRevision: "I understand your concern. While our standard policy states that renewals are non-refundable, I can offer you a one-time credit for next month as a gesture of goodwill.",
+        distractorRevisions: ["No, you cannot get a refund.", "Unfortunately, our policy does not allow refunds after the renewal date.", "It is impossible to process a refund at this stage."],
+        correctInsight: "Directly negative phrasing ('No,' 'You should have') can be perceived as blunt or rude in many cultures, which value more indirect, face-saving communication.",
+        distractorInsights: ["The customer is likely trying to get something for free.", "Stating company policy clearly is the most important part of the job.", "Refund requests should always be escalated to a manager."],
+      },
+      {
+        id: 3,
+        buildMessages: function () {
+          return [
+            { sender: 'User', ts: '09:01 AM', bad: false, text: 'I have an urgent problem with my account, I cannot log in and I need to access my files immediately for a presentation.' },
+            { sender: 'Agent', ts: '09:02 AM', bad: false, text: "I understand this is urgent, " + userName + ". Let me see what's going on." },
+            { sender: 'Agent', ts: '09:03 AM', bad: true, text: "Okay, I see a server-side issue. The engineering team is on it. I'll get back to you soon with an update." },
+            { sender: 'User', ts: '09:04 AM', bad: false, text: "Soon? How long is 'soon'? I need a specific time, my presentation is in one hour." },
+          ];
+        },
+        correctRevision: "I see a server-side issue. The engineering team is actively working on a fix now. I will check with them and provide you with a specific time estimate within the next 5-10 minutes.",
+        distractorRevisions: ["The engineers are working on it and it will be fixed as soon as possible.", "I will let you know when I have an update.", "Please be patient, the issue will be resolved soon."],
+        correctInsight: "Vague time-related words like 'soon' can increase anxiety for users in urgent situations. Providing concrete next steps and a specific follow-up time is more effective.",
+        distractorInsights: ["The user is being unreasonable about their presentation.", "It's important to never promise a specific time to a customer.", "Technical jargon like 'server-side issue' helps build trust with the customer."],
+      },
+    ];
+
+    var active = CASE_DEFS[Math.floor(Math.random() * CASE_DEFS.length)];
+    var conversation = active.buildMessages();
+    var revisionOptions = shuffle([active.correctRevision].concat(active.distractorRevisions));
+    var insightOptions = shuffle([active.correctInsight].concat(active.distractorInsights));
+
+    var selectedRevision = '';
+    var selectedInsight = '';
+    var hasSubmitted = false;
+    var isSuccess = false;
+
+    function avStyle(isAgent, idx) {
+      var h = isAgent ? 210 + (idx % 3) * 25 : 35 + (idx % 4) * 28;
+      return 'background:linear-gradient(135deg,hsl(' + h + ',55%,42%),hsl(' + ((h + 50) % 360) + ',50%,36%))';
+    }
+
+    function initials(isAgent) {
+      if (isAgent) return (agentName.length >= 2 ? agentName.slice(0, 2) : agentName + '·').toUpperCase();
+      return (userName.length >= 2 ? userName.slice(0, 2) : userName + '·').toUpperCase();
+    }
+
+    function renderThread() {
+      var el = document.getElementById('thread');
+      el.innerHTML = '';
+      conversation.forEach(function (m, i) {
+        var row = document.createElement('div');
+        row.className = 'cc-row ' + (m.sender === 'User' ? 'user' : 'agent');
+        var av = document.createElement('div');
+        av.className = 'cc-av';
+        av.style.cssText = avStyle(m.sender === 'Agent', i);
+        av.textContent = initials(m.sender === 'Agent');
+        av.setAttribute('aria-hidden', 'true');
+        var wrap = document.createElement('div');
+        var bub = document.createElement('div');
+        bub.className = 'cc-bubble ' + (m.sender === 'Agent' ? 'agent' : 'user') + (m.bad ? ' bad' : '');
+        bub.textContent = m.text;
+        var ts = document.createElement('div');
+        ts.className = 'cc-ts';
+        ts.textContent = m.ts;
+        wrap.appendChild(bub);
+        wrap.appendChild(ts);
+        if (m.sender === 'Agent') {
+          row.appendChild(av);
+          row.appendChild(wrap);
+        } else {
+          row.appendChild(wrap);
+          row.appendChild(av);
+        }
+        el.appendChild(row);
+      });
+    }
+
+    function syncSel(fs) {
+      fs.querySelectorAll('.cc-opt input').forEach(function (inp) {
+        var lab = inp.closest('.cc-opt');
+        if (lab) lab.classList.toggle('is-sel', inp.checked);
+      });
+    }
+
+    function buildFieldset(fs, name, options, selectedVal, disabled, onChange) {
+      fs.innerHTML = '';
+      fs.disabled = !!disabled;
+      options.forEach(function (opt) {
+        var lab = document.createElement('label');
+        lab.className = 'cc-opt' + (selectedVal === opt ? ' is-sel' : '');
+        var inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.name = name;
+        inp.value = opt;
+        inp.checked = selectedVal === opt;
+        inp.disabled = !!disabled;
+        var sp = document.createElement('span');
+        sp.textContent = opt;
+        lab.appendChild(inp);
+        lab.appendChild(sp);
+        inp.addEventListener('change', function () {
+          if (disabled) return;
+          if (name === 'revision') selectedRevision = opt; else selectedInsight = opt;
+          syncSel(fs);
+          onChange();
+        });
+        fs.appendChild(lab);
+      });
+    }
+
+    function updateSubmitBtn() {
+      var btn = document.getElementById('btnSubmit');
+      if (!btn) return;
+      btn.disabled = !selectedRevision || !selectedInsight || hasSubmitted;
+    }
+
+    function renderAnalysisForm() {
+      document.getElementById('revLabel').textContent = "1. Rephrase " + agentName + "'s problematic reply for clarity:";
+      buildFieldset(document.getElementById('fsRev'), 'revision', revisionOptions, selectedRevision, hasSubmitted, updateSubmitBtn);
+      buildFieldset(document.getElementById('fsIns'), 'insight', insightOptions, selectedInsight, hasSubmitted, updateSubmitBtn);
+      var area = document.getElementById('submitArea');
+      area.innerHTML = '';
+      if (hasSubmitted) {
+        var done = document.createElement('div');
+        done.className = 'cc-done';
+        done.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Thank you. Your submission is recorded.</span>';
+        area.appendChild(done);
+      } else {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cc-submit';
+        btn.id = 'btnSubmit';
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.657a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 14.95a1 1 0 001.414 1.414l.707-.707a1 1 0 00-1.414-1.414l-.707.707zM3 10a1 1 0 011-1h1a1 1 0 110 2H4a1 1 0 01-1-1zM8 16a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zM1.929 7.071a1 1 0 011.414-1.414l.707.707a1 1 0 01-1.414 1.414l-.707-.707zM14.95 5.05a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707z" /></svg><span>Submit analysis</span>';
+        btn.disabled = true;
+        btn.onclick = function () {
+          if (!selectedRevision || !selectedInsight || hasSubmitted) return;
+          hasSubmitted = true;
+          if (selectedRevision === active.correctRevision && selectedInsight === active.correctInsight) {
+            isSuccess = true;
+            document.getElementById('winBar').classList.add('on');
+          }
+          renderAnalysisForm();
+        };
+        area.appendChild(btn);
+        updateSubmitBtn();
+      }
+    }
+
+    function goHome() {
+      document.getElementById('pageHome').hidden = false;
+      document.getElementById('pageReview').hidden = true;
+      document.getElementById('btnBack').hidden = true;
+    }
+
+    function goReview() {
+      document.getElementById('pageHome').hidden = true;
+      document.getElementById('pageReview').hidden = false;
+      document.getElementById('btnBack').hidden = false;
+      renderThread();
+      renderAnalysisForm();
+    }
+
+    document.getElementById('btnBrand').onclick = goHome;
+    document.getElementById('btnBack').onclick = goHome;
+    document.getElementById('btnStartHero').onclick = goReview;
+    document.getElementById('btnStartMid').onclick = goReview;
+  </script>
+</body>
+
+</html>
