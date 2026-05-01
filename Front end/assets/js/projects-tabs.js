@@ -12,6 +12,13 @@
     webgames: 'project-panel-webgames',
   };
 
+  function getAndroidSectionEl(hashWithoutHash) {
+    if (!hashWithoutHash) return null;
+    var el = document.getElementById(hashWithoutHash);
+    if (!el || !el.closest) return null;
+    return el.closest('#project-panel-android') ? el : null;
+  }
+
   function activate(slug, updateHash) {
     const panelId = slugToPanelId[slug];
     if (!panelId) return;
@@ -28,7 +35,7 @@
       panel.setAttribute('aria-hidden', on ? 'false' : 'true');
     });
 
-    if (slug === 'llm' || slug === 'webgames') {
+    if (slug === 'llm' || slug === 'webgames' || slug === 'android') {
       requestAnimationFrame(function () {
         window.dispatchEvent(new Event('resize'));
       });
@@ -43,6 +50,17 @@
   var hash = window.location.hash.slice(1);
   if (hash && slugToPanelId[hash]) {
     activate(hash, false);
+  } else if (hash) {
+    var androidTarget = getAndroidSectionEl(hash);
+    if (androidTarget) {
+      activate('android', false);
+      requestAnimationFrame(function () {
+        window.dispatchEvent(new Event('resize'));
+        androidTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    } else {
+      activate('llm', false);
+    }
   } else {
     activate('llm', false);
   }
@@ -57,6 +75,17 @@
     var h = window.location.hash.slice(1);
     if (h && slugToPanelId[h]) {
       activate(h, false);
+      return;
+    }
+    if (h) {
+      var el = getAndroidSectionEl(h);
+      if (el) {
+        activate('android', false);
+        requestAnimationFrame(function () {
+          window.dispatchEvent(new Event('resize'));
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
     }
   });
 })();

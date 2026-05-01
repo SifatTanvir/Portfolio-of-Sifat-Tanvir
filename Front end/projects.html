@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <script src="assets/js/theme-init.js"></script>
   <title>Projects | Sifat Tanvir</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
@@ -49,8 +50,12 @@
           <li><a href="research.html">Research</a></li>
           <li><a href="projects.html" class="active">Projects</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="hobbies.html">Hobbies</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" title="Dark mode">
+          <i class="bi bi-moon-stars-fill" aria-hidden="true"></i>
+        </button>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
@@ -149,13 +154,15 @@
             </div>
           </div>
           <div id="project-panel-android" class="project-panel" role="tabpanel" aria-labelledby="tab-android" aria-hidden="true">
-            <h3 class="project-panel-title">Falling Object Catcher</h3>
+            <div class="row project-android-layout gx-lg-4 gy-4 align-items-start">
+              <div class="col-lg-8 col-xl-9 project-android-layout__main order-1">
+            <h3 id="android-overview" class="project-panel-title">Falling Object Catcher</h3>
             <p class="mb-3">Arcade-style Android game: catch good items, avoid bad ones, with a starfield backdrop and touch-and-drag controls — built with Jetpack Compose and Material 3.</p>
             <p class="mb-3">
               <a class="btn btn-primary" href="assets/projects/android/falling-object-catcher.apk" download="falling-object-catcher.apk"><i class="bi bi-download me-1" aria-hidden="true"></i>Download APK</a>
             </p>
 
-            <h4 class="project-llm-subheading"><span aria-hidden="true">🛠️</span> Tech stack</h4>
+            <h4 id="android-tech-stack" class="project-llm-subheading"><span aria-hidden="true">🛠️</span> Tech stack</h4>
             <ul class="mb-3">
               <li><strong>Kotlin</strong> — primary language</li>
               <li><strong>Jetpack Compose</strong> — modern declarative UI toolkit</li>
@@ -164,7 +171,7 @@
               <li><strong>Coroutines &amp; Flow</strong> — asynchronous game loop</li>
             </ul>
 
-            <h4 class="project-llm-subheading"><span aria-hidden="true">📱</span> Features</h4>
+            <h4 id="android-features" class="project-llm-subheading"><span aria-hidden="true">📱</span> Features</h4>
             <ul class="mb-3">
               <li>Smooth 60 FPS gameplay</li>
               <li>Touch and drag controls</li>
@@ -174,7 +181,7 @@
               <li>Game over screen with restart option</li>
             </ul>
 
-            <h4 class="project-llm-subheading"><span aria-hidden="true">📋</span> Requirements</h4>
+            <h4 id="android-requirements" class="project-llm-subheading"><span aria-hidden="true">📋</span> Requirements</h4>
             <ul class="mb-3">
               <li>Android Studio Arctic Fox (2020.3.1) or newer</li>
               <li>Kotlin 1.9.20</li>
@@ -183,7 +190,7 @@
             </ul>
 
             <div class="project-android-doc">
-            <h4 class="project-llm-subheading"><span aria-hidden="true">📖</span> Game rules</h4>
+            <h4 id="android-game-rules" class="project-llm-subheading"><span aria-hidden="true">📖</span> Game rules</h4>
             <div class="project-llm-prose">
               <p><strong>Core loop.</strong> Objects fall; the basket moves horizontally. A catch registers when an object is horizontally over the basket and vertically in the catch band (about 82–95% of screen height).</p>
               <p>Your score counts good catches (cash 💵 is scored like any other good item, not as a separate “dollar” tally).</p>
@@ -280,7 +287,7 @@
               <li><strong>Time Attack:</strong> 120&nbsp;s timer (time at zero ends the run). You have a very large life count, but each bad catch still reduces lives in the background, so it is effectively a cushion, not invincibility. Spawns speed up as time runs out. Same object mix as Classic and Mystery (not the Color Match or Survival tables).</li>
             </ul>
 
-            <h4 class="project-llm-subheading"><span aria-hidden="true">🎮</span> Game modes</h4>
+            <h4 id="android-game-modes" class="project-llm-subheading"><span aria-hidden="true">🎮</span> Game modes</h4>
             <div class="table-responsive mb-3">
               <table class="table table-sm table-bordered align-middle">
                 <thead><tr><th scope="col">Mode</th><th scope="col">Emoji</th><th scope="col">Summary</th></tr></thead>
@@ -294,7 +301,7 @@
               </table>
             </div>
 
-            <h4 class="project-llm-subheading"><span aria-hidden="true">🎨</span> Customization (hub &amp; shop)</h4>
+            <h4 id="android-customization" class="project-llm-subheading"><span aria-hidden="true">🎨</span> Customization (hub &amp; shop)</h4>
             <p class="mb-2">Hub sections: <strong>CUSTOMIZATION</strong> 🎨, <strong>BASKET SKINS</strong> 🧺, <strong>THEMES</strong> 🌈, and <strong>MUSIC</strong> 🎵. Earn gemstones simply playing the game and unlock customizations for free!</p>
 
             <h5 class="fs-6 fw-bold mt-3 mb-2">Basket skins</h5>
@@ -411,41 +418,63 @@
             </div>
             </div>
 
-            <h4 class="project-llm-subheading">Screenshots</h4>
-            <div class="project-deck-wrap mb-3">
-              <div class="swiper init-swiper project-android-swiper">
-                <script type="application/json" class="swiper-config">
-                  {
-                    "loop": true,
-                    "speed": 500,
-                    "slidesPerView": 1,
-                    "spaceBetween": 16,
-                    "observer": true,
-                    "observeParents": true,
-                    "pagination": { "el": ".android-swiper-pagination", "clickable": true },
-                    "navigation": { "nextEl": ".android-swiper-button-next", "prevEl": ".android-swiper-button-prev" }
-                  }
-                </script>
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050712.png" class="project-deck-img" alt="Falling Object Catcher — main view" loading="lazy"></div>
-                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050847.png" class="project-deck-img" alt="Falling Object Catcher — gameplay" loading="lazy"></div>
-                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050900.png" class="project-deck-img" alt="Falling Object Catcher — in game" loading="lazy"></div>
-                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050911.png" class="project-deck-img" alt="Falling Object Catcher — action" loading="lazy"></div>
-                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050921.png" class="project-deck-img" alt="Falling Object Catcher — session" loading="lazy"></div>
-                  <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_051057.png" class="project-deck-img" alt="Falling Object Catcher — game over" loading="lazy"></div>
+            <div id="android-media" class="row g-4 align-items-stretch project-android-media-row">
+              <div class="col-12 col-lg-6 d-flex flex-column">
+                <h4 class="project-llm-subheading">Screenshots</h4>
+                <div class="project-deck-wrap flex-grow-1">
+                  <div class="swiper init-swiper project-android-swiper">
+                    <script type="application/json" class="swiper-config">
+                      {
+                        "loop": true,
+                        "speed": 500,
+                        "slidesPerView": 1,
+                        "spaceBetween": 16,
+                        "observer": true,
+                        "observeParents": true,
+                        "pagination": { "el": ".android-swiper-pagination", "clickable": true },
+                        "navigation": { "nextEl": ".android-swiper-button-next", "prevEl": ".android-swiper-button-prev" }
+                      }
+                    </script>
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050712.png" class="project-deck-img" alt="Falling Object Catcher — main view" loading="lazy"></div>
+                      <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050847.png" class="project-deck-img" alt="Falling Object Catcher — gameplay" loading="lazy"></div>
+                      <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050900.png" class="project-deck-img" alt="Falling Object Catcher — in game" loading="lazy"></div>
+                      <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050911.png" class="project-deck-img" alt="Falling Object Catcher — action" loading="lazy"></div>
+                      <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_050921.png" class="project-deck-img" alt="Falling Object Catcher — session" loading="lazy"></div>
+                      <div class="swiper-slide"><img src="assets/projects/android/Screenshot_20260501_051057.png" class="project-deck-img" alt="Falling Object Catcher — game over" loading="lazy"></div>
+                    </div>
+                    <div class="swiper-pagination android-swiper-pagination"></div>
+                    <div class="swiper-button-prev android-swiper-button-prev"></div>
+                    <div class="swiper-button-next android-swiper-button-next"></div>
+                  </div>
                 </div>
-                <div class="swiper-pagination android-swiper-pagination"></div>
-                <div class="swiper-button-prev android-swiper-button-prev"></div>
-                <div class="swiper-button-next android-swiper-button-next"></div>
+              </div>
+              <div class="col-12 col-lg-6 d-flex flex-column">
+                <h4 class="project-llm-subheading">Gameplay Footage</h4>
+                <div class="project-android-video flex-grow-1">
+                  <video class="w-100 rounded border" controls preload="metadata" playsinline poster="assets/projects/android/Screenshot_20260501_050712.png">
+                    <source src="assets/projects/android/Screen_recording_20260501_050948.webm" type="video/webm">
+                    Your browser does not support embedded video; download the WebM from the project assets folder.
+                  </video>
+                </div>
               </div>
             </div>
-
-            <h4 class="project-llm-subheading">Gameplay Footage</h4>
-           <div class="project-android-video">
-              <video class="w-100 rounded border" controls preload="metadata" playsinline poster="assets/projects/android/Screenshot_20260501_050712.png">
-                <source src="assets/projects/android/Screen_recording_20260501_050948.webm" type="video/webm">
-                Your browser does not support embedded video; download the WebM from the project assets folder.
-              </video>
+              </div>
+              <aside class="col-lg-4 col-xl-3 project-android-layout__aside order-2" aria-label="Falling Object Catcher page contents">
+                <nav class="project-android-toc" aria-labelledby="android-toc-heading">
+                  <h2 id="android-toc-heading" class="project-android-toc__title">Contents</h2>
+                  <ul class="project-android-toc__list list-unstyled mb-0" role="list">
+                    <li><a class="project-android-toc__link" href="#android-overview">Overview</a></li>
+                    <li><a class="project-android-toc__link" href="#android-tech-stack">Tech stack</a></li>
+                    <li><a class="project-android-toc__link" href="#android-features">Features</a></li>
+                    <li><a class="project-android-toc__link" href="#android-requirements">Requirements</a></li>
+                    <li><a class="project-android-toc__link" href="#android-game-rules">Game rules</a></li>
+                    <li><a class="project-android-toc__link" href="#android-game-modes">Game modes</a></li>
+                    <li><a class="project-android-toc__link" href="#android-customization">Customization</a></li>
+                    <li><a class="project-android-toc__link" href="#android-media">Screenshots &amp; gameplay</a></li>
+                  </ul>
+                </nav>
+              </aside>
             </div>
           </div>
           <div id="project-panel-webgames" class="project-panel" role="tabpanel" aria-labelledby="tab-webgames" aria-hidden="true">

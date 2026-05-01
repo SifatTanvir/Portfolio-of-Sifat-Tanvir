@@ -95,6 +95,33 @@
   window.addEventListener('load', aosInit);
 
   /**
+   * Skills progress bar fill: red (0%) → yellow (50%) → deep green (100%)
+   */
+  function skillBarFillForPercent(p) {
+    var pct = Math.max(0, Math.min(100, Number(p) || 0));
+    var h;
+    var s;
+    var l;
+    if (pct <= 50) {
+      var t = pct / 50;
+      h = 0 + 52 * t;
+      s = 86 + 9 * t;
+      l = 43 + 5 * t;
+    } else {
+      var t2 = (pct - 50) / 50;
+      h = 52 + 93 * t2;
+      s = 95 - 23 * t2;
+      l = 48 - 15 * t2;
+    }
+    return "hsl(" + h + ", " + s + "%, " + l + "%)";
+  }
+
+  document.querySelectorAll(".skills-animation .progress-bar").forEach(function (el) {
+    var v = parseInt(el.getAttribute("aria-valuenow"), 10);
+    el.style.backgroundColor = skillBarFillForPercent(v);
+  });
+
+  /**
    * Animate the skills items on reveal
    */
   let skillsAnimation = document.querySelectorAll('.skills-animation');
@@ -174,5 +201,181 @@
     });
 
   });
+
+  /**
+   * Dark / light theme toggle
+   */
+  const THEME_STORAGE_KEY = "portfolio-theme";
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch (e) {}
+    syncThemeToggleButton();
+  }
+
+  function syncThemeToggleButton() {
+    const btn = document.getElementById("theme-toggle");
+    if (!btn) return;
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    btn.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    btn.setAttribute("title", isDark ? "Light mode" : "Dark mode");
+    const icon = btn.querySelector("i");
+    if (icon) {
+      icon.className = isDark ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
+    }
+  }
+
+  const themeToggle = document.getElementById("theme-toggle");
+  if (themeToggle) {
+    themeToggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      applyTheme(isDark ? "light" : "dark");
+    });
+    syncThemeToggleButton();
+  }
+
+  /**
+   * Footer running animal + picker (persists in localStorage)
+   */
+  function initFooterMascot() {
+    const footer = document.getElementById("footer");
+    if (!footer || footer.querySelector(".footer-mascot")) return;
+    const container = footer.querySelector(".container");
+    if (!container) return;
+
+    const STORAGE_KEY = "footer-mascot-animal";
+    const animals = [
+      { id: "dog", label: "Dog", char: "🐕" },
+      { id: "cat", label: "Cat", char: "🐈" },
+      { id: "rabbit", label: "Rabbit", char: "🐇" },
+      { id: "horse", label: "Horse", char: "🐎" },
+      { id: "turtle", label: "Turtle", char: "🐢" },
+      { id: "penguin", label: "Penguin", char: "🐧" },
+      { id: "dino", label: "Dinosaur", char: "🦖" }
+    ];
+
+    const TRACK_MODE_CLASSES = [
+      "footer-mascot-track--cat",
+      "footer-mascot-track--dog",
+      "footer-mascot-track--horse",
+      "footer-mascot-track--rabbit",
+      "footer-mascot-track--turtle",
+      "footer-mascot-track--penguin",
+      "footer-mascot-track--dino"
+    ];
+
+    function syncTrackMode(id) {
+      TRACK_MODE_CLASSES.forEach(function (cls) {
+        track.classList.remove(cls);
+      });
+      track.classList.add("footer-mascot-track--" + id);
+    }
+
+    const catSilhouetteHtml =
+      '<span class="fmc" aria-hidden="true">' +
+      '<span class="fmc-tail"></span>' +
+      '<span class="fmc-torso"></span>' +
+      '<span class="fmc-head"></span>' +
+      '<span class="fmc-ear fmc-ear--l"></span>' +
+      '<span class="fmc-ear fmc-ear--r"></span>' +
+      '<span class="fmc-leg fmc-leg--1"></span>' +
+      '<span class="fmc-leg fmc-leg--2"></span>' +
+      '<span class="fmc-leg fmc-leg--3"></span>' +
+      '<span class="fmc-leg fmc-leg--4"></span>' +
+      "</span>";
+
+    const optionsHtml = animals
+      .map(function (a) {
+        return '<option value="' + a.id + '">' + a.label + "</option>";
+      })
+      .join("");
+
+    const wrap = document.createElement("div");
+    wrap.className = "footer-mascot";
+    wrap.innerHTML =
+      '<div class="footer-mascot-controls">' +
+      '<label class="footer-mascot-label" for="footer-mascot-select">Runner</label>' +
+      '<select id="footer-mascot-select" class="form-select form-select-sm footer-mascot-select" aria-label="Choose footer animal">' +
+      optionsHtml +
+      "</select></div>" +
+      '<div class="footer-mascot-track" tabindex="0" role="img" aria-label="Animated runner. Click or press Enter for a hop." title="Click for a hop">' +
+      '<div class="footer-mascot-lane">' +
+      '<span class="footer-mascot-runner">' +
+      '<span class="footer-mascot-bounce">' +
+      '<span class="footer-mascot-char" id="footer-mascot-char"></span>' +
+      "</span></span></div></div>";
+
+    container.appendChild(wrap);
+
+    const select = document.getElementById("footer-mascot-select");
+    const charEl = document.getElementById("footer-mascot-char");
+    const track = wrap.querySelector(".footer-mascot-track");
+    const bounceEl = wrap.querySelector(".footer-mascot-bounce");
+    const byId = {};
+    animals.forEach(function (a) {
+      byId[a.id] = a.char;
+    });
+
+    function setAnimal(id) {
+      var mode = byId[id] ? id : "dog";
+      charEl.className = "footer-mascot-char" + (mode === "cat" ? " footer-mascot-char--css-cat" : "");
+      if (mode === "cat") {
+        charEl.innerHTML = catSilhouetteHtml;
+      } else {
+        charEl.innerHTML = "";
+        charEl.textContent = byId[mode];
+      }
+      syncTrackMode(mode);
+      if (select.value !== mode) {
+        select.value = mode;
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, mode);
+      } catch (e) {}
+    }
+
+    function triggerHop() {
+      if (!bounceEl || bounceEl.classList.contains("footer-mascot-bounce--jump")) return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      bounceEl.classList.add("footer-mascot-bounce--jump");
+      window.setTimeout(function () {
+        bounceEl.classList.remove("footer-mascot-bounce--jump");
+      }, 560);
+    }
+
+    if (track) {
+      track.addEventListener("click", function (e) {
+        if (e.target.closest(".footer-mascot-select")) return;
+        triggerHop();
+      });
+      track.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          triggerHop();
+        }
+      });
+    }
+
+    var stored = "dog";
+    try {
+      stored = localStorage.getItem(STORAGE_KEY) || "dog";
+    } catch (e) {}
+    if (!byId[stored]) stored = "dog";
+    select.value = stored;
+    setAnimal(stored);
+
+    select.addEventListener("change", function () {
+      setAnimal(select.value);
+    });
+  }
+
+  initFooterMascot();
 
 })();

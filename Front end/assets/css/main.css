@@ -226,6 +226,9 @@ h6 {
 @media (min-width: 1200px) {
   .navmenu {
     padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
   .navmenu ul {
@@ -368,6 +371,10 @@ h6 {
   .navmenu {
     padding: 0;
     z-index: 9997;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
   }
 
   .navmenu ul {
@@ -491,12 +498,32 @@ h6 {
   position: relative;
 }
 
-.footer .copyright p {
-  margin-bottom: 0;
+.footer .container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: clamp(0.5rem, 2vw, 1rem);
+  row-gap: 1rem;
+}
+
+.footer .copyright {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  text-align: center;
+  max-width: 100%;
 }
 
 .footer .social-links {
-  margin-top: 20px;
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0;
+  justify-self: center;
+}
+
+.footer .copyright p {
+  margin-bottom: 0;
 }
 
 .footer .social-links a {
@@ -532,6 +559,667 @@ h6 {
   font-weight: 800;
   letter-spacing: 0;
   line-height: 1;
+}
+
+/*--------------------------------------------------------------
+# Footer mascot (running animal)
+--------------------------------------------------------------*/
+.footer-mascot {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  min-width: 0;
+}
+
+.footer-mascot-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem 0.5rem;
+  margin: 0;
+  background: transparent;
+}
+
+.footer-mascot-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--heading-color);
+}
+
+.footer-mascot-select {
+  width: auto;
+  min-width: 9rem;
+  max-width: min(14rem, 42vw);
+  font-size: 0.8125rem;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  background-color: transparent;
+  border-color: color-mix(in srgb, var(--default-color), transparent 65%);
+  color: var(--default-color);
+}
+
+.footer-mascot-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color), transparent 80%);
+}
+
+.footer-mascot-track {
+  position: relative;
+  width: min(12.5rem, 38vw);
+  height: 3.25rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+}
+
+.footer-mascot-track:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+.footer-mascot-lane {
+  position: absolute;
+  inset: 0;
+}
+
+@media (max-width: 767px) {
+  .footer .container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .footer .copyright,
+  .footer .social-links {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: center;
+  }
+
+  .footer-mascot {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: center;
+    align-items: center;
+    width: 100%;
+    max-width: 20rem;
+    margin-top: 0.5rem;
+  }
+
+  .footer-mascot-controls {
+    justify-content: center;
+  }
+
+  .footer-mascot-track {
+    width: min(14rem, 85vw);
+  }
+}
+
+.footer-mascot-runner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0.35rem;
+  display: flex;
+  align-items: center;
+  width: 2.75rem;
+  pointer-events: none;
+  animation: footer-mascot-dash 4.2s cubic-bezier(0.42, 0.01, 0.58, 1) infinite alternate;
+}
+
+/* Horizontal path: each species uses different speed + easing */
+.footer-mascot-track--dog .footer-mascot-runner {
+  animation-duration: 3s;
+  animation-timing-function: cubic-bezier(0.33, 0.02, 0.25, 1);
+}
+
+.footer-mascot-track--horse .footer-mascot-runner {
+  animation-duration: 4.1s;
+  animation-timing-function: cubic-bezier(0.52, 0.02, 0.48, 0.98);
+}
+
+.footer-mascot-track--rabbit .footer-mascot-runner {
+  animation-duration: 2.45s;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.45, 1);
+}
+
+.footer-mascot-track--turtle .footer-mascot-runner {
+  animation-duration: 18s;
+  animation-timing-function: linear;
+}
+
+/* Penguin: short sliding strides (slightly sticky easing) */
+.footer-mascot-track--penguin .footer-mascot-runner {
+  animation-duration: 4.65s;
+  animation-timing-function: cubic-bezier(0.28, 0.55, 0.32, 0.94);
+}
+
+/* Dino: heavy, deliberate pacing */
+.footer-mascot-track--dino .footer-mascot-runner {
+  animation-duration: 5.35s;
+  animation-timing-function: cubic-bezier(0.62, 0.02, 0.38, 0.98);
+}
+
+.footer-mascot-track--cat .footer-mascot-runner {
+  animation-duration: 4.2s;
+  animation-timing-function: cubic-bezier(0.42, 0.01, 0.58, 1);
+}
+
+.footer-mascot-bounce {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+}
+
+.footer-mascot-track--cat .footer-mascot-bounce {
+  animation: none;
+}
+
+/* Penguin: side-to-side waddle + small hop (ice-walk) */
+.footer-mascot-track--penguin .footer-mascot-bounce {
+  animation: footer-mascot-bob-penguin 0.44s ease-in-out infinite;
+}
+
+/* Dino: stomp–lift–settle (weight on the ground) */
+.footer-mascot-track--dino .footer-mascot-bounce {
+  animation: footer-mascot-bob-dino 0.52s cubic-bezier(0.55, 0.05, 0.25, 0.95) infinite;
+}
+
+/* Dog: fast “paw drum” vertical + squash — different from cat silhouette */
+.footer-mascot-track--dog .footer-mascot-bounce {
+  animation: footer-mascot-bob-dog 0.19s ease-in-out infinite;
+}
+
+/* Horse: long-stride gallop — horizontal stretch pulse, slower vertical */
+.footer-mascot-track--horse .footer-mascot-bounce {
+  animation: footer-mascot-bob-horse 0.55s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Rabbit: double-hop cadence — sharp hops, not a smooth jog */
+.footer-mascot-track--rabbit .footer-mascot-bounce {
+  animation: footer-mascot-bob-rabbit 0.42s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+}
+
+/* Turtle: barely lifts — long period micro shuffle */
+.footer-mascot-track--turtle .footer-mascot-bounce {
+  animation: footer-mascot-bob-turtle 2.4s ease-in-out infinite;
+}
+
+.footer-mascot-bounce.footer-mascot-bounce--jump {
+  animation: footer-mascot-jump 0.56s cubic-bezier(0.33, 1.18, 0.52, 1) !important;
+}
+
+.footer-mascot-track--turtle .footer-mascot-bounce.footer-mascot-bounce--jump {
+  animation: footer-mascot-jump-turtle 0.48s ease-out !important;
+}
+
+.footer-mascot-char {
+  display: inline-block;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+/* Penguin: gentle pendulum lean (does not mirror the waddle transform) */
+.footer-mascot-track--penguin .footer-mascot-char:not(.footer-mascot-char--css-cat) {
+  animation: footer-mascot-tilt-penguin 0.52s ease-in-out infinite;
+}
+
+/* Dino: slower head–tail sway with micro “roar” pulse */
+.footer-mascot-track--dino .footer-mascot-char:not(.footer-mascot-char--css-cat) {
+  animation: footer-mascot-tilt-dino 1.05s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.footer-mascot-track--dog .footer-mascot-char:not(.footer-mascot-char--css-cat) {
+  animation: footer-mascot-tilt-dog 0.21s ease-in-out infinite;
+}
+
+.footer-mascot-track--horse .footer-mascot-char:not(.footer-mascot-char--css-cat) {
+  animation: footer-mascot-tilt-horse 0.58s ease-in-out infinite;
+}
+
+.footer-mascot-track--rabbit .footer-mascot-char:not(.footer-mascot-char--css-cat) {
+  animation: footer-mascot-tilt-rabbit 0.38s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+.footer-mascot-track--turtle .footer-mascot-char:not(.footer-mascot-char--css-cat) {
+  animation: footer-mascot-tilt-turtle 3.2s ease-in-out infinite;
+}
+
+@keyframes footer-mascot-dash {
+  from {
+    left: 0.35rem;
+  }
+
+  to {
+    left: calc(100% - 2.75rem - 0.35rem);
+  }
+}
+
+@keyframes footer-mascot-bob-penguin {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(-5px, -3px) rotate(-5deg);
+  }
+
+  50% {
+    transform: translate(0, -6px) rotate(0deg);
+  }
+
+  75% {
+    transform: translate(5px, -3px) rotate(5deg);
+  }
+}
+
+@keyframes footer-mascot-bob-dino {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+
+  18% {
+    transform: translateY(3px) scaleY(0.78) scaleX(1.18);
+  }
+
+  38% {
+    transform: translateY(-9px) scaleY(1.14) scaleX(0.88);
+  }
+
+  58% {
+    transform: translateY(1px) scaleY(0.92) scaleX(1.06);
+  }
+
+  78% {
+    transform: translateY(-4px) scaleY(1.06) scaleX(0.94);
+  }
+}
+
+@keyframes footer-mascot-bob-dog {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+
+  35% {
+    transform: translateY(-4px) scaleY(1.08) scaleX(0.96);
+  }
+
+  50% {
+    transform: translateY(-6px) scaleY(0.9) scaleX(1.04);
+  }
+
+  70% {
+    transform: translateY(-2px) scaleY(1.05) scaleX(0.98);
+  }
+}
+
+@keyframes footer-mascot-bob-horse {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+  }
+
+  20% {
+    transform: translateY(-2px) scaleX(1.14) scaleY(0.91);
+  }
+
+  45% {
+    transform: translateY(-7px) scaleX(0.92) scaleY(1.1);
+  }
+
+  70% {
+    transform: translateY(-3px) scaleX(1.08) scaleY(0.94);
+  }
+}
+
+@keyframes footer-mascot-bob-rabbit {
+
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1) scaleX(1);
+  }
+
+  12% {
+    transform: translateY(-11px) scaleY(1.18) scaleX(0.82);
+  }
+
+  28% {
+    transform: translateY(0) scaleY(0.88) scaleX(1.08);
+  }
+
+  50% {
+    transform: translateY(-4px) scaleY(1.06) scaleX(0.95);
+  }
+
+  62% {
+    transform: translateY(-13px) scaleY(1.15) scaleX(0.85);
+  }
+
+  80% {
+    transform: translateY(0) scaleY(0.92) scaleX(1.04);
+  }
+}
+
+@keyframes footer-mascot-bob-turtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-1px);
+  }
+
+  60% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@keyframes footer-mascot-tilt-penguin {
+
+  0%,
+  100% {
+    transform: rotate(-10deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(10deg) translateY(-1px);
+  }
+}
+
+@keyframes footer-mascot-tilt-dino {
+
+  0%,
+  100% {
+    transform: rotate(-16deg) scale(1);
+  }
+
+  35% {
+    transform: rotate(10deg) scale(1.08);
+  }
+
+  70% {
+    transform: rotate(-6deg) scale(0.94);
+  }
+}
+
+@keyframes footer-mascot-tilt-dog {
+
+  0%,
+  100% {
+    transform: rotate(-11deg) scaleX(1);
+  }
+
+  50% {
+    transform: rotate(11deg) scaleX(1.06);
+  }
+}
+
+@keyframes footer-mascot-tilt-horse {
+
+  0%,
+  100% {
+    transform: rotate(-15deg) skewX(-5deg);
+  }
+
+  50% {
+    transform: rotate(15deg) skewX(5deg);
+  }
+}
+
+@keyframes footer-mascot-tilt-rabbit {
+
+  0% {
+    transform: rotate(-20deg) scale(1);
+  }
+
+  25% {
+    transform: rotate(14deg) scale(1.1);
+  }
+
+  50% {
+    transform: rotate(-10deg) scale(0.92);
+  }
+
+  75% {
+    transform: rotate(18deg) scale(1.08);
+  }
+
+  100% {
+    transform: rotate(-20deg) scale(1);
+  }
+}
+
+@keyframes footer-mascot-tilt-turtle {
+
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+@keyframes footer-mascot-jump {
+  0% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  18% {
+    transform: translateY(-10px) scaleY(1.12) scaleX(0.92);
+  }
+
+  38% {
+    transform: translateY(-18px) scaleY(0.9) scaleX(1.06);
+  }
+
+  62% {
+    transform: translateY(-6px) scaleY(1.05) scaleX(0.98);
+  }
+
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@keyframes footer-mascot-jump-turtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-5px);
+  }
+
+  55% {
+    transform: translateY(-7px);
+  }
+}
+
+/*--------------------------------------------------------------
+# Footer mascot — CSS silhouette cat (cartoon run cycle)
+--------------------------------------------------------------*/
+.footer-mascot-char--css-cat {
+  width: 2.6rem;
+  height: 1.85rem;
+  font-size: 0;
+  position: relative;
+}
+
+.footer-mascot-char--css-cat .fmc {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: var(--heading-color);
+}
+
+.footer-mascot-char--css-cat .fmc-tail {
+  position: absolute;
+  right: -1px;
+  top: 0.15rem;
+  width: 0.65rem;
+  height: 1.1rem;
+  border: solid 0.2rem transparent;
+  border-right-color: currentColor;
+  border-radius: 0 90% 35% 0;
+  transform-origin: 100% 85%;
+  animation: fmc-tail-wag 0.42s ease-in-out infinite;
+}
+
+.footer-mascot-char--css-cat .fmc-torso {
+  position: absolute;
+  left: 0.55rem;
+  bottom: 0.38rem;
+  width: 1.35rem;
+  height: 0.72rem;
+  background: currentColor;
+  border-radius: 45% 50% 48% 42% / 58% 58% 42% 42%;
+  transform-origin: 50% 80%;
+  animation: fmc-torso-squash 0.3s ease-in-out infinite;
+}
+
+.footer-mascot-char--css-cat .fmc-head {
+  position: absolute;
+  left: 1.38rem;
+  bottom: 0.62rem;
+  width: 0.78rem;
+  height: 0.68rem;
+  background: currentColor;
+  border-radius: 48% 52% 42% 40%;
+}
+
+.footer-mascot-char--css-cat .fmc-ear {
+  position: absolute;
+  bottom: 1.18rem;
+  width: 0;
+  height: 0;
+  border-left: 0.14rem solid transparent;
+  border-right: 0.14rem solid transparent;
+  border-bottom: 0.32rem solid currentColor;
+}
+
+.footer-mascot-char--css-cat .fmc-ear--l {
+  left: 1.42rem;
+  transform: rotate(-18deg);
+}
+
+.footer-mascot-char--css-cat .fmc-ear--r {
+  left: 1.78rem;
+  transform: rotate(12deg);
+}
+
+.footer-mascot-char--css-cat .fmc-leg {
+  position: absolute;
+  bottom: 0;
+  width: 0.18rem;
+  height: 0.55rem;
+  background: currentColor;
+  border-radius: 0.1rem;
+  transform-origin: 50% 0;
+  animation: fmc-leg-swing 0.3s ease-in-out infinite;
+}
+
+.footer-mascot-char--css-cat .fmc-leg--1 {
+  left: 0.62rem;
+  animation-delay: 0s;
+}
+
+.footer-mascot-char--css-cat .fmc-leg--2 {
+  left: 0.92rem;
+  animation-delay: 0.15s;
+}
+
+.footer-mascot-char--css-cat .fmc-leg--3 {
+  left: 1.18rem;
+  animation-delay: 0.075s;
+}
+
+.footer-mascot-char--css-cat .fmc-leg--4 {
+  left: 1.48rem;
+  animation-delay: 0.225s;
+}
+
+@keyframes fmc-tail-wag {
+
+  0%,
+  100% {
+    transform: rotate(12deg);
+  }
+
+  50% {
+    transform: rotate(-18deg);
+  }
+}
+
+@keyframes fmc-torso-squash {
+
+  0%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+
+  50% {
+    transform: scaleY(0.88) scaleX(1.06) translateY(1px);
+  }
+}
+
+@keyframes fmc-leg-swing {
+
+  0%,
+  100% {
+    transform: rotate(28deg);
+  }
+
+  50% {
+    transform: rotate(-38deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .footer-mascot-runner,
+  .footer-mascot-bounce,
+  .footer-mascot-char {
+    animation: none !important;
+  }
+
+  .footer-mascot-char--css-cat .fmc-tail,
+  .footer-mascot-char--css-cat .fmc-torso,
+  .footer-mascot-char--css-cat .fmc-leg {
+    animation: none !important;
+  }
+
+  .footer-mascot-runner {
+    left: 50% !important;
+    margin-left: -1.375rem;
+  }
 }
 
 /*--------------------------------------------------------------
@@ -915,6 +1603,16 @@ section,
   line-height: 0;
 }
 
+.about .about-profile-img {
+  display: block;
+  width: min(100%, 480px);
+  max-width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-inline: auto;
+}
+
 /*--------------------------------------------------------------
 # Gallery page
 --------------------------------------------------------------*/
@@ -985,6 +1683,7 @@ section,
   width: 1px;
   height: 10px;
   transition: 0.9s;
+  /* Fill hue set per bar from aria-valuenow in main.js (red → yellow → green) */
   background-color: var(--accent-color);
 }
 
@@ -1418,7 +2117,7 @@ section,
 }
 
 /* Android tab: extra air between major sections */
-.projects #project-panel-android > h4.project-llm-subheading ~ h4.project-llm-subheading {
+.projects #project-panel-android .project-android-layout__main > h4.project-llm-subheading ~ h4.project-llm-subheading {
   margin-top: 2.5rem;
 }
 
@@ -1434,9 +2133,155 @@ section,
   margin-top: 2rem;
 }
 
-.projects #project-panel-android > .project-android-doc + h4.project-llm-subheading,
-.projects #project-panel-android > .project-deck-wrap + h4.project-llm-subheading {
+.projects #project-panel-android .project-android-layout__main > .project-android-doc + h4.project-llm-subheading,
+.projects #project-panel-android .project-android-media-row .project-deck-wrap + h4.project-llm-subheading {
   margin-top: 2.5rem;
+}
+
+.projects .project-android-layout__aside {
+  align-self: flex-start;
+}
+
+.projects .project-android-toc {
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  border-radius: 8px;
+  background: var(--surface-color);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width: 992px) {
+  .projects .project-android-toc {
+    position: sticky;
+    top: 5.75rem;
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+  }
+}
+
+.projects .project-android-toc__title {
+  font-family: var(--heading-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--default-color), transparent 35%);
+  margin: 0 0 0.85rem;
+}
+
+.projects .project-android-toc__list li {
+  margin-bottom: 0.35rem;
+}
+
+.projects .project-android-toc__list li:last-child {
+  margin-bottom: 0;
+}
+
+.projects .project-android-toc__link {
+  display: block;
+  padding: 0.35rem 0.5rem;
+  margin-left: -0.5rem;
+  border-radius: 4px;
+  color: var(--default-color);
+  text-decoration: none;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.projects .project-android-toc__link:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: var(--heading-color);
+}
+
+.projects #project-panel-android [id^="android-"]:not(#android-toc-heading) {
+  scroll-margin-top: 5.75rem;
+}
+
+.hobbies-page #hobbies .hobby-logo-card {
+  display: block;
+  text-decoration: none;
+}
+
+.hobbies-page #hobbies .hobby-logo-img {
+  background: color-mix(in srgb, var(--default-color), transparent 94%);
+  object-fit: contain;
+}
+
+.hobbies-page #hobbies .hobby-video-frame {
+  background: color-mix(in srgb, var(--default-color), transparent 94%);
+  border-radius: 8px;
+  padding: 0.35rem;
+}
+
+.hobbies-page #hobbies .hobby-video-frame video {
+  display: block;
+  max-height: min(58vh, 480px);
+  width: 100%;
+  object-fit: contain;
+  background: #111;
+}
+
+.hobbies-page #hobbies .hobby-show-category {
+  margin-top: 0.85rem;
+}
+
+.hobbies-page #hobbies .hobby-show-category:first-of-type {
+  margin-top: 0.25rem;
+}
+
+.hobbies-page #hobbies .hobby-show-category-title {
+  font-family: var(--heading-font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+}
+
+.hobbies-page #hobbies .hobby-show-list {
+  margin-bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem 0.75rem;
+  align-items: start;
+}
+
+@media (max-width: 575.98px) {
+  .hobbies-page #hobbies .hobby-show-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hobbies-page #hobbies .hobby-show-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0;
+  line-height: 1.35;
+  min-width: 0;
+}
+
+.hobbies-page #hobbies .hobby-show-thumb {
+  width: 92px;
+  height: 138px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.14);
+  background: color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.hobbies-page #hobbies .hobby-show-tmdb {
+  font-size: 0.72rem;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+.hobbies-page #hobbies .hobby-show-tmdb a {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .projects .project-llm-prose p {
@@ -1616,6 +2461,38 @@ section,
   max-width: min(100%, 380px);
   margin-left: auto;
   margin-right: auto;
+}
+
+.projects .project-android-media-row {
+  --android-media-box: min(54vh, 450px);
+}
+
+.projects .project-android-media-row .project-android-swiper .swiper-slide {
+  min-height: var(--android-media-box);
+}
+
+.projects .project-android-media-row .project-android-swiper .project-deck-img {
+  max-height: var(--android-media-box);
+}
+
+.projects .project-android-media-row .project-android-video {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--default-color), transparent 94%);
+  border-radius: 4px;
+}
+
+.projects .project-android-media-row .project-android-video video {
+  width: auto;
+  max-width: 100%;
+  max-height: var(--android-media-box);
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .projects .project-android-video video {
@@ -1913,4 +2790,92 @@ section,
 --------------------------------------------------------------*/
 .starter-section {
   /* Add your styles here */
+}
+
+/*--------------------------------------------------------------
+# Theme toggle (dark / light)
+--------------------------------------------------------------*/
+.theme-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--nav-color);
+  width: 40px;
+  height: 40px;
+  margin: 0 0 0 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--nav-hover-color);
+  background-color: color-mix(in srgb, var(--accent-color), transparent 90%);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background-color: #131313;
+  --default-color: #c8c8c8;
+  --heading-color: #f0f0f0;
+  --surface-color: #1e1e1e;
+  --contrast-color: #ffffff;
+  --nav-color: #bdbdbd;
+  --nav-mobile-background-color: #242424;
+  --nav-dropdown-background-color: #242424;
+  --nav-dropdown-color: #e4e4e4;
+}
+
+html[data-theme="dark"] .light-background {
+  --background-color: #1a1a1a;
+  --surface-color: #252525;
+}
+
+html[data-theme="dark"] .header {
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] .navmenu>ul>li>a:before {
+  background-color: var(--nav-hover-color);
+}
+
+html[data-theme="dark"] .mobile-nav-active .mobile-nav-toggle {
+  color: #fff;
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+  background-color: var(--surface-color);
+  color: var(--default-color);
+  border-color: color-mix(in srgb, var(--default-color), transparent 78%);
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus {
+  background-color: var(--surface-color);
+  color: var(--default-color);
+  border-color: var(--accent-color);
+}
+
+html[data-theme="dark"] .footer-mascot .footer-mascot-select,
+html[data-theme="dark"] .footer-mascot .footer-mascot-select:focus {
+  background-color: transparent;
+  color: var(--default-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle {
+    transition: none;
+  }
 }
