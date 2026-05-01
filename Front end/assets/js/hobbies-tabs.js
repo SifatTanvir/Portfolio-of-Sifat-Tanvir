@@ -34,11 +34,9 @@
       }
     });
 
-    if (slug === "video" || slug === "gaming") {
-      requestAnimationFrame(function () {
-        window.dispatchEvent(new Event("resize"));
-      });
-    }
+    requestAnimationFrame(function () {
+      window.dispatchEvent(new Event("resize"));
+    });
 
     if (updateHash && history.replaceState) {
       var path = window.location.pathname + window.location.search + "#" + slug;

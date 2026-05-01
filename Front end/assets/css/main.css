@@ -1603,14 +1603,23 @@ section,
   line-height: 0;
 }
 
-.about .about-profile-img {
-  display: block;
-  width: min(100%, 480px);
+/* Wrapper clips to a circle reliably (img + border-radius alone can render square on some browsers). */
+.about .about-profile-photo {
+  width: min(100%, 420px);
   max-width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: 50%;
   margin-inline: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--default-color), transparent 92%);
+}
+
+.about .about-profile-photo .about-profile-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
 /*--------------------------------------------------------------
@@ -2096,7 +2105,7 @@ section,
 }
 
 .projects .project-panel.active {
-  display: block;
+  display: flow-root;
 }
 
 .projects .project-panel-title {
@@ -2221,15 +2230,15 @@ section,
   background: #111;
 }
 
-.hobbies-page #hobbies .hobby-show-category {
+.hobbies-page #hobby-panel-shows .hobby-show-category {
   margin-top: 0.85rem;
 }
 
-.hobbies-page #hobbies .hobby-show-category:first-of-type {
+.hobbies-page #hobby-panel-shows .hobby-show-category:first-of-type {
   margin-top: 0.25rem;
 }
 
-.hobbies-page #hobbies .hobby-show-category-title {
+.hobbies-page #hobby-panel-shows .hobby-show-category-title {
   font-family: var(--heading-font);
   font-size: 0.95rem;
   font-weight: 700;
@@ -2239,8 +2248,10 @@ section,
   border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
 }
 
-.hobbies-page #hobbies .hobby-show-list {
+.hobbies-page #hobby-panel-shows ul.hobby-show-list {
   margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.55rem 0.75rem;
@@ -2248,12 +2259,12 @@ section,
 }
 
 @media (max-width: 575.98px) {
-  .hobbies-page #hobbies .hobby-show-list {
+  .hobbies-page #hobby-panel-shows ul.hobby-show-list {
     grid-template-columns: 1fr;
   }
 }
 
-.hobbies-page #hobbies .hobby-show-item {
+.hobbies-page #hobby-panel-shows .hobby-show-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -2262,7 +2273,7 @@ section,
   min-width: 0;
 }
 
-.hobbies-page #hobbies .hobby-show-thumb {
+.hobbies-page #hobby-panel-shows .hobby-show-thumb {
   width: 92px;
   height: 138px;
   object-fit: cover;
@@ -2272,14 +2283,14 @@ section,
   background: color-mix(in srgb, var(--default-color), transparent 90%);
 }
 
-.hobbies-page #hobbies .hobby-show-tmdb {
+.hobbies-page #hobby-panel-shows .hobby-show-tmdb {
   font-size: 0.72rem;
   color: color-mix(in srgb, var(--default-color), transparent 30%);
   margin-top: 1rem;
   margin-bottom: 0;
 }
 
-.hobbies-page #hobbies .hobby-show-tmdb a {
+.hobbies-page #hobby-panel-shows .hobby-show-tmdb a {
   color: inherit;
   text-decoration: underline;
 }
