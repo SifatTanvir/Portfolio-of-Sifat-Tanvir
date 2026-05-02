@@ -34,6 +34,8 @@
     .msd-hero { background: #f0fdfa; border: 2px dashed #5eead4; color: #115e59; border-radius: 12px; padding: 1.25rem 1rem; text-align: center; margin-bottom: 2rem; }
     .msd-hero h2 { margin: 0 0 0.5rem; font-size: 1.25rem; }
     .msd-hero p { margin: 0 auto; max-width: 40rem; font-size: 0.9rem; line-height: 1.55; }
+    .msd-progress { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.85rem; padding: 0.45rem 0.9rem; border-radius: 999px; background: #fff; border: 1px solid #99f6e4; font-size: 0.8125rem; font-weight: 600; color: #0f766e; }
+    .msd-progress .dot { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #14b8a6; }
     .msd-layout { display: flex; flex-direction: column; gap: 1.5rem; }
     @media (min-width: 1024px) { .msd-layout { flex-direction: row; align-items: flex-start; } }
     .msd-aside { width: 100%; max-width: 100%; }
@@ -51,7 +53,7 @@
     .msd-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06); border: 2px solid transparent; display: flex; flex-direction: column; transition: box-shadow .2s, border-color .2s; }
     .msd-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.1); }
     .msd-card.sel { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20,184,166,.25); }
-    .msd-img { height: 12rem; width: 100%; background-size: cover; background-position: center; }
+    .msd-img { height: 12rem; width: 100%; object-fit: cover; object-position: center; display: block; background: #e2e8f0; flex-shrink: 0; }
     .msd-card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
     .msd-card h3 { margin: 0; font-size: 1rem; font-weight: 800; color: #0f172a; line-height: 1.3; }
     .msd-card .price { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0.5rem 0; }
@@ -66,9 +68,9 @@
     .msd-flag svg { width: 1.1rem; height: 1.1rem; flex-shrink: 0; }
     .msd-just { padding: 0 1rem 1rem; border-top: 2px dashed #e2e8f0; margin-top: 0.5rem; padding-top: 1rem; }
     .msd-just label { font-size: 0.8125rem; font-weight: 600; color: #334155; }
-    .msd-just textarea { width: 100%; box-sizing: border-box; margin-top: 0.35rem; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; font-size: 0.8125rem; min-height: 3.5rem; resize: vertical; }
-    .msd-just textarea:focus { outline: none; border-color: #14b8a6; }
-    .msd-just textarea:disabled { background: #f1f5f9; }
+    .msd-just select { width: 100%; box-sizing: border-box; margin-top: 0.35rem; padding: 0.55rem 0.65rem; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; font-size: 0.8125rem; background: #fff; cursor: pointer; }
+    .msd-just select:focus { outline: none; border-color: #14b8a6; box-shadow: 0 0 0 2px rgba(20,184,166,.2); }
+    .msd-just select:disabled { background: #f1f5f9; cursor: not-allowed; opacity: 0.85; }
     .msd-empty { grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; }
     .msd-empty h3 { margin: 0 0 0.5rem; font-size: 1.1rem; color: #334155; }
     .msd-submit-wrap { margin-top: 2.5rem; display: flex; justify-content: center; }
@@ -78,6 +80,11 @@
     .msd-thanks { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.08); max-width: 36rem; text-align: center; border: 1px solid #e2e8f0; }
     .msd-thanks h3 { margin: 0 0 0.5rem; font-size: 1.35rem; color: #0f172a; }
     .msd-thanks p { margin: 0; color: #64748b; line-height: 1.55; }
+    .msd-thanks--fail { border-color: #fecaca; background: #fef2f2; }
+    .msd-thanks--fail h3 { color: #991b1b; }
+    .msd-thanks--fail p { color: #7f1d1d; }
+    .msd-retry { margin-top: 1rem; padding: 0.75rem 1.5rem; border-radius: 10px; border: 1px solid #cbd5e1; background: #fff; font: inherit; font-weight: 700; color: #334155; cursor: pointer; }
+    .msd-retry:hover { background: #f8fafc; border-color: #94a3b8; }
     .msd-about { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.08); border: 1px solid #e2e8f0; max-width: 48rem; margin: 0 auto; animation: msdFade .4s ease-out; }
     .msd-about h2 { margin: 0 0 1rem; font-size: 1.65rem; color: #0f172a; }
     .msd-about p { color: #475569; line-height: 1.65; margin: 0 0 1rem; }
@@ -88,7 +95,7 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🔎</span><span class="wg-tile-test">Fraud judgment</span></span></header>
   <div class="msd">
     <div class="msd-token" id="tokenBar" role="status">
       <p style="margin:0;font-weight:600">Token</p>
@@ -99,39 +106,41 @@
       <div class="msd-head-top">
         <button type="button" class="msd-logo" id="btnHome" aria-label="Marketplace Watch home">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 1a.75.75 0 01.75.75v1.252a12.02 12.02 0 013.515 2.527.75.75 0 01-1.06 1.062A10.52 10.52 0 0010 5.5V17a1 1 0 11-2 0V5.5a10.521 10.521 0 00-3.206 1.091.75.75 0 01-1.06-1.062A12.02 12.02 0 019.25 3.002V1.75A.75.75 0 0110 1z" clip-rule="evenodd" /></svg>
-          <h1>Marketplace Watch</h1>
+          <h1>Scam Detection</h1>
         </button>
         <div class="msd-search-wrap">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
           <input type="search" class="msd-search" id="searchInp" placeholder="Search for anything…" autocomplete="off">
         </div>
-        <button type="button" class="msd-about-link" id="btnAbout">About</button>
+        <button type="button" class="msd-about-link" id="btnAbout" aria-expanded="false">About</button>
       </div>
       <div class="msd-cats" id="catRow"></div>
     </header>
 
     <main class="msd-main">
-      <div id="viewHome">
-        <section class="msd-hero">
-          <h2>Community watch task active</h2>
-          <p>Help keep the marketplace safe. Review listings, flag scams, and add a short justification for each flag you raise. Submit when every flagged item has a reason.</p>
+      <div id="viewHome" class="msd-page">
+        <section class="msd-hero" aria-labelledby="msd-hero-h">
+          <h2 id="msd-hero-h">Community watch task active</h2>
+          <p>Flag <strong>every</strong> scam, then for each flag choose the <strong>primary violation</strong> from the dropdown (same list for every listing). Submit only when counts, targets, <strong>and both reasons</strong> match moderation—no misses, no false flags, no wrong reason codes. Perfect detection with proper primary reasoning will reveal the secret password in the <strong>teal token bar</strong> at the very top of the page.</p>
+          <p class="msd-progress" id="msdProgress" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="msdProgressTxt"></span></p>
         </section>
         <div class="msd-layout">
           <aside class="msd-aside">
             <div class="msd-filter">
               <h3>Filter listings</h3>
               <label for="catSel">Category</label>
-              <select id="catSel">
-                <option>All Categories</option>
-                <option>Electronics</option>
-                <option>Apparel</option>
-                <option>Collectibles</option>
-                <option>Home &amp; Garden</option>
-                <option>Motors</option>
-                <option>Deals</option>
+              <select id="catSel" aria-label="Filter by category">
+                <option value="All Categories">All Categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Apparel">Apparel</option>
+                <option value="Collectibles">Collectibles</option>
+                <option value="Home &amp; Garden">Home &amp; Garden</option>
+                <option value="Motors">Motors</option>
+                <option value="Deals">Deals</option>
               </select>
               <div class="msd-range-row"><span>Price range</span><span id="priceLbl"></span></div>
               <input type="range" class="msd-range" id="priceRange" min="0" max="1000" step="5" value="1000">
+              <p style="margin:1rem 0 0;font-size:0.75rem;line-height:1.45;color:#64748b">Each flag requires a <strong>primary violation</strong> from the dropdown; moderation expects the exact code per scam.</p>
             </div>
           </aside>
           <section class="msd-grid" id="grid"></section>
@@ -150,23 +159,38 @@
     <footer class="msd-foot">
       <p>© <span id="yr"></span> Marketplace Watch Inc.</p>
       <p>Trade safely and report suspicious activity.</p>
+      <p>Listing photos are stock images for illustration (Unsplash).</p>
     </footer>
   </div>
 
   <script>
     document.getElementById('yr').textContent = String(new Date().getFullYear());
 
+    /**
+     * Canonical reasons (value = id). Each scam listing has correctScamReason — must match for token.
+     */
+    var SCAM_REASON_OPTIONS = [
+      { id: '', label: '— Select primary violation —' },
+      { id: 'wire_only', label: 'Demands wire / bank transfer only; avoids protected checkout' },
+      { id: 'offsite_email', label: 'Redirects buyers to an external email or off-platform messaging' },
+      { id: 'price_implausible', label: 'Price implausible for the item as described' },
+      { id: 'urgency_tactics', label: 'Artificial urgency or pressure to pay immediately' },
+      { id: 'mockup_only', label: 'No credible product proof; vague or stock-only presentation' },
+      { id: 'identity_mismatch', label: 'Seller profile inconsistent with high-value or risky deal' }
+    ];
+
+    /** Stock photos (Unsplash) matched to listing copy — fixed URLs for stable hotlinking. */
     var ALL = [
-      { id: 1, title: 'Brand New A-Phone 15 Pro Max - Unopened Box!', price: '$250', description: 'URGENT SALE! Won this in a contest but I use Android. Selling cheap must go today. Only serious buyers, payment via wire transfer ONLY. First come first serve.', sellerName: 'QuickSeller24', sellerRating: 4.1, location: 'Citywide', isScam: true, category: 'Electronics', hue: 200 },
-      { id: 5, title: 'Professional Studio Headphones - GREAT DEAL', price: '$90', description: 'Selling headphones. Barely used. Look at picture for details. Please for all question and fast response email me direct at topdeals_seller@fakemail.net, do not message here.', sellerName: 'Deals4U', sellerRating: 3.2, location: 'Northwood', isScam: true, category: 'Deals', hue: 280 },
-      { id: 2, title: 'Vintage Leather Messenger Bag', price: '$85', description: 'High-quality leather bag, great for laptops and documents. Gently used with a nice patina.', sellerName: 'VintageFindsCo', sellerRating: 4.9, location: 'Oakwood', isScam: false, category: 'Apparel', hue: 35 },
-      { id: 3, title: "Rare Collector's Edition Fountain Pen", price: '$220', description: "Limited edition 'Orion' series fountain pen. Comes with original case and certificate.", sellerName: 'CollectorItems', sellerRating: 5, location: 'Maple Creek', isScam: false, category: 'Collectibles', hue: 45 },
-      { id: 4, title: 'Professional Studio Headphones (Used)', price: '$110', description: 'Selling my pair of Audio-Pro headphones. Excellent working condition, just upgrading my setup.', sellerName: 'SoundGuy88', sellerRating: 4.8, location: 'Downtown', isScam: false, category: 'Electronics', hue: 265 },
-      { id: 6, title: 'Classic 1985 Roadster Convertible', price: '$15500', description: 'My weekend driver, a true classic. Runs great, new tires. A real head-turner.', sellerName: 'CarEnthusiast', sellerRating: 4.9, location: 'Sunset Valley', isScam: false, category: 'Motors', hue: 15 },
-      { id: 7, title: 'Hand-Painted Ceramic Pot Set', price: '$45', description: 'Set of 3 ceramic pots, perfect for succulents or herbs. Frost-resistant.', sellerName: 'GardenCreations', sellerRating: 4.7, location: 'Greenleaf', isScam: false, category: 'Home & Garden', hue: 130 },
-      { id: 8, title: 'Designer Brand Winter Coat', price: '$150', description: "Authentic 'Arctic Wolf' brand winter coat. Worn twice. Too small for me now. Great deal!", sellerName: 'Fashionista22', sellerRating: 4.8, location: 'Downtown', isScam: false, category: 'Apparel', hue: 310 },
-      { id: 9, title: 'Gaming Laptop - 1 Year Old', price: '$750', description: 'Powerful gaming laptop, can run all modern games. Selling because I built a desktop.', sellerName: 'GamerTech', sellerRating: 5, location: 'Tech Hub', isScam: false, category: 'Electronics', hue: 190 },
-      { id: 10, title: 'Motorcycle - NEEDS WORK', price: '$1200', description: "Project bike. Engine turns over but won't start. Great for parts or a mechanic.", sellerName: 'HobbyMechanic', sellerRating: 4.5, location: 'Garland', isScam: false, category: 'Motors', hue: 25 },
+      { id: 1, title: 'Brand New A-Phone 15 Pro Max - Unopened Box!', price: '$250', description: 'URGENT SALE! Won this in a contest but I use Android. Selling cheap must go today. Only serious buyers, payment via wire transfer ONLY. First come first serve.', sellerName: 'QuickSeller24', sellerRating: 4.1, location: 'Citywide', isScam: true, correctScamReason: 'wire_only', category: 'Electronics', imageUrl: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80' },
+      { id: 5, title: 'Professional Studio Headphones - GREAT DEAL', price: '$90', description: 'Selling headphones. Barely used. Look at picture for details. Please for all question and fast response email me direct at topdeals_seller@fakemail.net, do not message here.', sellerName: 'Deals4U', sellerRating: 3.2, location: 'Northwood', isScam: true, correctScamReason: 'offsite_email', category: 'Deals', imageUrl: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80' },
+      { id: 2, title: 'Vintage Leather Messenger Bag', price: '$85', description: 'High-quality leather bag, great for laptops and documents. Gently used with a nice patina.', sellerName: 'VintageFindsCo', sellerRating: 4.9, location: 'Oakwood', isScam: false, category: 'Apparel', imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80' },
+      { id: 3, title: "Rare Collector's Edition Fountain Pen", price: '$220', description: "Limited edition 'Orion' series fountain pen. Comes with original case and certificate.", sellerName: 'CollectorItems', sellerRating: 5, location: 'Maple Creek', isScam: false, category: 'Collectibles', imageUrl: 'https://images.unsplash.com/photo-1585336261022-680e295ce3fe?auto=format&fit=crop&w=800&q=80' },
+      { id: 4, title: 'Professional Studio Headphones (Used)', price: '$110', description: 'Selling my pair of Audio-Pro headphones. Excellent working condition, just upgrading my setup.', sellerName: 'SoundGuy88', sellerRating: 4.8, location: 'Downtown', isScam: false, category: 'Electronics', imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80' },
+      { id: 6, title: 'Classic 1985 Roadster Convertible', price: '$15500', description: 'My weekend driver, a true classic. Runs great, new tires. A real head-turner.', sellerName: 'CarEnthusiast', sellerRating: 4.9, location: 'Sunset Valley', isScam: false, category: 'Motors', imageUrl: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80' },
+      { id: 7, title: 'Hand-Painted Ceramic Pot Set', price: '$45', description: 'Set of 3 ceramic pots, perfect for succulents or herbs. Frost-resistant.', sellerName: 'GardenCreations', sellerRating: 4.7, location: 'Greenleaf', isScam: false, category: 'Home & Garden', imageUrl: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=800&q=80' },
+      { id: 8, title: 'Designer Brand Winter Coat', price: '$150', description: "Authentic 'Arctic Wolf' brand winter coat. Worn twice. Too small for me now. Great deal!", sellerName: 'Fashionista22', sellerRating: 4.8, location: 'Downtown', isScam: false, category: 'Apparel', imageUrl: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=800&q=80' },
+      { id: 9, title: 'Gaming Laptop - 1 Year Old', price: '$750', description: 'Powerful gaming laptop, can run all modern games. Selling because I built a desktop.', sellerName: 'GamerTech', sellerRating: 5, location: 'Tech Hub', isScam: false, category: 'Electronics', imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80' },
+      { id: 10, title: 'Motorcycle - NEEDS WORK', price: '$1200', description: "Project bike. Engine turns over but won't start. Great for parts or a mechanic.", sellerName: 'HobbyMechanic', sellerRating: 4.5, location: 'Garland', isScam: false, category: 'Motors', imageUrl: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80' },
     ];
 
     function shuffle(arr) {
@@ -186,7 +210,8 @@
     var maxPrice = Math.max.apply(null, listings.map(function (l) { return parsePrice(l.price); }));
 
     var selected = {};
-    var justifications = {};
+    /** Selected moderation reason id per flagged listing id (must match correctScamReason on scams). */
+    var reasonByListing = {};
     var submitted = false;
     var success = false;
     var searchQuery = '';
@@ -195,11 +220,6 @@
     var view = 'home';
 
     var CATS = ['Electronics', 'Apparel', 'Collectibles', 'Home & Garden', 'Motors'];
-
-    function imgStyle(hue) {
-      var h2 = (hue + 55) % 360;
-      return 'background-image:linear-gradient(135deg,hsl(' + hue + ',45%,38%) 0%,hsl(' + h2 + ',50%,28%) 50%,hsl(' + hue + ',35%,22%) 100%)';
-    }
 
     function passesCategory(l) {
       if (selectedCategory === 'All Categories' || selectedCategory === 'Deals') {
@@ -224,6 +244,32 @@
       return s;
     }
 
+    function scamCount() {
+      var c = 0;
+      listings.forEach(function (l) { if (l.isScam) c++; });
+      return c;
+    }
+
+    function updateProgress() {
+      var el = document.getElementById('msdProgressTxt');
+      if (!el) return;
+      if (submitted) {
+        el.textContent = success ? 'Review complete — token unlocked.' : 'Submission logged — adjust flags and try again.';
+        return;
+      }
+      var n = 0;
+      for (var k in selected) if (selected[k]) n++;
+      var total = scamCount();
+      el.textContent = total + ' scam' + (total === 1 ? '' : 's') + ' in this batch — ' + n + ' listing' + (n === 1 ? '' : 's') + ' flagged';
+    }
+
+    function listingById(id) {
+      for (var i = 0; i < listings.length; i++) {
+        if (listings[i].id === id) return listings[i];
+      }
+      return null;
+    }
+
     function canSubmit() {
       var ids = [];
       for (var id in selected) {
@@ -231,8 +277,19 @@
       }
       if (ids.length === 0) return false;
       for (var i = 0; i < ids.length; i++) {
-        var j = justifications[ids[i]];
-        if (!j || !String(j).trim()) return false;
+        var r = reasonByListing[ids[i]];
+        if (!r || !String(r).trim()) return false;
+      }
+      return true;
+    }
+
+    function reasonsMatchModeration(ids, correctMap) {
+      for (var k in correctMap) {
+        var nid = Number(k);
+        if (ids.indexOf(nid) === -1) return false;
+        var L = listingById(nid);
+        if (!L || !L.isScam || !L.correctScamReason) return false;
+        if (reasonByListing[nid] !== L.correctScamReason) return false;
       }
       return true;
     }
@@ -243,8 +300,21 @@
       return d.innerHTML;
     }
 
+    function reasonSelectHtml(listingId, currentVal, disabled) {
+      var opts = SCAM_REASON_OPTIONS.map(function (o) {
+        return '<option value="' + escapeHtml(o.id) + '"' + (o.id === currentVal ? ' selected' : '') + '>' + escapeHtml(o.label) + '</option>';
+      }).join('');
+      return '<label for="reason-' + listingId + '">Primary violation</label>' +
+        '<select id="reason-' + listingId + '" class="msd-reason-sel" data-lid="' + listingId + '"' + (disabled ? ' disabled' : '') + '>' + opts + '</select>';
+    }
+
     function syncCatUi() {
-      document.getElementById('catSel').value = selectedCategory;
+      var sel = document.getElementById('catSel');
+      if (sel) {
+        var ok = Array.prototype.some.call(sel.options, function (o) { return o.value === selectedCategory; });
+        if (!ok) selectedCategory = 'All Categories';
+        sel.value = selectedCategory;
+      }
       document.querySelectorAll('#catRow button').forEach(function (b) {
         var c = b.getAttribute('data-cat');
         b.classList.toggle('on', c === selectedCategory);
@@ -279,11 +349,13 @@
         var sel = !!selected[l.id];
         var card = document.createElement('article');
         card.className = 'msd-card' + (sel ? ' sel' : '');
-        var img = document.createElement('div');
+        var img = document.createElement('img');
         img.className = 'msd-img';
-        img.style.cssText = imgStyle(l.hue);
-        img.setAttribute('role', 'img');
-        img.setAttribute('aria-label', 'Listing image');
+        img.src = l.imageUrl || '';
+        img.alt = '';
+        img.decoding = 'async';
+        img.loading = 'lazy';
+        img.setAttribute('aria-hidden', 'true');
         var body = document.createElement('div');
         body.className = 'msd-card-body';
         body.innerHTML = '<h3>' + escapeHtml(l.title) + '</h3><p class="price">' + escapeHtml(l.price) + '</p><p class="meta">' + escapeHtml(l.location) + ' • Seller: ' + escapeHtml(l.sellerName) + ' (' + l.sellerRating + ' ★)</p><p class="desc">' + escapeHtml(l.description) + '</p>';
@@ -291,12 +363,14 @@
         btn.type = 'button';
         btn.className = 'msd-flag ' + (sel ? 'on' : 'off');
         btn.disabled = submitted;
+        btn.setAttribute('aria-pressed', sel ? 'true' : 'false');
+        btn.setAttribute('aria-label', (sel ? 'Remove scam flag from ' : 'Flag as scam: ') + l.title);
         btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-4.392l1.657-.348a6.449 6.449 0 014.271.572 7.948 7.948 0 005.965.524l.338-.057a.75.75 0 00-.533-1.424l-.338.057a6.448 6.448 0 01-4.907-.478 7.95 7.95 0 00-5.645-.523L3.5 7.142V2.75z" /></svg><span>' + (sel ? 'Flagged as scam' : 'Flag listing') + '</span>';
         btn.onclick = function () {
           if (submitted) return;
           if (selected[l.id]) {
             delete selected[l.id];
-            delete justifications[l.id];
+            delete reasonByListing[l.id];
           } else {
             selected[l.id] = true;
           }
@@ -308,29 +382,41 @@
         if (sel) {
           var just = document.createElement('div');
           just.className = 'msd-just';
-          just.innerHTML = '<label for="j-' + l.id + '">Justification</label>';
-          var ta = document.createElement('textarea');
-          ta.id = 'j-' + l.id;
-          ta.rows = 2;
-          ta.placeholder = 'Explain why this is suspicious…';
-          ta.disabled = submitted;
-          ta.value = justifications[l.id] || '';
-          ta.oninput = function () {
-            justifications[l.id] = ta.value;
-            renderSubmit();
-          };
-          just.appendChild(ta);
+          var cur = reasonByListing[l.id] || '';
+          just.innerHTML = reasonSelectHtml(l.id, cur, submitted);
+          var selEl = just.querySelector('select');
+          if (selEl) {
+            selEl.addEventListener('change', function () {
+              reasonByListing[l.id] = selEl.value;
+              renderSubmit();
+              updateProgress();
+            });
+          }
           card.appendChild(just);
         }
         grid.appendChild(card);
       });
       renderSubmit();
+      updateProgress();
     }
 
     function renderSubmit() {
       var w = document.getElementById('submitWrap');
       if (submitted) {
-        w.innerHTML = '<div class="msd-thanks"><h3>Thank you for your report!</h3><p>Your submission has been logged. We appreciate you helping to keep our community safe from fraudulent activity.</p></div>';
+        if (success) {
+          w.innerHTML = '<div class="msd-thanks"><h3>Report accepted</h3><p>Your flags, targets, and violation codes matched moderation. Thanks for helping keep the marketplace safe.</p></div>';
+        } else {
+          w.innerHTML = '<div class="msd-thanks msd-thanks--fail"><h3>Report did not match</h3><p>Check every scam is flagged, no honest listing is flagged, each flag has a violation selected, and each scam uses the <strong>correct</strong> primary violation from the dropdown. Review and try again.</p><button type="button" class="msd-retry" id="msdRetry">Revise flags and resubmit</button></div>';
+          var retry = document.getElementById('msdRetry');
+          if (retry) {
+            retry.onclick = function () {
+              submitted = false;
+              success = false;
+              renderGrid();
+            };
+          }
+        }
+        updateProgress();
         return;
       }
       var n = 0;
@@ -351,16 +437,24 @@
           for (var i = 0; i < ids.length; i++) {
             if (!correct[ids[i]]) { perfect = false; break; }
           }
+        } else {
+          perfect = false;
+        }
+        if (perfect && !reasonsMatchModeration(ids, correct)) {
+          perfect = false;
         }
         if (perfect) {
           success = true;
           document.getElementById('tokenBar').classList.add('on');
           window.scrollTo(0, 0);
+        } else {
+          success = false;
         }
         renderGrid();
       };
       w.innerHTML = '';
       w.appendChild(btn);
+      updateProgress();
     }
 
     function updatePriceLabel() {
@@ -371,12 +465,17 @@
       view = 'home';
       document.getElementById('viewHome').hidden = false;
       document.getElementById('viewAbout').hidden = true;
+      var ab = document.getElementById('btnAbout');
+      if (ab) ab.setAttribute('aria-expanded', 'false');
+      updateProgress();
     }
 
     function goAbout() {
       view = 'about';
       document.getElementById('viewHome').hidden = true;
       document.getElementById('viewAbout').hidden = false;
+      var ab = document.getElementById('btnAbout');
+      if (ab) ab.setAttribute('aria-expanded', 'true');
     }
 
     document.getElementById('btnHome').onclick = goHomeView;

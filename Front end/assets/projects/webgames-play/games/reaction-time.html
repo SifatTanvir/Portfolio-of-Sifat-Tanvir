@@ -17,13 +17,15 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">⚡</span><span class="wg-tile-test">Reaction time test</span></span></header>
   <main class="wg-main">
     <h1 class="wg-h1">Reaction time</h1>
     <p class="wg-lead">When the box turns <strong style="color:#4ade80">green</strong>, tap it as fast as you can. If you tap on orange, you jumped early.</p>
+    <p class="wg-lead" style="font-size:0.9rem">Secret password <strong>REACTFAST</strong> unlocks when your reaction time on a valid green tap is <strong>400&nbsp;ms or less</strong> (shown below).</p>
     <div class="arena idle" id="arena" role="button" tabindex="0">Tap to start</div>
     <p class="best" id="last">Last: —</p>
     <p class="best" id="best">Best: —</p>
+    <div id="pwdReact" class="wg-success" hidden style="margin-top:1rem;text-align:center">Password: <strong>REACTFAST</strong></div>
   </main>
   <script>
     var state = 'idle', t0 = 0, timer = null;
@@ -65,6 +67,10 @@
           best = String(ms);
           localStorage.setItem('wg-react-ms', best);
           document.getElementById('best').textContent = 'Best: ' + best + ' ms';
+        }
+        var pwdEl = document.getElementById('pwdReact');
+        if (pwdEl && ms <= 400) {
+          pwdEl.hidden = false;
         }
         set('idle', 'Tap for another round');
         return;

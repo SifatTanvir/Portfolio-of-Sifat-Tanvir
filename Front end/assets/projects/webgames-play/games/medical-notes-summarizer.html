@@ -59,13 +59,13 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">📋</span><span class="wg-tile-test">Chart synthesis</span></span></header>
   <div class="med">
     <div class="med-nav">
       <div class="logo" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>
       </div>
-      <span>MediSynth AI Summarizer</span>
+      <span>Medical Notes Summarizer</span>
     </div>
     <div class="med-banner" id="winBanner">Password: <span style="font-family:ui-monospace;background:rgba(0,0,0,.2);padding:.15rem .5rem;border-radius:4px">DIAGNOSISDECODED</span></div>
 
@@ -75,7 +75,7 @@
       <div class="hero-slide" data-i="2" style="background-image:linear-gradient(135deg,#134e4a 0%,#0e7490 100%)"></div>
       <div class="hero-inner">
         <h1>AI-Powered Clinical Insight</h1>
-        <p>Synthesize complex patient notes into clear timelines and insights.</p>
+        <p>Synthesize complex patient notes into clear timelines and insights. To reveal the password: choose the correct <strong>observation overview</strong> and <strong>key clinical insight</strong> for this chart, then submit once—both must match moderation. A wrong first submit locks the form; reload the page to try another randomized case.</p>
       </div>
       <button type="button" class="hero-ctrl prev" id="heroPrev" aria-label="Previous slide">‹</button>
       <button type="button" class="hero-ctrl next" id="heroNext" aria-label="Next slide">›</button>
@@ -124,6 +124,7 @@
         <div class="submit-wrap">
           <button type="button" class="btn-submit" id="submitBtn" disabled>Submit insight</button>
           <p id="submitMsg" style="text-align:center;margin-top:0.75rem;font-size:0.875rem;color:#64748b;min-height:1.25rem"></p>
+          <p style="margin:0.75rem 0 0;font-size:0.8125rem;line-height:1.5;color:#64748b">Password unlock: correct observation + correct insight on first submit → green top banner.</p>
         </div>
       </aside>
     </div>

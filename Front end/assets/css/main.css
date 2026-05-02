@@ -1479,6 +1479,13 @@ section,
   }
 }
 
+/* Signature: wrapper for layout; ink reveal runs on the img */
+.hero .hero-signature-ink {
+  display: inline-block;
+  line-height: 0;
+  max-width: 100%;
+}
+
 .hero .hero-signature {
   position: relative;
   display: block;
@@ -1486,6 +1493,52 @@ section,
   width: auto;
   max-width: min(840px, 90vw);
   height: auto;
+}
+
+.hero .hero-signature-ink .hero-signature {
+  transform: translateZ(0);
+  clip-path: inset(0 100% 0 0);
+  filter: blur(4px);
+  opacity: 0.92;
+  will-change: clip-path, filter;
+  animation: hero-signature-ink 2.1s cubic-bezier(0.45, 0, 0.18, 1) 0.28s forwards;
+}
+
+@keyframes hero-signature-ink {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(4px);
+    opacity: 0.92;
+    transform: translateZ(0) scale(0.985);
+  }
+
+  42% {
+    filter: blur(1px);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .hero-signature-ink .hero-signature {
+    animation: none;
+    clip-path: none;
+    filter: none;
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}
+
+.hero.hero--copy-top-right .hero-signature-ink {
+  margin-left: auto;
+  margin-right: 0;
+  display: block;
 }
 
 .hero.hero--copy-top-right .hero-signature {
@@ -1513,6 +1566,11 @@ section,
   text-align: center;
 }
 
+/* Home hero: nudge signature + role slightly left of column center */
+#hero .hero-intro-nudge {
+  transform: translateX(calc(-1 * clamp(2.95rem, 9.5vw, 7.5rem)));
+}
+
 .hero .hero-intro-nudge .hero-signature {
   margin-left: 0;
   margin-right: 0;
@@ -1534,6 +1592,39 @@ section,
   margin: 20px 0 0 0;
   font-size: 48px;
   color: var(--heading-color);
+}
+
+.hero .hero-role-line {
+  min-height: 1.15em;
+}
+
+.hero .hero-role-line__inner {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.hero .hero-role-line__cursor {
+  display: inline-block;
+  width: 0.06em;
+  min-width: 2px;
+  height: 0.92em;
+  margin-left: 0.08em;
+  background-color: var(--heading-color);
+  vertical-align: text-bottom;
+  animation: hero-role-caret-blink 1s steps(1, end) infinite;
+}
+
+@keyframes hero-role-caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .hero.hero--copy-top-right .hero-tagline {
@@ -2312,11 +2403,20 @@ section,
   min-height: 320px;
 }
 
+.projects .webgame-hub-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+  gap: 1rem;
+}
+
 .projects .webgame-hub-tile {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   height: 100%;
   padding: 1rem 1.1rem;
   border-radius: 8px;
@@ -2335,9 +2435,28 @@ section,
   color: inherit;
 }
 
+.projects .webgame-hub-tile__head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 .projects .webgame-hub-tile__emoji {
   font-size: 1.75rem;
   line-height: 1;
+  flex-shrink: 0;
+}
+
+.projects .webgame-hub-tile__test {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-color);
+  line-height: 1.25;
+  min-width: 0;
 }
 
 .projects .webgame-hub-tile__title {

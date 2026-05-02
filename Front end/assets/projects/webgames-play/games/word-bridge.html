@@ -54,7 +54,7 @@
     .wb-btn-submit { width: 100%; margin-top: 0.5rem; padding: 1rem; border: none; border-radius: 8px; background: #16a34a; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
     .wb-btn-submit:hover:not(:disabled) { background: #15803d; }
     .wb-btn-submit:disabled { background: #d1d5db; color: #9ca3af; cursor: not-allowed; }
-    .wb-bottom { margin-top: 3rem; display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+    .wb-bottom { margin: 0 0 2.5rem; display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
     @media (min-width: 768px) { .wb-bottom { grid-template-columns: 1fr 1fr; } }
     .wb-rules h3 { display: flex; align-items: flex-start; gap: 0.35rem; font-size: 1.1rem; margin: 0 0 0.75rem; color: #111827; }
     .wb-rules ul { margin: 0; padding-left: 1.25rem; color: #6b7280; font-size: 0.9rem; line-height: 1.6; }
@@ -71,12 +71,12 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🌉</span><span class="wg-tile-test">Word Formation</span></span></header>
   <div class="wb">
     <div class="wb-nav">
       <div class="wb-brand">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h6l2-2h2l-2 2z" /></svg>
-        <h1>Word Weaver</h1>
+        <h1>Lexical Bridge</h1>
       </div>
       <button type="button" id="btnNew">New puzzle</button>
     </div>
@@ -87,9 +87,33 @@
 
     <main class="wb-main">
       <section class="wb-hero">
-        <h2>Lexical bridge challenge</h2>
-        <p>Transform the starting word into the target word, one letter at a time. Each step must be a valid dictionary word. Submit the <strong>exact optimal chain</strong> for this puzzle.</p>
+        <h2>Lexical Bridge</h2>
+        <p>Transform the starting word into the target word, one letter at a time. Each step must be a valid dictionary word. Submit the <strong>exact optimal (shortest possible) chain</strong> for this puzzle to obtain the hidden password. The password <strong>WORDBRIDGED</strong> appears in the green banner at the top only after a successful optimal submission (non-optimal chains stay locked out).</p>
       </section>
+
+      <div class="wb-bottom">
+        <section class="wb-card wb-rules" id="rules">
+          <h3>
+            <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;color:#6366f1;flex-shrink:0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
+            Rules of transformation
+          </h3>
+          <ul>
+            <li>You must change exactly one letter at each step.</li>
+            <li>Each intermediate step must be a valid word from the dictionary below.</li>
+            <li>The final word in your chain must match the target word.</li>
+            <li>Your submitted chain must match the shortest official solution for this puzzle.</li>
+            <li>You cannot use the banned words in your chain.</li>
+          </ul>
+          <div class="dict">
+            <h4>Dictionary words</h4>
+            <div class="wb-tags" id="dictTags"></div>
+          </div>
+        </section>
+        <section class="wb-card wb-banned" id="bannedSec">
+          <h3>Banned words <span class="cat" id="bannedCat"></span></h3>
+          <div class="tags" id="bannedTags"></div>
+        </section>
+      </div>
 
       <div class="wb-grid">
         <div class="wb-card">
@@ -125,29 +149,6 @@
           <button type="button" class="wb-btn-submit" id="btnSubmit" disabled>Submit final chain</button>
         </div>
       </div>
-
-      <div class="wb-bottom">
-        <section class="wb-card wb-rules" id="rules">
-          <h3>
-            <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;color:#6366f1;flex-shrink:0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" /></svg>
-            Rules of transformation
-          </h3>
-          <ul>
-            <li>You must change exactly one letter at each step.</li>
-            <li>Each intermediate step must be a valid word from the dictionary below.</li>
-            <li>The final word in your chain must match the target word.</li>
-            <li>Your submitted chain must match the shortest official solution for this puzzle.</li>
-          </ul>
-          <div class="dict">
-            <h4>Dictionary words</h4>
-            <div class="wb-tags" id="dictTags"></div>
-          </div>
-        </section>
-        <section class="wb-card wb-banned" id="bannedSec">
-          <h3>Banned words <span class="cat" id="bannedCat"></span></h3>
-          <div class="tags" id="bannedTags"></div>
-        </section>
-      </div>
     </main>
     <footer class="wb-foot">© <span id="yr"></span> LexiCorp Dynamics · demonstration only</footer>
   </div>
@@ -160,7 +161,7 @@
         startWord: 'COLD',
         endWord: 'WARM',
         solution: ['COLD', 'CORD', 'WORD', 'WARD', 'WARM'],
-        bannedCategory: 'Colors',
+        bannedCategory: 'Colors and Objects',
         bannedWords: ['GOLD', 'PINK', 'CYAN', 'LIME', 'CARD'],
       },
       {

@@ -9,31 +9,40 @@
   <link href="shared.css" rel="stylesheet">
 </head>
 
-<body class="wg-page">
-  <header class="wg-top">
+<body class="wg-page wg-page--hub">
+  <header class="wg-top wg-top--hub">
     <a href="../../../projects.html#webgames">← Projects</a>
-    <span style="color:var(--wg-muted);font-size:0.9rem">Mini-apps — static HTML/JS</span>
+    <span class="wg-top-divider" aria-hidden="true"></span>
+    <span class="wg-top-badge">Static HTML &amp; JS</span>
   </header>
 
   <main class="wg-hub">
-    <h1>Webgames</h1>
-    <p class="wg-sub">Each link opens a self-contained mini-app. </p>
+    <header class="wg-hub-hero">
+      <p class="wg-hub-kicker">Human-skill mini lab</p>
+      <h1>Webgames</h1>
+      <p class="wg-sub">Each link opens a self-contained mini-app. They are deliberately awkward for generic models: each one stresses a different mix of attention, literacy, and judgment.</p>
+      <ul class="wg-hub-stats" aria-label="About this collection">
+        <li><strong>14</strong> challenges</li>
+        <li>One file per game</li>
+        <li>No backend</li>
+      </ul>
+    </header>
 
     <div class="wg-tiles">
-      <a class="wg-tile" href="games/memory-match.html"><span class="wg-tile-emoji" aria-hidden="true">🃏</span><span class="wg-tile-title">Memory match</span><p class="wg-tile-desc">Flip cards and pair four symbols.</p></a>
-      <a class="wg-tile" href="games/reaction-time.html"><span class="wg-tile-emoji" aria-hidden="true">⚡</span><span class="wg-tile-title">Reaction time</span><p class="wg-tile-desc">Tap when the panel flashes green.</p></a>
-      <a class="wg-tile" href="games/word-bridge.html"><span class="wg-tile-emoji" aria-hidden="true">🌉</span><span class="wg-tile-title">Word bridge</span><p class="wg-tile-desc">Build a one-letter-at-a-time chain to the target — match the official shortest path.</p></a>
-      <a class="wg-tile" href="games/medical-notes-summarizer.html"><span class="wg-tile-emoji" aria-hidden="true">📋</span><span class="wg-tile-title">Medical notes summarizer</span><p class="wg-tile-desc">Read a three-day chart, pick the insight and observation — unlock the code when correct.</p></a>
-      <a class="wg-tile" href="games/delivery-route-optimizer.html"><span class="wg-tile-emoji" aria-hidden="true">🗺️</span><span class="wg-tile-title">Delivery route optimizer</span><p class="wg-tile-desc">Reorder stops, pick the right vehicle, and simulate until efficiency clears 90%.</p></a>
-      <a class="wg-tile" href="games/phishing-detector.html"><span class="wg-tile-emoji" aria-hidden="true">🛡️</span><span class="wg-tile-title">Phishing detector</span><p class="wg-tile-desc">Inbox triage: flag both phishes, cite why, and enter the IT override from the real notice.</p></a>
-      <a class="wg-tile" href="games/cultural-clarity.html"><span class="wg-tile-emoji" aria-hidden="true">🌍</span><span class="wg-tile-title">Cultural clarity</span><p class="wg-tile-desc">Read a support transcript, pick the best rewrite and insight — unlock the code when both match.</p></a>
-      <a class="wg-tile" href="games/scam-detection.html"><span class="wg-tile-emoji" aria-hidden="true">🔎</span><span class="wg-tile-title">Scam detection</span><p class="wg-tile-desc">Filter marketplace listings, flag only the real scams, and justify each flag to unlock the token.</p></a>
-      <a class="wg-tile" href="games/neon-target.html"><span class="wg-tile-emoji" aria-hidden="true">🎯</span><span class="wg-tile-title">Neon targets</span><p class="wg-tile-desc">Twenty seconds of reflex tapping on glowing discs.</p></a>
-      <a class="wg-tile" href="games/math-challenge.html"><span class="wg-tile-emoji" aria-hidden="true">🧮</span><span class="wg-tile-title">Math challenge</span><p class="wg-tile-desc">Quick equations; match the suggested username to unlock the code.</p></a>
-      <a class="wg-tile" href="games/color-count.html"><span class="wg-tile-emoji" aria-hidden="true">🎨</span><span class="wg-tile-title">Game of color</span><p class="wg-tile-desc">Count red, green, and blue cells in a 3×3 grid.</p></a>
-      <a class="wg-tile" href="games/cipher-riddles.html"><span class="wg-tile-emoji" aria-hidden="true">🔐</span><span class="wg-tile-title">Cipher riddles</span><p class="wg-tile-desc">Five riddles, three choices each — all must be correct.</p></a>
-      <a class="wg-tile" href="games/symbol-decoder.html"><span class="wg-tile-emoji" aria-hidden="true">📡</span><span class="wg-tile-title">Symbol decoder</span><p class="wg-tile-desc">Read the log, pick the next triad, decode the phrase.</p></a>
-      <a class="wg-tile" href="games/pc-builder.html"><span class="wg-tile-emoji" aria-hidden="true">🖥️</span><span class="wg-tile-title">PC builder</span><p class="wg-tile-desc">Match CPU socket, parts, and peripherals.</p></a>
+      <a class="wg-tile" href="games/memory-match.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🃏</span><span class="wg-tile-test">Working memory</span></span><span class="wg-tile-title">Memory match</span><p class="wg-tile-desc">Flip cards and pair four symbols.</p></a>
+      <a class="wg-tile" href="games/reaction-time.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">⚡</span><span class="wg-tile-test">Reaction time test</span></span><span class="wg-tile-title">Reaction time</span><p class="wg-tile-desc">Tap when the panel flashes green.</p></a>
+      <a class="wg-tile" href="games/word-bridge.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🌉</span><span class="wg-tile-test">Word Formation</span></span><span class="wg-tile-title">Lexical bridge</span><p class="wg-tile-desc">Build a one-letter-at-a-time chain to the target — match the official shortest path.</p></a>
+      <a class="wg-tile" href="games/medical-notes-summarizer.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">📋</span><span class="wg-tile-test">Chart synthesis</span></span><span class="wg-tile-title">Medical notes summarizer</span><p class="wg-tile-desc">Read a three-day chart, pick the insight and observation — unlock the code when correct.</p></a>
+      <a class="wg-tile" href="games/delivery-route-optimizer.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🗺️</span><span class="wg-tile-test">Decision making</span></span><span class="wg-tile-title">Delivery route optimizer</span><p class="wg-tile-desc">Reorder stops, pick the right vehicle, and simulate until efficiency clears 90%.</p></a>
+      <a class="wg-tile" href="games/phishing-detector.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🛡️</span><span class="wg-tile-test">Threat identification</span></span><span class="wg-tile-title">Phishing detector</span><p class="wg-tile-desc">Inbox triage: flag both phishes, cite why, and enter the IT override from the real notice.</p></a>
+      <a class="wg-tile" href="games/cultural-clarity.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🌍</span><span class="wg-tile-test">Tone &amp; context</span></span><span class="wg-tile-title">Cultural clarity</span><p class="wg-tile-desc">Read a support transcript, pick the best rewrite and insight — unlock the code when both match.</p></a>
+      <a class="wg-tile" href="games/scam-detection.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🔎</span><span class="wg-tile-test">Fraud judgment</span></span><span class="wg-tile-title">Scam detection</span><p class="wg-tile-desc">Filter listings, flag only real scams, choose the correct violation per flag, then submit for the token.</p></a>
+      <a class="wg-tile" href="games/neon-target.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🎯</span><span class="wg-tile-test">Aim test</span></span><span class="wg-tile-title">Neon targets</span><p class="wg-tile-desc">Twenty seconds of reflex tapping on glowing discs.</p></a>
+      <a class="wg-tile" href="games/math-challenge.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🧮</span><span class="wg-tile-test">Basic arithmetic</span></span><span class="wg-tile-title">Math challenge</span><p class="wg-tile-desc">Quick equations; match the suggested username to unlock the code.</p></a>
+      <a class="wg-tile" href="games/color-count.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🎨</span><span class="wg-tile-test">Color Blindness</span></span><span class="wg-tile-title">Game of color</span><p class="wg-tile-desc">Count red, green, and blue cells in a 3×3 grid.</p></a>
+      <a class="wg-tile" href="games/cipher-riddles.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🔐</span><span class="wg-tile-test">Lateral reasoning</span></span><span class="wg-tile-title">Cipher riddles</span><p class="wg-tile-desc">Five riddles, three choices each — all must be correct.</p></a>
+      <a class="wg-tile" href="games/symbol-decoder.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">📡</span><span class="wg-tile-test">Pattern recognition</span></span><span class="wg-tile-title">Symbol decoder</span><p class="wg-tile-desc">Read the log, pick the next triad, decode the phrase.</p></a>
+      <a class="wg-tile" href="games/pc-builder.html"><span class="wg-tile-head"><span class="wg-tile-emoji" aria-hidden="true">🖥️</span><span class="wg-tile-test">Cross matching</span></span><span class="wg-tile-title">PC builder</span><p class="wg-tile-desc">Match CPU socket, parts, and peripherals.</p></a>
     </div>
   </main>
 </body>

@@ -15,10 +15,11 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🎯</span><span class="wg-tile-test">Aim test</span></span></header>
   <main class="wg-main">
     <h1 class="wg-h1">Neon targets</h1>
     <p class="wg-lead">You have <strong>20 seconds</strong>. Tap each glowing disc as it appears. Misses do not subtract — only hits count.</p>
+    <p class="wg-lead" style="font-size:0.9rem">End-of-run summary includes the secret password <strong>NEONSNIPER</strong> when you score <strong>12 or more hits</strong> before time runs out.</p>
     <div class="hud"><span id="t">20.0s</span><span id="sc">Hits: 0</span></div>
     <div class="field" id="field"></div>
     <p style="text-align:center;margin-top:1rem">
@@ -59,7 +60,8 @@
       field.innerHTML = '';
       document.getElementById('go').disabled = false;
       document.getElementById('end').hidden = false;
-      document.getElementById('end').innerHTML = '<div class="wg-success">Time up — <strong>' + score + '</strong> hits. <button type="button" class="wg-btn" style="margin-top:.5rem" onclick="location.reload()">Play again</button></div>';
+      var pwd = score >= 12 ? '<p style="margin:0.75rem 0 0;font-weight:700">Password: <strong>NEONSNIPER</strong></p>' : '<p style="margin:0.75rem 0 0;font-size:0.875rem;opacity:0.9">Score 12+ hits in one run to reveal the password.</p>';
+      document.getElementById('end').innerHTML = '<div class="wg-success">Time up — <strong>' + score + '</strong> hits.' + pwd + '<p style="margin-top:0.75rem"><button type="button" class="wg-btn" onclick="location.reload()">Play again</button></p></div>';
     }
 
     function addTarget() {

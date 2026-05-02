@@ -25,17 +25,149 @@ body.wg-page {
   line-height: 1.5;
 }
 
+/* Hub index (webgames-play/index.html) */
+body.wg-page--hub {
+  background:
+    radial-gradient(ellipse 100% 70% at 50% -15%, rgba(28, 145, 136, 0.22), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 100% 20%, rgba(61, 139, 253, 0.12), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 0% 80%, rgba(61, 139, 253, 0.06), transparent 45%),
+    var(--wg-bg);
+}
+
+.wg-top--hub {
+  justify-content: flex-start;
+}
+
+.wg-top-divider {
+  width: 1px;
+  height: 1.35rem;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.wg-top-badge {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--wg-muted);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(26, 35, 50, 0.6);
+}
+
+.wg-hub-hero {
+  margin-bottom: 2.25rem;
+  padding: 2rem 1.5rem 2.25rem;
+  border-radius: calc(var(--wg-radius) + 4px);
+  background: linear-gradient(165deg, rgba(36, 48, 68, 0.65) 0%, rgba(26, 35, 50, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.wg-hub-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--wg-accent), var(--wg-accent2));
+  opacity: 0.85;
+}
+
+.wg-hub-kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wg-accent);
+}
+
+.wg-hub-hero h1 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(2.1rem, 5vw, 2.85rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 0%, #c8d7e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (forced-colors: active) {
+  .wg-hub-hero h1 {
+    background: none;
+    color: var(--wg-text);
+  }
+}
+
+.wg-hub-hero .wg-sub {
+  margin: 0;
+  max-width: 40rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--wg-muted);
+}
+
+.wg-hub-stats {
+  list-style: none;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.65rem;
+}
+
+.wg-hub-stats li {
+  font-size: 0.8125rem;
+  color: var(--wg-muted);
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(15, 20, 25, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wg-hub-stats li strong {
+  color: var(--wg-text);
+  font-weight: 800;
+}
+
 .wg-top {
   position: sticky;
   top: 0;
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
   padding: 0.75rem 1.25rem;
   background: rgba(15, 20, 25, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
+}
+
+/* Same emoji + “what it tests” row as hub tiles (index.html), shown on each game page */
+.wg-game-brand {
+  margin-left: auto;
+  flex-shrink: 0;
+  max-width: min(100%, 20rem);
+}
+
+@media (max-width: 520px) {
+  .wg-game-brand .wg-tile-emoji {
+    font-size: 1.5rem;
+  }
+
+  .wg-game-brand .wg-tile-test {
+    font-size: 0.65rem;
+  }
 }
 
 .wg-top a {
@@ -161,60 +293,108 @@ body.wg-page {
 }
 
 .wg-hub {
-  max-width: 1000px;
+  max-width: 1250px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
-}
-
-.wg-hub h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  margin: 0 0 0.35rem;
-}
-
-.wg-hub .wg-sub {
-  color: var(--wg-muted);
-  margin: 0 0 2rem;
+  padding: 1.25rem clamp(1rem, 3vw, 1.75rem) 3.5rem;
 }
 
 .wg-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+  gap: 1.15rem;
 }
 
 a.wg-tile {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
-  padding: 1.25rem;
-  background: var(--wg-card);
+  gap: 0.55rem;
+  padding: 1.35rem 1.35rem 2.75rem;
+  background: linear-gradient(160deg, rgba(42, 56, 78, 0.95) 0%, var(--wg-card) 48%, rgba(26, 35, 50, 0.98) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--wg-radius);
+  border-radius: calc(var(--wg-radius) + 2px);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+a.wg-tile::after {
+  content: "Open →";
+  position: absolute;
+  right: 1.1rem;
+  bottom: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--wg-accent);
 }
 
 a.wg-tile:hover {
-  transform: translateY(-2px);
-  border-color: var(--wg-accent);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transform: translateY(-3px);
+  border-color: rgba(28, 145, 136, 0.55);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(28, 145, 136, 0.15);
+}
+
+a.wg-tile:focus-visible {
+  outline: none;
+  border-color: var(--wg-accent2);
+  box-shadow: 0 0 0 3px rgba(61, 139, 253, 0.35), 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+a.wg-tile:active {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.wg-tile,
+  a.wg-tile:hover,
+  a.wg-tile:active {
+    transform: none;
+    transition-duration: 0.01ms;
+  }
+}
+
+.wg-tile-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .wg-tile-emoji {
   font-size: 2rem;
   line-height: 1;
+  flex-shrink: 0;
+}
+
+.wg-tile-test {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wg-accent);
+  line-height: 1.25;
+  min-width: 0;
 }
 
 .wg-tile-title {
-  font-weight: 700;
-  font-size: 1.05rem;
+  font-weight: 800;
+  font-size: 1.08rem;
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+}
+
+a.wg-tile:hover .wg-tile-title {
+  color: #f0f4f8;
 }
 
 .wg-tile-desc {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: var(--wg-muted);
   margin: 0;
+  line-height: 1.5;
 }

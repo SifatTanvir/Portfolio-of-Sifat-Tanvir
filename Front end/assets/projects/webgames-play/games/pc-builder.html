@@ -7,121 +7,1004 @@
   <title>PC builder | Webgames</title>
   <link href="../shared.css" rel="stylesheet">
   <style>
-    .shell { display: flex; flex-wrap: wrap; min-height: calc(100vh - 52px); }
-    .sum { width: 100%; max-width: 260px; padding: 1rem; background: var(--wg-surface); border-right: 1px solid rgba(255,255,255,.08); }
-    .stage { flex: 1; padding: 1rem; display: flex; align-items: flex-start; justify-content: center; }
-    .card { max-width: 480px; width: 100%; background: var(--wg-card); border-radius: var(--wg-radius); padding: 1.25rem; border: 1px solid rgba(255,255,255,.1); }
-    label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
-    .pergrid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin: .5rem 0 1rem; }
-    .pergrid button { padding: .6rem; border-radius: 8px; border: 1px solid rgba(255,255,255,.15); background: var(--wg-surface); color: inherit; font: inherit; cursor: pointer; }
-    .pergrid button.on { background: rgba(225,29,72,.25); border-color: #fb7185; }
+    .pcb-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 52px);
+    }
+
+    @media (min-width: 768px) {
+      .pcb-shell {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: stretch;
+      }
+    }
+
+    .pcb-sum {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: var(--wg-surface);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @media (min-width: 768px) {
+      .pcb-sum {
+        width: min(280px, 24vw);
+        min-width: 240px;
+        max-width: 26%;
+        flex-shrink: 0;
+        border-bottom: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    .pcb-sum h2 {
+      font-size: 1rem;
+      margin: 0 0 0.75rem;
+      color: var(--wg-text);
+    }
+
+    .pcb-sum ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      font-size: 0.875rem;
+      color: var(--wg-muted);
+      line-height: 1.55;
+    }
+
+    .pcb-sum li {
+      margin-bottom: 0.2rem;
+    }
+
+    .pcb-sum .pcb-socket {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--wg-accent);
+      margin-top: 0.15rem;
+      letter-spacing: 0.03em;
+    }
+
+    .pcb-stage {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      padding: 1rem clamp(0.75rem, 2.5vw, 2.25rem) 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 0.85rem;
+    }
+
+    .pcb-page-head {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .pcb-page-head__title {
+      margin: 0;
+      font-size: clamp(1.05rem, 2.5vw, 1.4rem);
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--wg-text);
+      letter-spacing: -0.02em;
+    }
+
+    .pcb-page-head__sub {
+      margin: 0.5rem 0 0;
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.55;
+      color: var(--wg-muted);
+      max-width: 52rem;
+    }
+
+    .pcb-page-head__sub strong {
+      color: var(--wg-text);
+    }
+
+    .pcb-card {
+      max-width: none;
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--wg-card);
+      border-radius: var(--wg-radius);
+      padding: 1.35rem clamp(1rem, 2vw, 2rem);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pcb-core-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .pcb-core-main {
+      min-width: 0;
+      order: 1;
+    }
+
+    .pcb-core-side {
+      min-width: 0;
+    }
+
+    .pcb-core-side--left {
+      order: 2;
+    }
+
+    .pcb-core-side--right {
+      order: 3;
+    }
+
+    .pcb-core-side .pcb-ram-ref,
+    .pcb-core-side .pcb-socket-ref {
+      margin-top: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .pcb-core-layout {
+        display: grid;
+        /* Wider side columns (RAM + socket refs); narrow center for the form */
+        grid-template-columns: minmax(260px, 1.35fr) minmax(240px, 0.62fr) minmax(260px, 1.35fr);
+        gap: 1rem 1.35rem;
+        align-items: start;
+      }
+
+      .pcb-core-main {
+        order: 0;
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: stretch;
+        max-width: min(380px, 100%);
+        margin-inline: auto;
+      }
+
+      .pcb-core-side--left {
+        order: 0;
+        grid-column: 1;
+        grid-row: 1;
+        position: sticky;
+        top: 4.75rem;
+        align-self: start;
+        max-height: calc(100vh - 5.5rem);
+        overflow-y: auto;
+      }
+
+      .pcb-core-side--right {
+        order: 0;
+        grid-column: 3;
+        grid-row: 1;
+        position: sticky;
+        top: 4.75rem;
+        align-self: start;
+        max-height: calc(100vh - 5.5rem);
+        overflow-y: auto;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .pcb-core-layout {
+        grid-template-columns: minmax(280px, 1.4fr) minmax(260px, 0.58fr) minmax(280px, 1.4fr);
+        gap: 1.15rem 1.5rem;
+      }
+
+      .pcb-core-main {
+        max-width: min(400px, 100%);
+      }
+    }
+
+    @media (min-width: 1536px) {
+      .pcb-core-layout {
+        grid-template-columns: minmax(300px, 1.42fr) minmax(280px, 0.55fr) minmax(300px, 1.42fr);
+        gap: 1.25rem 1.75rem;
+      }
+
+      .pcb-core-main {
+        max-width: min(420px, 100%);
+      }
+    }
+
+    .pcb-card h2 {
+      margin: 0 0 0.65rem;
+      font-size: 1.15rem;
+      color: var(--wg-text);
+    }
+
+    .pcb-lead {
+      margin: 0 0 1.1rem;
+      font-size: 0.9rem;
+      color: var(--wg-muted);
+      line-height: 1.55;
+    }
+
+    .pcb-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pcb-step {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--wg-muted);
+    }
+
+    .pcb-step.on {
+      color: var(--wg-accent);
+    }
+
+    .pcb-step.done {
+      color: color-mix(in srgb, var(--wg-accent) 55%, var(--wg-muted));
+    }
+
+    .pcb-field label {
+      display: block;
+      font-weight: 600;
+      margin: 0.85rem 0 0.3rem;
+      font-size: 0.9rem;
+    }
+
+    .pcb-field label:first-of-type {
+      margin-top: 0;
+    }
+
+    .pcb-live {
+      margin-top: 0.85rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+
+    .pcb-live[hidden] {
+      display: none !important;
+    }
+
+    .pcb-live--ok {
+      background: rgba(28, 145, 136, 0.15);
+      border: 1px solid rgba(28, 145, 136, 0.45);
+      color: #b8f0eb;
+    }
+
+    .pcb-live--bad {
+      background: rgba(220, 80, 80, 0.12);
+      border: 1px solid rgba(220, 100, 100, 0.35);
+      color: #fecaca;
+    }
+
+    .pcb-live--wait {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--wg-muted);
+    }
+
+    .pcb-msg {
+      margin-top: 0.75rem;
+      min-height: 0;
+    }
+
+    .pcb-msg:empty {
+      display: none;
+    }
+
+    .pcb-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1.1rem;
+    }
+
+    @media (min-width: 480px) {
+      .pcb-actions.pcb-actions--row {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .pcb-actions.pcb-actions--row .wg-btn {
+        flex: 1;
+        min-width: 8rem;
+      }
+    }
+
+    .pcb-compat {
+      margin: 0 0 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .pcb-compat.ok {
+      color: #b8f0eb;
+    }
+
+    .pcb-compat.bad {
+      color: #fecaca;
+    }
+
+    .pcb-pergrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .pcb-pergrid button {
+      padding: 0.65rem 0.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: var(--wg-surface);
+      color: inherit;
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pcb-pergrid button:hover:not(:disabled) {
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .pcb-pergrid button.on {
+      background: rgba(28, 145, 136, 0.22);
+      border-color: var(--wg-accent);
+      box-shadow: 0 0 0 1px rgba(28, 145, 136, 0.35);
+    }
+
+    .pcb-pergrid button:focus-visible {
+      outline: 2px solid var(--wg-accent);
+      outline-offset: 2px;
+    }
+
+    .pcb-review ul {
+      margin: 0 0 1rem;
+      padding-left: 1.2rem;
+      color: var(--wg-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .pcb-foot {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--wg-muted);
+      padding: 0.75rem 1rem;
+      margin-top: auto;
+    }
+
+    .pcb-memo {
+      margin-top: 1.15rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pcb-memo[hidden] {
+      display: none !important;
+    }
+
+    .pcb-memo-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--wg-accent);
+      margin: 0 0 0.5rem;
+    }
+
+    .pcb-memo p {
+      margin: 0 0 0.45rem;
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--wg-muted);
+    }
+
+    .pcb-memo ol {
+      margin: 0.35rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: color-mix(in srgb, var(--wg-text) 82%, var(--wg-muted));
+    }
+
+    .pcb-memo li {
+      margin-bottom: 0.35rem;
+    }
+
+    .pcb-memo .pcb-memo-ex {
+      margin-top: 0.65rem;
+      font-size: 0.75rem;
+      font-style: italic;
+      color: var(--wg-muted);
+    }
+
+    .pcb-sock-sum {
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    .pcb-sock-sum-p {
+      margin: 0.2rem 0 0;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: color-mix(in srgb, var(--wg-muted) 92%, var(--wg-text));
+      font-weight: 400;
+    }
+
+    .pcb-socket-ref {
+      margin-top: 1.25rem;
+      padding: 1rem 1rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .pcb-socket-ref h4,
+    .pcb-ram-ref h4 {
+      margin: 0 0 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--wg-accent);
+    }
+
+    .pcb-ram-ref {
+      margin-top: 1.15rem;
+      padding: 1rem 1rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .pcb-sock-grid {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 520px) {
+      .pcb-sock-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .pcb-sock-card {
+      margin: 0;
+      padding: 0.75rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(31, 41, 55, 0.45);
+    }
+
+    .pcb-sock-card-h {
+      margin: 0 0 0.45rem;
+      font-size: 0.82rem;
+      color: var(--wg-text);
+    }
+
+    .pcb-sock-card p {
+      margin: 0 0 0.45rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--wg-muted);
+    }
+
+    .pcb-sock-card ul {
+      margin: 0;
+      padding-left: 1.05rem;
+      font-size: 0.74rem;
+      line-height: 1.5;
+      color: color-mix(in srgb, var(--wg-muted) 88%, var(--wg-text));
+    }
+
+    .pcb-sock-card li {
+      margin-bottom: 0.3rem;
+    }
+
+    .pcb-sock-dossier {
+      margin-top: 1.15rem;
+    }
+
+    .pcb-sock-doss-h {
+      margin: 0 0 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--wg-text);
+    }
+
+    .pcb-live .pcb-live-tip {
+      margin: 0.5rem 0 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: color-mix(in srgb, var(--wg-text) 75%, var(--wg-muted));
+    }
   </style>
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
-  <div class="shell">
-    <aside class="sum">
-      <h2 style="font-size:1rem;margin:0 0 1rem">Build summary</h2>
-      <ul style="margin:0;padding-left:1.1rem;font-size:.9rem;color:var(--wg-muted)" id="sum"></ul>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🖥️</span><span class="wg-tile-test">Cross matching</span></span></header>
+  <div class="pcb-shell">
+    <aside class="pcb-sum">
+      <h2>Build summary</h2>
+      <ul id="sum" aria-live="polite"></ul>
+      <div id="pcb-hunt" class="pcb-memo" hidden></div>
     </aside>
-    <div class="stage">
-      <div class="card" id="card"></div>
+    <div class="pcb-stage">
+      <header class="pcb-page-head">
+        <h1 class="pcb-page-head__title">Build the PC with proper configuration combination to reveal the secret password.</h1>
+        <p class="pcb-page-head__sub">Password <strong>Configuration</strong> appears in the green success alert only after you satisfy <strong>REQ-884</strong>: pick one of the <strong>three approved core stacks</strong> (socket-matched CPU, board, GPU, RAM), complete the desk hunt peripherals, then <strong>Place order</strong>. Non-compliant builds are rejected with an error instead of awarding the password.</p>
+      </header>
+      <div class="pcb-card" id="card"></div>
     </div>
   </div>
+  <footer class="pcb-foot">Configurator demo · sockets must match before checkout</footer>
+
   <script>
-    var CPUs = [{ id: 'i5', name: 'Intel i5-13600K', socket: 'LGA1700' }, { id: 'i7', name: 'Intel i7-14700K', socket: 'LGA1700' }, { id: 'r5', name: 'Ryzen 5 7600', socket: 'AM5' }];
-    var MOBs = [{ id: 'z790', name: 'ASUS Z790-Plus', socket: 'LGA1700' }, { id: 'b650', name: 'MSI B650 Tomahawk', socket: 'AM5' }];
+    var SOCKET_INFO = {
+      LGA1700: {
+        title: 'LGA1700',
+        spec: 'Land Grid Array with 1700 independent contacts under a hinged Independent Loading Mechanism (ILM). The CPU sits pads-down; the socket supplies power and DDR signals through the board.',
+        cpus: 'Intel desktop Core 12th Gen (Alder Lake) through 14th Gen (Raptor Lake Refresh) when sold for LGA1700 share this physical socket.',
+        boards: 'Chipsets such as Z790 and B760 appear on retail boards in this form factor; the two boards listed here are both DDR5-class LGA1700 designs.',
+        memory: 'The CPU’s IMC may be DDR4 or DDR5 depending on SKU; the DIMM type is determined by the motherboard—this demo’s LGA1700 board expects DDR5 kits only.',
+        quick: 'Intel LGA1700 — 1700 lands, ILM latch, 12th–14th Gen Core desktop when specified for this socket.'
+      },
+      AM5: {
+        title: 'AM5',
+        spec: 'AMD desktop socket using an LGA1718 contact grid (pins on the motherboard, pads on the CPU) with a single retention frame; successor to pin-in-socket AM4 for mainstream Ryzen towers.',
+        cpus: 'Ryzen 7000 (Zen 4) and later desktop processors that explicitly list Socket AM5 (7600-class CPUs in this catalog).',
+        boards: 'B650, X670, and other AM5 chipsets use the same keyed socket so any compatible AM5 CPU seats on any compatible AM5 board.',
+        memory: 'Platform is DDR5-only; there is no official DDR4 path on true AM5 desktop boards.',
+        quick: 'AMD AM5 — LGA1718 grid, Ryzen 7000+ desktop, DDR5-only.'
+      }
+    };
+
+    var CPUs = [
+      { id: 'i5', name: 'Intel i5-13600K', socket: 'LGA1700' },
+      { id: 'i7', name: 'Intel i7-14700K', socket: 'LGA1700' },
+      { id: 'r5', name: 'Ryzen 5 7600', socket: 'AM5' }
+    ];
+    var MOBs = [
+      { id: 'z790', name: 'ASUS Z790-Plus', socket: 'LGA1700' },
+      { id: 'b650', name: 'MSI B650 Tomahawk', socket: 'AM5' }
+    ];
     var GPUS = ['RTX 4070 Super', 'RX 7800 XT', 'RTX 4090'];
     var RAMS = ['32 GB DDR5-6000', '64 GB DDR5-5600'];
+    var RAM_INFO = {
+      '32 GB DDR5-6000': {
+        title: '32 GB DDR5-6000',
+        headline: '32 GB total, 6000 MT/s class (effective data rate on the box).',
+        detail: 'Usually 2×16 GB UDIMMs. “6000” is the marketed speed bin above JEDEC 4800; the board trains tighter timings via Intel XMP 3.0 or AMD EXPO depending on the SPD burned on the sticks.',
+        lga1700: 'With the LGA1700 Z790 board in this catalog, both DDR5 slots are U-DIMM—this kit is supported as long as you enable the matching vendor profile in firmware after POST.',
+        am5: 'With the AM5 B650 board, Ryzen 7000 IMCs often run happily near the 6000 MT/s “1:1 vs divider” folklore; still pick the EXPO table that matches this SKU.',
+        either: 'Every motherboard sold here is DDR5-only, so either socket path accepts this kit electrically once CPU and board agree.',
+        tradeoff: 'Favors frequency over capacity—great for lighter footprints; compare against the 64 GB kit if the workload needs RAM headroom.'
+      },
+      '64 GB DDR5-5600': {
+        title: '64 GB DDR5-5600',
+        headline: '64 GB total, 5600 MT/s class—more GB, slightly relaxed clock versus the 6000 kit.',
+        detail: 'Typically 2×32 GB UDIMMs. The slower bin is often easier on the memory controller while doubling capacity versus 2×16 GB.',
+        lga1700: 'Z790 DDR5 boards here can populate both channels at this density for creator/gamer hybrids; enable XMP/EXPO so the board does not boot at JEDEC 4800 silently.',
+        am5: 'B650 + Zen 4 is a common pairing for 64 GB when VMs or compilers need space; EXPO at 5600 is usually conservative versus chasing 6000+.',
+        either: 'Socket choice does not change DIMM generation in this store—only DDR5 kits exist—so compare kits on capacity vs MT/s, not on LGA1700 vs AM5.',
+        tradeoff: 'More headroom for large working sets; pick this when the brief implies “heavy RAM” over raw MHz bragging rights.'
+      }
+    };
     var PERS = ['27" Monitor', 'Mechanical Keyboard', 'Wireless Mouse', '7.1 Headset'];
-    var REQ = { cpu: 'r5', mobo: 'b650', gpu: 'RX 7800 XT', ram: '64 GB DDR5-5600', per: ['27" Monitor', 'Mechanical Keyboard', 'Wireless Mouse'] };
-    var cpu = '', mobo = '', gpu = '', ram = '', per = [], stage = 0, order = false;
+    /** Shared peripherals for every accepted core stack (REQ-884 desk bundle). */
+    var REQ_PER = ['27" Monitor', 'Mechanical Keyboard', 'Wireless Mouse'];
 
-    function cpuO() { return CPUs.find(function (c) { return c.id === cpu; }); }
-    function mobO() { return MOBs.find(function (m) { return m.id === mobo; }); }
-    function match() { return cpuO() && mobO() && cpuO().socket === mobO().socket; }
-    function coreOk() { return cpu === REQ.cpu && mobo === REQ.mobo && gpu === REQ.gpu && ram === REQ.ram; }
-    function perOk() { return REQ.per.length === per.length && REQ.per.every(function (p) { return per.indexOf(p) !== -1; }); }
+    /**
+     * Three approved full core configs — each is socket-matched in this catalog:
+     * LGA1700 i5 + Z790, LGA1700 i7 + Z790, AM5 R5 + B650.
+     */
+    var ACCEPTED_CORES = [
+      { cpu: 'i5', mobo: 'z790', gpu: 'RTX 4070 Super', ram: '32 GB DDR5-6000' },
+      { cpu: 'i7', mobo: 'z790', gpu: 'RTX 4090', ram: '64 GB DDR5-5600' },
+      { cpu: 'r5', mobo: 'b650', gpu: 'RX 7800 XT', ram: '64 GB DDR5-5600' }
+    ];
+    var cpu = '';
+    var mobo = '';
+    var gpu = '';
+    var ram = '';
+    var per = [];
+    var stage = 0;
+    var order = false;
 
-    function updSum() {
-      document.getElementById('sum').innerHTML =
-        '<li>CPU: ' + (cpuO() ? cpuO().name : '—') + '</li>' +
-        '<li>Motherboard: ' + (mobO() ? mobO().name : '—') + '</li>' +
-        '<li>GPU: ' + (gpu || '—') + '</li>' +
-        '<li>RAM: ' + (ram || '—') + '</li>' +
-        '<li>Peripherals: ' + (per.length ? per.join(', ') : '—') + '</li>';
+    function cpuO() {
+      return CPUs.find(function (c) { return c.id === cpu; });
     }
 
-    function sel(name, val, opts) {
-      var h = '<label>' + name + '</label><select class="wg-select" data-k="' + name + '"><option value="">— pick —</option>';
-      opts.forEach(function (o) { h += '<option value="' + o.v + '"' + (o.v === val ? ' selected' : '') + '>' + o.t + '</option>'; });
-      return h + '</select>';
+    function mobO() {
+      return MOBs.find(function (m) { return m.id === mobo; });
+    }
+
+    function match() {
+      return cpuO() && mobO() && cpuO().socket === mobO().socket;
+    }
+
+    function coreOk() {
+      return ACCEPTED_CORES.some(function (sol) {
+        return cpu === sol.cpu && mobo === sol.mobo && gpu === sol.gpu && ram === sol.ram;
+      });
+    }
+
+    function perOk() {
+      return REQ_PER.length === per.length && REQ_PER.every(function (p) { return per.indexOf(p) !== -1; });
+    }
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function socketSumBlock(code) {
+      var S = SOCKET_INFO[code];
+      if (!S) {
+        return '<div class="pcb-sock-sum"><span class="pcb-socket">' + esc(code) + '</span></div>';
+      }
+      return '<div class="pcb-sock-sum"><span class="pcb-socket">' + esc(S.title) + '</span>' +
+        '<p class="pcb-sock-sum-p">' + esc(S.spec) + '</p></div>';
+    }
+
+    function socketRefBlockHtml() {
+      var keys = ['LGA1700', 'AM5'];
+      var cards = keys.map(function (key) {
+        var S = SOCKET_INFO[key];
+        return '<article class="pcb-sock-card"><h5 class="pcb-sock-card-h">' + esc(S.title) + '</h5>' +
+          '<p>' + esc(S.spec) + '</p><ul>' +
+          '<li><strong>Typical CPUs:</strong> ' + esc(S.cpus) + '</li>' +
+          '<li><strong>Typical boards:</strong> ' + esc(S.boards) + '</li>' +
+          '<li><strong>Memory:</strong> ' + esc(S.memory) + '</li></ul></article>';
+      }).join('');
+      return '<section class="pcb-socket-ref" aria-labelledby="pcb-sref-h">' +
+        '<h4 id="pcb-sref-h">Socket reference</h4>' +
+        '<p class="pcb-lead" style="margin-top:0;margin-bottom:.75rem">Every CPU and motherboard in this catalog lists which socket it uses. Both must name the <strong>same</strong> socket or the machine will not boot.</p>' +
+        '<div class="pcb-sock-grid">' + cards + '</div></section>';
+    }
+
+    function socketDossierHtml() {
+      var c = cpuO();
+      var m = mobO();
+      if (!c || !m) return '';
+      var S = SOCKET_INFO[c.socket];
+      var T = SOCKET_INFO[m.socket];
+      var a1 = '<article class="pcb-sock-card"><h5 class="pcb-sock-card-h">Your CPU → ' + esc(c.socket) + '</h5>' +
+        (S ? '<p>' + esc(S.spec) + '</p><ul><li>' + esc(S.cpus) + '</li><li>' + esc(S.memory) + '</li></ul>' : '') + '</article>';
+      var a2 = '<article class="pcb-sock-card"><h5 class="pcb-sock-card-h">Your board → ' + esc(m.socket) + '</h5>' +
+        (T ? '<p>' + esc(T.spec) + '</p><ul><li>' + esc(T.boards) + '</li><li>' + esc(T.memory) + '</li></ul>' : '') + '</article>';
+      return '<div class="pcb-sock-dossier"><h4 class="pcb-sock-doss-h">What each pick is asking for</h4><div class="pcb-sock-grid">' + a1 + a2 + '</div></div>';
+    }
+
+    function ramRefBlockHtml() {
+      var cards = RAMS.map(function (key) {
+        var R = RAM_INFO[key];
+        if (!R) return '';
+        return '<article class="pcb-sock-card"><h5 class="pcb-sock-card-h">' + esc(R.title) + '</h5>' +
+          '<p><strong>' + esc(R.headline) + '</strong></p><p>' + esc(R.detail) + '</p><ul>' +
+          '<li><strong>LGA1700 + Z790 path:</strong> ' + esc(R.lga1700) + '</li>' +
+          '<li><strong>AM5 + B650 path:</strong> ' + esc(R.am5) + '</li>' +
+          '<li><strong>Either socket:</strong> ' + esc(R.either) + '</li>' +
+          '<li><strong>Tradeoff:</strong> ' + esc(R.tradeoff) + '</li></ul></article>';
+      }).join('');
+      return '<section class="pcb-ram-ref" aria-labelledby="pcb-ramref-h">' +
+        '<h4 id="pcb-ramref-h">DDR5 kit reference</h4>' +
+        '<p class="pcb-lead" style="margin-top:0;margin-bottom:.75rem">This store only stocks <strong>DDR5 UDIMMs</strong>. Socket (LGA1700 vs AM5) decides which CPU and board you pair, not whether DDR4 fits—there is no DDR4 inventory here. Use the matrix below to see how each kit behaves on each platform path.</p>' +
+        '<div class="pcb-sock-grid">' + cards + '</div></section>';
+    }
+
+    function ramSumExtra(val) {
+      var R = RAM_INFO[val];
+      if (!R) return '';
+      return '<div class="pcb-sock-sum"><p class="pcb-sock-sum-p"><strong>' + esc(R.headline) + '</strong> ' + esc(R.tradeoff) + '</p></div>';
+    }
+
+    function ramDossierHtml() {
+      if (!ram || !RAM_INFO[ram] || !cpuO() || !mobO()) return '';
+      var R = RAM_INFO[ram];
+      var sock = cpuO().socket;
+      var pathNote = sock === 'LGA1700' ? R.lga1700 : R.am5;
+      return '<div class="pcb-sock-dossier" style="margin-top:1rem"><h4 class="pcb-sock-doss-h">RAM vs your current platform</h4>' +
+        '<article class="pcb-sock-card"><h5 class="pcb-sock-card-h">' + esc(ram) + ' on ' + esc(sock) + '</h5>' +
+        '<p>' + esc(R.detail) + '</p><ul>' +
+        '<li><strong>This socket path:</strong> ' + esc(pathNote) + '</li>' +
+        '<li><strong>General rule:</strong> ' + esc(R.either) + '</li>' +
+        '<li><strong>Tradeoff:</strong> ' + esc(R.tradeoff) + '</li></ul></article></div>';
+    }
+
+    function paintRamHint(host) {
+      if (!host) return;
+      host.hidden = false;
+      if (!cpu || !mobo) {
+        host.className = 'pcb-live pcb-live--wait';
+        host.innerHTML = '<p style="margin:0">Pick CPU and motherboard first. The <strong>DDR5 kit reference</strong> below explains how each RAM option maps to LGA1700 vs AM5 once those two agree.</p>';
+        return;
+      }
+      if (!match()) {
+        host.className = 'pcb-live pcb-live--bad';
+        host.innerHTML = '<p style="margin:0">Sockets still disagree—RAM kits are DDR5-only in this catalog, but <strong>fix the CPU/board socket pair</strong> before the DIMM choice affects whether the machine trains.</p>';
+        return;
+      }
+      var sock = cpuO().socket;
+      var R = ram && RAM_INFO[ram];
+      host.className = 'pcb-live pcb-live--ok';
+      var base = '<p style="margin:0">Sockets line up on <strong>' + esc(sock) + '</strong>. Both RAM kits are valid DDR5 U-DIMMs for this demo’s ' +
+        (sock === 'LGA1700' ? 'Z790' : 'B650') + ' inventory—choose based on capacity vs MT/s in the kit cards.</p>';
+      if (R) {
+        var path = sock === 'LGA1700' ? R.lga1700 : R.am5;
+        base += '<p class="pcb-live-tip"><strong>Selected ' + esc(ram) + ':</strong> ' + esc(path) + '</p>';
+      } else {
+        base += '<p class="pcb-live-tip">Select a kit from the dropdown to see how it lands on your ' + esc(sock) + ' path.</p>';
+      }
+      host.innerHTML = base;
+    }
+
+    function updSum() {
+      var c = cpuO();
+      var m = mobO();
+      var sockCpu = c ? socketSumBlock(c.socket) : '';
+      var sockMob = m ? socketSumBlock(m.socket) : '';
+      var ramX = ram ? ramSumExtra(ram) : '';
+      document.getElementById('sum').innerHTML =
+        '<li>CPU: ' + (c ? esc(c.name) : '—') + sockCpu + '</li>' +
+        '<li>Motherboard: ' + (m ? esc(m.name) : '—') + sockMob + '</li>' +
+        '<li>GPU: ' + esc(gpu || '—') + '</li>' +
+        '<li>RAM: ' + esc(ram || '—') + ramX + '</li>' +
+        '<li>Peripherals: ' + (per.length ? esc(per.join(', ')) : '—') + '</li>';
+    }
+
+    function updHuntPanel() {
+      var el = document.getElementById('pcb-hunt');
+      if (!el) return;
+      if (stage < 2) {
+        el.hidden = true;
+        el.innerHTML = '';
+        el.removeAttribute('aria-live');
+        return;
+      }
+      el.hidden = false;
+      el.setAttribute('aria-live', 'polite');
+      el.innerHTML =
+        '<h3 class="pcb-memo-title">REQ-884 · desk bundle hunt</h3>' +
+        '<p>Procurement will only sign off if <strong>exactly three</strong> peripherals match the desk story below—no more, no less.</p>' +
+        '<ol>' +
+        '<li><strong>Glass stage:</strong> where the frame buffer faces you—diagonal legend is <strong>three cubed</strong> inches, glass only, no copper tail to the tower.</li>' +
+        '<li><strong>Switch garden:</strong> every stem is a tactile tower; letters ride metal, not mush.</li>' +
+        '<li><strong>Silent tail:</strong> the pointer roams the pad with no leash back to the tower.</li>' +
+        '</ol>' +
+        '<p class="pcb-memo-ex">Disallowed on this ticket: the circumaural rig tuned for <strong>seven-point-one</strong> surround—audio stays in the booth, not the parts list.</p>';
+    }
+
+    function stepRow() {
+      var labels = ['Core', 'Sockets', 'Extras', 'Confirm'];
+      var parts = [];
+      for (var si = 0; si < 4; si++) {
+        var cls = 'pcb-step';
+        if (si === stage) cls += ' on';
+        else if (si < stage) cls += ' done';
+        parts.push('<span class="' + cls + '">' + (si + 1) + '. ' + labels[si] + '</span>');
+      }
+      return '<div class="pcb-steps" role="group" aria-label="Build steps">' + parts.join('') + '</div>';
+    }
+
+    function sel(idSuffix, labelText, dataKey, val, opts) {
+      var id = 'pcb-sel-' + idSuffix;
+      var h = '<div class="pcb-field"><label for="' + id + '">' + esc(labelText) + '</label>' +
+        '<select id="' + id + '" class="wg-select" data-k="' + esc(dataKey) + '"><option value="">— Choose —</option>';
+      opts.forEach(function (o) {
+        h += '<option value="' + esc(o.v) + '"' + (o.v === val ? ' selected' : '') + '>' + esc(o.t) + '</option>';
+      });
+      return h + '</select></div>';
+    }
+
+    function paintLiveCompat(host) {
+      if (!host) return;
+      if (!cpu || !mobo) {
+        host.hidden = false;
+        host.className = 'pcb-live pcb-live--wait';
+        host.innerHTML = '';
+        host.textContent = 'Select a CPU and motherboard to preview socket compatibility.';
+        return;
+      }
+      host.hidden = false;
+      var Sc = SOCKET_INFO[cpuO().socket];
+      var Sm = SOCKET_INFO[mobO().socket];
+      if (match()) {
+        host.className = 'pcb-live pcb-live--ok';
+        var line = 'Sockets match on <strong>' + esc(cpuO().socket) + '</strong>. You can continue to the socket-check step.';
+        var tip = Sc ? '<p class="pcb-live-tip">' + esc(Sc.quick) + '</p>' : '';
+        host.innerHTML = '<p style="margin:0">' + line + '</p>' + tip;
+      } else {
+        host.className = 'pcb-live pcb-live--bad';
+        var q1 = Sc ? esc(Sc.quick) : esc(cpuO().socket);
+        var q2 = Sm ? esc(Sm.quick) : esc(mobO().socket);
+        host.innerHTML =
+          '<p style="margin:0"><strong>Mismatch:</strong> the CPU package targets <strong>' + esc(cpuO().socket) + '</strong> while the board exposes <strong>' + esc(mobO().socket) + '</strong>. They must be identical.</p>' +
+          '<p class="pcb-live-tip"><strong>CPU side:</strong> ' + q1 + '</p>' +
+          '<p class="pcb-live-tip"><strong>Board side:</strong> ' + q2 + '</p>';
+      }
+    }
+
+    function setMsg(el, text, asError) {
+      if (!el) return;
+      if (!text) {
+        el.innerHTML = '';
+        el.className = 'pcb-msg';
+        return;
+      }
+      el.className = 'pcb-msg ' + (asError ? 'wg-error' : '');
+      el.textContent = text;
     }
 
     function render() {
       updSum();
+      updHuntPanel();
       var el = document.getElementById('card');
+      var msgId = 'pcb-msg';
+
       if (stage === 0) {
-        el.innerHTML = '<h2 style="margin:0 0 1rem">1. Core parts</h2>' +
-          sel('CPU', cpu, CPUs.map(function (c) { return { v: c.id, t: c.name }; })) +
-          sel('Motherboard', mobo, MOBs.map(function (m) { return { v: m.id, t: m.name }; })) +
-          sel('GPU', gpu, GPUS.map(function (g) { return { v: g, t: g }; })) +
-          sel('RAM', ram, RAMS.map(function (r) { return { v: r, t: r }; })) +
-          '<button type="button" class="wg-btn" style="margin-top:1rem;width:100%" id="n0">Check selections →</button>';
+        el.innerHTML =
+          stepRow() +
+          '<h2>Core components</h2>' +
+          '<p class="pcb-lead">Choose CPU, motherboard, GPU, and RAM. The motherboard socket must match the CPU (next step). <strong>REQ-884</strong> approves <strong>three</strong> exact core stacks (two LGA1700 + Z790, one AM5 + B650)—GPU and RAM must match one of those stacks, not only sockets. <strong>RAM is DDR5-only</strong> in this catalog; on wide screens the <strong>DDR5 kit reference</strong> is on the left and the <strong>Socket reference</strong> on the right.</p>' +
+          '<div class="pcb-core-layout">' +
+          '<aside class="pcb-core-side pcb-core-side--left">' + ramRefBlockHtml() + '</aside>' +
+          '<div class="pcb-core-main">' +
+          sel('cpu', 'CPU', 'CPU', cpu, CPUs.map(function (c) { return { v: c.id, t: c.name + ' · ' + c.socket }; })) +
+          sel('mobo', 'Motherboard', 'Motherboard', mobo, MOBs.map(function (m) { return { v: m.id, t: m.name + ' · ' + m.socket }; })) +
+          sel('gpu', 'GPU', 'GPU', gpu, GPUS.map(function (g) { return { v: g, t: g }; })) +
+          sel('ram', 'RAM', 'RAM', ram, RAMS.map(function (r) { return { v: r, t: r }; })) +
+          '<div id="pcb-live" class="pcb-live pcb-live--wait" hidden></div>' +
+          '<div id="pcb-ram-hint" class="pcb-live pcb-live--wait" style="margin-top:.65rem"></div>' +
+          '<div id="' + msgId + '" class="pcb-msg" role="status"></div>' +
+          '<div class="pcb-actions">' +
+          '<button type="button" class="wg-btn" style="width:100%" id="n0">Check selections →</button></div>' +
+          '</div>' +
+          '<aside class="pcb-core-side pcb-core-side--right">' + socketRefBlockHtml() + '</aside>' +
+          '</div>';
+
+        var live = document.getElementById('pcb-live');
+        var ramHint = document.getElementById('pcb-ram-hint');
+        paintLiveCompat(live);
+        paintRamHint(ramHint);
+
         el.querySelectorAll('select').forEach(function (s) {
-          s.onchange = function () {
+          s.addEventListener('change', function () {
             var k = s.getAttribute('data-k');
             if (k === 'CPU') cpu = s.value;
             if (k === 'Motherboard') mobo = s.value;
             if (k === 'GPU') gpu = s.value;
             if (k === 'RAM') ram = s.value;
             updSum();
-          };
+            paintLiveCompat(live);
+            paintRamHint(ramHint);
+            setMsg(document.getElementById(msgId), '', false);
+          });
         });
-        el.querySelector('#n0').onclick = function () {
-          if (!cpu || !mobo || !gpu || !ram) { alert('Choose all core parts.'); return; }
+        el.querySelector('#n0').addEventListener('click', function () {
+          if (!cpu || !mobo || !gpu || !ram) {
+            setMsg(document.getElementById(msgId), 'Pick a value in every dropdown before continuing.', true);
+            return;
+          }
+          setMsg(document.getElementById(msgId), '', false);
           stage = 1;
           render();
-        };
+        });
       } else if (stage === 1) {
-        el.innerHTML = '<h2 style="margin:0 0 1rem">2. Compatibility</h2>' +
-          '<p style="margin:0 0 1rem;font-size:.95rem">' + (match() ? '✓ CPU and motherboard sockets match.' : '✗ Mismatch: CPU is ' + (cpuO() && cpuO().socket) + ', board is ' + (mobO() && mobO().socket) + '.') + '</p>' +
-          (match() ? '<button type="button" class="wg-btn" id="n1">Peripherals →</button>' : '<button type="button" class="wg-btn wg-btn--ghost" id="b0">← Back</button>');
-        if (match()) el.querySelector('#n1').onclick = function () { stage = 2; render(); };
-        else el.querySelector('#b0').onclick = function () { stage = 0; render(); };
+        var ok = match();
+        var sockLine = ok
+          ? 'CPU and motherboard both use ' + esc(cpuO().socket) + '.'
+          : 'CPU is ' + esc(cpuO() ? cpuO().socket : '—') + ', motherboard is ' + esc(mobO() ? mobO().socket : '—') + '.';
+        el.innerHTML =
+          stepRow() +
+          '<h2>Socket check</h2>' +
+          '<p class="pcb-lead">Mixed sockets will not post. Fix core picks or go back to change them.</p>' +
+          '<p class="pcb-compat ' + (ok ? 'ok' : 'bad') + '" role="status">' + (ok ? '✓ ' : '✗ ') + sockLine + '</p>' +
+          socketDossierHtml() +
+          ramDossierHtml() +
+          '<div class="pcb-actions pcb-actions--row">' +
+          (ok
+            ? '<button type="button" class="wg-btn" id="n1">Peripherals →</button>'
+            : '<button type="button" class="wg-btn wg-btn--ghost" id="b0">← Edit core parts</button>') +
+          '</div>';
+        if (ok) {
+          el.querySelector('#n1').addEventListener('click', function () { stage = 2; render(); });
+        } else {
+          el.querySelector('#b0').addEventListener('click', function () { stage = 0; render(); });
+        }
       } else if (stage === 2) {
-        var pg = '<div class="pergrid">';
+        var pg = '<div class="pcb-pergrid">';
         PERS.forEach(function (p, idx) {
-          pg += '<button type="button" data-idx="' + idx + '" class="' + (per.indexOf(p) !== -1 ? 'on' : '') + '">' + p + '</button>';
+          var on = per.indexOf(p) !== -1;
+          pg += '<button type="button" data-idx="' + idx + '" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '">' + esc(p) + '</button>';
         });
         pg += '</div>';
-        el.innerHTML = '<h2 style="margin:0 0 1rem">3. Peripherals</h2>' + pg +
-          '<button type="button" class="wg-btn" style="width:100%" id="n2">Review order →</button>';
-        el.querySelectorAll('.pergrid button').forEach(function (b) {
-          b.onclick = function () {
+        el.innerHTML =
+          stepRow() +
+          '<h2>Peripherals</h2>' +
+          '<p class="pcb-lead">Toggle items to match <strong>REQ-884</strong>. You need <strong>exactly three</strong> peripherals—the <strong>Desk bundle hunt</strong> in the summary column tells you which story each slot must satisfy.</p>' +
+          pg +
+          '<div id="' + msgId + '" class="pcb-msg" role="status"></div>' +
+          '<div class="pcb-actions">' +
+          '<button type="button" class="wg-btn" style="width:100%" id="n2">Review order →</button>' +
+          '<button type="button" class="wg-btn wg-btn--ghost" id="b1">← Back to socket check</button></div>';
+
+        el.querySelectorAll('.pcb-pergrid button').forEach(function (b) {
+          b.addEventListener('click', function () {
             var p = PERS[+b.getAttribute('data-idx')];
             var i = per.indexOf(p);
-            if (i === -1) per.push(p); else per.splice(i, 1);
-            b.classList.toggle('on', per.indexOf(p) !== -1);
-          };
+            if (i === -1) per.push(p);
+            else per.splice(i, 1);
+            var onNow = per.indexOf(p) !== -1;
+            b.classList.toggle('on', onNow);
+            b.setAttribute('aria-pressed', onNow ? 'true' : 'false');
+            updSum();
+            setMsg(document.getElementById(msgId), '', false);
+          });
         });
-        el.querySelector('#n2').onclick = function () {
-          if (!per.length) { alert('Pick at least one peripheral.'); return; }
+        el.querySelector('#b1').addEventListener('click', function () { stage = 1; render(); });
+        el.querySelector('#n2').addEventListener('click', function () {
+          if (!per.length) {
+            setMsg(document.getElementById(msgId), 'Select at least one peripheral (or several), then continue.', true);
+            return;
+          }
+          setMsg(document.getElementById(msgId), '', false);
           stage = 3;
           render();
-        };
+        });
       } else {
-        el.innerHTML = '<h2 style="margin:0 0 1rem">4. Confirm</h2><ul style="margin:0 0 1rem;padding-left:1.2rem;color:var(--wg-muted)">' +
-          '<li>CPU: ' + cpuO().name + '</li><li>Board: ' + mobO().name + '</li><li>GPU: ' + gpu + '</li><li>RAM: ' + ram + '</li><li>Extras: ' + per.join(', ') + '</li></ul>' +
-          (order ? (match() && coreOk() && perOk()
-            ? '<div class="wg-success">Order placed! Password: <strong>Configuration</strong></div>'
-            : '<div class="wg-error">This build does not match the secret brief. Hint: AM5 mid-tier CPU, matching board, RX 7800 XT, 64 GB RAM, three specific peripherals.</div>')
-            : '<button type="button" class="wg-btn" id="go">Place order</button>');
+        el.innerHTML =
+          stepRow() +
+          '<h2>Confirm order</h2>' +
+          '<p class="pcb-lead">If this matches <strong>REQ-884</strong> — one of the <strong>three approved core stacks</strong> (socket-matched CPU+board+GPU+RAM) plus the desk hunt peripherals — place the order to receive the build password.</p>' +
+          '<div class="pcb-review"><ul>' +
+          '<li><strong>CPU:</strong> ' + esc(cpuO().name) + '<br><span class="pcb-sock-sum-p">' + esc((SOCKET_INFO[cpuO().socket] && SOCKET_INFO[cpuO().socket].quick) || cpuO().socket) + '</span></li>' +
+          '<li><strong>Board:</strong> ' + esc(mobO().name) + '<br><span class="pcb-sock-sum-p">' + esc((SOCKET_INFO[mobO().socket] && SOCKET_INFO[mobO().socket].quick) || mobO().socket) + '</span></li>' +
+          '<li><strong>GPU:</strong> ' + esc(gpu) + '</li>' +
+          '<li><strong>RAM:</strong> ' + esc(ram) +
+          (RAM_INFO[ram] ? '<br><span class="pcb-sock-sum-p">' + esc(RAM_INFO[ram].headline) + ' ' + esc(RAM_INFO[ram].tradeoff) + '</span>' : '') + '</li>' +
+          '<li><strong>Peripherals:</strong> ' + esc(per.join(', ')) + '</li></ul></div>' +
+          (order
+            ? (match() && coreOk() && perOk()
+              ? '<div class="wg-success">Order placed. Password: <strong>Configuration</strong></div>'
+              : '<div class="wg-error">REQ-884 rejected: cores must match exactly one approved stack — <strong>LGA1700</strong>: i5-13600K + Z790 + RTX 4070 Super + 32 GB DDR5-6000, or i7-14700K + Z790 + RTX 4090 + 64 GB DDR5-5600; <strong>AM5</strong>: Ryzen 5 7600 + B650 + RX 7800 XT + 64 GB DDR5-5600. Peripherals must be the three hunt items only (no headset).</div><div class="pcb-actions" style="margin-top:1rem"><button type="button" class="wg-btn wg-btn--ghost" id="retry">Adjust build and try again</button></div>')
+            : '<div class="pcb-actions pcb-actions--row">' +
+              '<button type="button" class="wg-btn" id="go">Place order</button>' +
+              '<button type="button" class="wg-btn wg-btn--ghost" id="b2">← Edit build</button></div>');
         var go = el.querySelector('#go');
-        if (go) go.onclick = function () { order = true; render(); };
+        if (go) {
+          go.addEventListener('click', function () {
+            order = true;
+            render();
+          });
+        }
+        var b2 = el.querySelector('#b2');
+        if (b2) {
+          b2.addEventListener('click', function () {
+            stage = 0;
+            render();
+          });
+        }
+        var retry = el.querySelector('#retry');
+        if (retry) {
+          retry.addEventListener('click', function () {
+            order = false;
+            stage = 0;
+            render();
+          });
+        }
       }
     }
+
     render();
   </script>
 </body>

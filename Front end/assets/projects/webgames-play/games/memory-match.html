@@ -17,14 +17,15 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🃏</span><span class="wg-tile-test">Working memory</span></span></header>
   <main class="wg-main">
     <h1 class="wg-h1">Memory match</h1>
     <p class="wg-lead">Flip two cards at a time. Match all 4 pairs. Fewer moves is better.</p>
+    <p class="wg-lead" style="font-size:0.9rem">When every pair is matched, the secret password appears in the green success line below.</p>
     <p class="stats" id="stats">Moves: 0 · Pairs: 0/4</p>
     <div class="board" id="board"></div>
     <p style="text-align:center;margin-top:1rem"><button type="button" class="wg-btn wg-btn--ghost" id="again">New board</button></p>
-    <div id="win" class="wg-success" hidden style="text-align:center;margin-top:1rem">Cleared in <strong id="moves"></strong> moves — nice work.</div>
+    <div id="win" class="wg-success" hidden style="text-align:center;margin-top:1rem">Cleared in <strong id="moves"></strong> moves — nice work. Password: <strong>MEMORYCLEAR</strong></div>
   </main>
   <script>
     var SYMBOLS = ['λ', 'π', '∑', 'Ω'];

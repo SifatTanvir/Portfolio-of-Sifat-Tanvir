@@ -401,4 +401,61 @@
 
   });
 
+  /**
+   * Hero role line: type / hold / delete, alternating LECTURER and LLM DEVELOPER.
+   */
+  function initHeroRoleTyping() {
+    const textEl = document.getElementById("hero-role-text");
+    if (!textEl) return;
+
+    const phrases = ["LECTURER", "LLM DEVELOPER"];
+    const typeMs = 106;
+    const deleteMs = 63;
+    const holdMs = 1500;
+
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let phase = "typing";
+
+    function schedule(ms) {
+      window.setTimeout(tick, ms);
+    }
+
+    function tick() {
+      const phrase = phrases[phraseIndex % phrases.length];
+
+      if (phase === "typing") {
+        if (charIndex < phrase.length) {
+          charIndex += 1;
+          textEl.textContent = phrase.slice(0, charIndex);
+          schedule(typeMs);
+        } else {
+          phase = "hold";
+          schedule(holdMs);
+        }
+      } else if (phase === "hold") {
+        phase = "deleting";
+        schedule(deleteMs);
+      } else if (phase === "deleting") {
+        if (charIndex > 0) {
+          charIndex -= 1;
+          textEl.textContent = phrase.slice(0, charIndex);
+          schedule(deleteMs);
+        } else {
+          phraseIndex += 1;
+          phase = "typing";
+          schedule(typeMs);
+        }
+      }
+    }
+
+    /* After signature ink reveal (~0.28s delay + 2.1s) so typewriter does not compete */
+    const inkSig = document.querySelector(".hero-signature-ink .hero-signature");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const startDelay = inkSig && !reducedMotion ? 2480 : 375;
+    schedule(startDelay);
+  }
+
+  initHeroRoleTyping();
+
 })();

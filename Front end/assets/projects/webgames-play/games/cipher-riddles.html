@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cipher riddles | Webgames</title>
+  <title>Cipher Riddles | Webgames</title>
   <link href="../shared.css" rel="stylesheet">
   <style>
     .puzzle { border-bottom: 1px solid rgba(255,255,255,.1); padding: 1.25rem 0; }
@@ -17,10 +17,11 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🔐</span><span class="wg-tile-test">Lateral reasoning</span></span></header>
   <main class="wg-main wg-main--wide">
-    <h1 class="wg-h1">The Cryptographer's challenge</h1>
+    <h1 class="wg-h1">Cipher Riddles</h1>
     <p class="wg-lead">Pick one answer per riddle, then verify. All five must be correct on the first submit to earn the password (you can reset and try again).</p>
+    <p class="wg-lead" style="font-size:0.9rem">When every riddle is right, the green box below shows the password <strong>CIPHERCRACKED</strong>. A failed verify locks that attempt—click <strong>Reset puzzle</strong> (reloads the page) to draw a fresh set of riddles and try again.</p>
     <div class="wg-card" id="board"></div>
     <button type="button" class="wg-btn" id="verify">Verify all answers</button>
     <div id="msg"></div>

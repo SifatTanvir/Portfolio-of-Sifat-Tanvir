@@ -11,6 +11,8 @@
     .phi-win { display: none; flex-shrink: 0; background: #16a34a; color: #fff; padding: 0.65rem 1rem; align-items: center; justify-content: center; gap: 0.75rem; z-index: 9; }
     .phi-win.on { display: flex; }
     .phi-win code { font-family: ui-monospace, monospace; font-size: 1rem; background: rgba(0,0,0,.25); padding: 0.2rem 0.5rem; border-radius: 6px; letter-spacing: 0.06em; }
+    .phi-mission { flex-shrink: 0; padding: 0.55rem 1rem; background: #eff6ff; border-bottom: 1px solid #bfdbfe; font-size: 0.8125rem; line-height: 1.5; color: #1e3a8a; }
+    .phi-mission strong { color: #172554; }
     .phi-head { flex-shrink: 0; display: flex; align-items: center; gap: 1rem; padding: 0 1rem; height: 4rem; background: #fff; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
     .phi-brand { display: flex; align-items: center; gap: 0.65rem; }
     .phi-brand svg { width: 1.5rem; height: 1.5rem; color: #2563eb; flex-shrink: 0; }
@@ -90,16 +92,17 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🛡️</span><span class="wg-tile-test">Threat identification</span></span></header>
   <div class="phi" id="app">
     <div class="phi-win" id="winBar" role="status">
       <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;flex-shrink:0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
       <span>Mission success! Password: <code>PH4SHC4UGHT</code></span>
     </div>
+    <p class="phi-mission"><strong>Password conditions:</strong> In Inbox, checkbox-flag <strong>exactly the two</strong> phishing threads (no legit mail flagged). Open the report panel, write any non-empty justification, and enter the <strong>security override code</strong> spelled out in the real IT maintenance email (case-insensitive). First <strong>Submit report</strong> must pass all checks—the banner then shows the password; a wrong first submit locks the mission for this load (refresh to retry).</p>
     <header class="phi-head">
       <div class="phi-brand">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a12.02 12.02 0 009 3.04a12.02 12.02 0 009-3.04 12.02 12.02 0 00-2.382-9.984z" /></svg>
-        <span>Threat Intel AI</span>
+        <span>Phishing Detector</span>
       </div>
       <div class="phi-search-wrap">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>

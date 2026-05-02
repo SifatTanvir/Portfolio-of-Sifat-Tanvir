@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Game of color | Webgames</title>
+  <title>Game of Color | Webgames</title>
   <link href="../shared.css" rel="stylesheet">
   <style>
     .grid3 { display: grid; grid-template-columns: repeat(3, 72px); gap: 10px; justify-content: center; margin: 1rem 0; }
@@ -17,10 +17,11 @@
 </head>
 
 <body class="wg-page">
-  <header class="wg-top"><a href="../index.html">← All games</a></header>
+  <header class="wg-top"><a href="../index.html">← All games</a><span class="wg-tile-head wg-game-brand"><span class="wg-tile-emoji" aria-hidden="true">🎨</span><span class="wg-tile-test">Color Blindness</span></span></header>
   <main class="wg-main">
-    <h1 class="wg-h1">Game of color</h1>
+    <h1 class="wg-h1">Game of Color</h1>
     <p class="wg-lead">Count how many red, green, and blue squares appear in the grid.</p>
+    <p class="wg-lead" style="font-size:0.9rem">Enter the exact counts and press <strong>Check</strong>. The password appears only when all three numbers match the grid.</p>
     <div id="play">
       <div class="wg-card">
         <div class="grid3" id="grid"></div>
