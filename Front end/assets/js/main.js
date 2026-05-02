@@ -21,8 +21,10 @@
   function applyTheme(theme) {
     if (theme === "dark") {
       document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.setAttribute("data-bs-theme", "dark");
     } else {
       document.documentElement.removeAttribute("data-theme");
+      document.documentElement.removeAttribute("data-bs-theme");
     }
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);

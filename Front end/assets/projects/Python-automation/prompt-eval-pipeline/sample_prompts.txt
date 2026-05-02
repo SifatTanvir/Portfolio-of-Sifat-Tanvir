@@ -1,0 +1,2 @@
+Summarize the water cycle in two sentences.
+What is a hash table?

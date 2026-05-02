@@ -10,6 +10,7 @@
     llm: 'project-panel-llm',
     android: 'project-panel-android',
     webgames: 'project-panel-webgames',
+    python: 'project-panel-python',
   };
 
   function getAndroidSectionEl(hashWithoutHash) {
@@ -17,6 +18,24 @@
     var el = document.getElementById(hashWithoutHash);
     if (!el || !el.closest) return null;
     return el.closest('#project-panel-android') ? el : null;
+  }
+
+  function getPythonSectionEl(hashWithoutHash) {
+    if (!hashWithoutHash) return null;
+    var el = document.getElementById(hashWithoutHash);
+    if (!el || !el.closest) return null;
+    return el.closest('#project-panel-python') ? el : null;
+  }
+
+  /** Open the Bootstrap collapse for a deep link like #python-rlhf (same page). */
+  function expandPythonCardForHash(hashWithoutHash) {
+    if (!hashWithoutHash || hashWithoutHash.indexOf('python-') !== 0) return;
+    if (hashWithoutHash === 'python-overview') return;
+    var suffix = hashWithoutHash.slice('python-'.length);
+    if (!suffix) return;
+    var collapseEl = document.getElementById('python-collapse-' + suffix);
+    if (!collapseEl || typeof window.bootstrap === 'undefined' || !window.bootstrap.Collapse) return;
+    window.bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false }).show();
   }
 
   function activate(slug, updateHash) {
@@ -35,7 +54,7 @@
       panel.setAttribute('aria-hidden', on ? 'false' : 'true');
     });
 
-    if (slug === 'llm' || slug === 'webgames' || slug === 'android') {
+    if (slug === 'llm' || slug === 'webgames' || slug === 'android' || slug === 'python') {
       requestAnimationFrame(function () {
         window.dispatchEvent(new Event('resize'));
       });
@@ -59,7 +78,17 @@
         androidTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     } else {
-      activate('llm', false);
+      var pythonTarget = getPythonSectionEl(hash);
+      if (pythonTarget) {
+        activate('python', false);
+        requestAnimationFrame(function () {
+          window.dispatchEvent(new Event('resize'));
+          expandPythonCardForHash(hash);
+          pythonTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      } else {
+        activate('llm', false);
+      }
     }
   } else {
     activate('llm', false);
@@ -84,6 +113,16 @@
         requestAnimationFrame(function () {
           window.dispatchEvent(new Event('resize'));
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        return;
+      }
+      var py = getPythonSectionEl(h);
+      if (py) {
+        activate('python', false);
+        requestAnimationFrame(function () {
+          window.dispatchEvent(new Event('resize'));
+          expandPythonCardForHash(h);
+          py.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       }
     }

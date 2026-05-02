@@ -1,0 +1,1 @@
+Sample file for bulk rename demos (safe to copy elsewhere and experiment).

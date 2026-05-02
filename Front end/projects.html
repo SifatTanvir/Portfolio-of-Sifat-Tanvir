@@ -88,6 +88,7 @@
           <button type="button" class="project-tab-btn active" role="tab" aria-selected="true" aria-controls="project-panel-llm" id="tab-llm" data-project="llm">LLM Compression</button>
           <button type="button" class="project-tab-btn" role="tab" aria-selected="false" aria-controls="project-panel-android" id="tab-android" data-project="android">Android App</button>
           <button type="button" class="project-tab-btn" role="tab" aria-selected="false" aria-controls="project-panel-webgames" id="tab-webgames" data-project="webgames">Webgames</button>
+          <button type="button" class="project-tab-btn" role="tab" aria-selected="false" aria-controls="project-panel-python" id="tab-python" data-project="python">Python Automation</button>
         </div>
 
         <div class="project-panels" data-aos="fade-up" data-aos-delay="100">
@@ -499,6 +500,469 @@
             </div>
 
           </div>
+          <div id="project-panel-python" class="project-panel" role="tabpanel" aria-labelledby="tab-python" aria-hidden="true">
+            <div class="python-auto-wrap">
+                <h3 id="python-overview" class="project-panel-title">Python Automation</h3>
+                <p class="mb-3">Python automation is valuable because it transforms repetitive, rule-based tasks into efficient, reliable systems that save time, reduce human error, and scale far beyond what manual work can handle. Instead of spending hours on tasks like organizing files, sending emails, scraping data, or validating links, automation can complete them in seconds with consistency. It improves productivity by freeing up time for higher-value work such as analysis, creativity, and decision-making, while also enabling scheduled workflows and system integrations. Beyond convenience, building automation projects strengthens practical programming skills and serves as a strong foundation for more advanced areas like data engineering, AI pipelines, and workflow optimization. <br> <br> <strong>Click a card</strong> to expand it on this page.</p>
+                <p class="mb-3"><a class="btn btn-outline-primary btn-sm" href="assets/projects/Python-automation/requirements.txt" download="python-automation-requirements.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>Download toolkit requirements.txt</a> <a class="btn btn-outline-secondary btn-sm" href="assets/projects/Python-automation/LEGAL_AND_ETHICS.md" download="LEGAL_AND_ETHICS.md"><i class="bi bi-download me-1" aria-hidden="true"></i>LEGAL_AND_ETHICS.md</a></p>
+                <details class="project-python-code-details mb-4">
+                  <summary>Toolkit folder layout (in this repository)</summary>
+                  <p class="small text-muted mb-2">In the cloned repo, the toolkit root is <code class="px-1">Front end/assets/projects/Python-automation</code>. Open a terminal and <code class="px-1">cd</code> to that folder before running any command below: every path is written relative to this root so <code class="px-1">tool-name/main.py</code> resolves correctly.</p>
+                  <pre class="python-auto-fs-tree mb-2">Python-automation/
+├── requirements.txt          ← shared optional installs (see each tool)
+├── LEGAL_AND_ETHICS.md
+├── README.md
+├── LICENSE
+├── rlhf-dataset-builder/
+├── prompt-eval-pipeline/
+├── data-scrape-export/
+├── pdf-merger-splitter/
+├── bulk-file-rename/
+├── file-organizer/
+├── auto-email-sender/
+└── url-validation/</pre>
+                  <p class="small text-muted mb-0">Each named folder is one tool: it contains <code class="px-1">main.py</code>, <code class="px-1">README.md</code>, and bundled sample inputs where applicable (<code class="px-1">sample_in/</code>, <code class="px-1">sample_messy_in/</code>, <code class="px-1">samples/</code>, or single files such as <code class="px-1">sample_prompts.csv</code>). Expand a card for download buttons and run steps.</p>
+                </details>
+
+                <div id="python-auto-accordion" class="python-auto-accordion">
+
+                  <div id="python-rlhf" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-rlhf" data-bs-toggle="collapse" data-bs-target="#python-collapse-rlhf" aria-expanded="false" aria-controls="python-collapse-rlhf">
+                      <span class="python-auto-card__emoji" aria-hidden="true">🧪</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">RLHF dataset builder</span>
+                        <span class="python-auto-card__desc">Turn prompt spreadsheets or text dumps into a clean JSONL dataset you can feed labeling or training workflows—without wiring a full data pipeline first.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-rlhf" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Work from the toolkit root directory <code class="px-1">Python-automation</code> (the folder that contains <code class="px-1">requirements.txt</code> and the tool subfolders). If you open a new terminal, <code class="px-1">cd</code> there first so every relative path below is valid.</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── rlhf-dataset-builder/
+    ├── main.py
+    ├── README.md
+    └── sample_prompts.csv      ← bundled CSV for --input</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd</code> into <code class="px-1">…/Front end/assets/projects/Python-automation</code> (or your local equivalent).</li>
+                          <li><strong>Dependencies:</strong> this script uses only the Python standard library. Running <code class="px-1">pip install -r requirements.txt</code> once is still useful if you use other tools in the same folder that need third-party packages.</li>
+                          <li><strong>Command:</strong> <code class="px-1">python rlhf-dataset-builder/main.py --input rlhf-dataset-builder/sample_prompts.csv -o dataset.jsonl</code> — the first path is the entry script from the root; the second path is the sample CSV inside the tool folder.</li>
+                          <li><strong>Output:</strong> <code class="px-1">-o dataset.jsonl</code> is relative to your current working directory (the toolkit root unless you pass a path that contains <code class="px-1">/</code> or <code class="px-1">\</code>).</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>Standard library only for this script</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_prompts.csv</code> — header <code class="px-1">prompt</code> plus three example prompts; pass as <code class="px-1">--input rlhf-dataset-builder/sample_prompts.csv</code> from the toolkit root.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/rlhf-dataset-builder/main.py" download="rlhf-dataset-builder-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/rlhf-dataset-builder/README.md" download="rlhf-dataset-builder-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/rlhf-dataset-builder/sample_prompts.csv" download="rlhf-sample_prompts.csv"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_prompts.csv</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/rlhf-dataset-builder/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-prompt-eval" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-prompt-eval" data-bs-toggle="collapse" data-bs-target="#python-collapse-prompt-eval" aria-expanded="false" aria-controls="python-collapse-prompt-eval">
+                      <span class="python-auto-card__emoji" aria-hidden="true">📊</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">Prompt evaluation pipeline</span>
+                        <span class="python-auto-card__desc">Run a whole prompt file through repeatable stub “models” and get a CSV of length, timing, and simple quality heuristics so you can compare batches before you spend on real APIs.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-prompt-eval" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Stay in the toolkit root <code class="px-1">Python-automation</code> (same folder as <code class="px-1">requirements.txt</code>). All <code class="px-1">python …/main.py</code> commands are launched from there.</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── prompt-eval-pipeline/
+    ├── main.py
+    ├── README.md
+    └── sample_prompts.txt      ← demo one prompt per line (--input …)</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code>.</li>
+                          <li><strong>Dependencies:</strong> standard library only for this script; <code class="px-1">pip install -r requirements.txt</code> is optional here but installs shared deps for other tools in the toolkit.</li>
+                          <li><strong>Command:</strong> <code class="px-1">python prompt-eval-pipeline/main.py --input prompt-eval-pipeline/sample_prompts.txt -o metrics.csv</code> — reads bundled sample text and writes <code class="px-1">metrics.csv</code> in the current directory.</li>
+                          <li><strong>Own inputs:</strong> place a <code class="px-1">.txt</code> file anywhere and pass its path to <code class="px-1">--input</code> (still easiest if you run from the toolkit root and use relative paths).</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>Standard library only</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_prompts.txt</code> — one stub prompt per line for a quick metrics run.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/prompt-eval-pipeline/main.py" download="prompt-eval-pipeline-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/prompt-eval-pipeline/README.md" download="prompt-eval-pipeline-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/prompt-eval-pipeline/sample_prompts.txt" download="prompt-eval-sample_prompts.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_prompts.txt</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/prompt-eval-pipeline/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-scrape" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-scrape" data-bs-toggle="collapse" data-bs-target="#python-collapse-scrape" aria-expanded="false" aria-controls="python-collapse-scrape">
+                      <span class="python-auto-card__emoji" aria-hidden="true">🌐</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">Data scrape &amp; export</span>
+                        <span class="python-auto-card__desc">Extract tables from HTML you are allowed to use (saved pages or approved URLs) into CSV—or Excel when you need a shareable report for stakeholders.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-scrape" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Use the toolkit root <code class="px-1">Python-automation</code>. This tool needs third-party packages from the root <code class="px-1">requirements.txt</code> (Beautiful Soup, optional pandas/openpyxl for Excel).</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── data-scrape-export/
+    ├── main.py
+    ├── README.md
+    └── sample_job_listings.html   ← offline demo (--html-file …)</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code>.</li>
+                          <li><strong>Install:</strong> <code class="px-1">pip install -r requirements.txt</code> (installs into your active environment).</li>
+                          <li><strong>Offline sample:</strong> <code class="px-1">python data-scrape-export/main.py --html-file data-scrape-export/sample_job_listings.html -o jobs.csv</code> — HTML path is under the tool folder; CSV is created in the current directory.</li>
+                          <li><strong>Excel:</strong> add <code class="px-1">--excel</code> (needs pandas + openpyxl from the same requirements file).</li>
+                          <li><strong>Remote URL:</strong> use <code class="px-1">--url</code> only for hosts you are allowed to fetch; read <code class="px-1">LEGAL_AND_ETHICS.md</code> at the toolkit root.</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>beautifulsoup4, lxml</li>
+                          <li>pandas + openpyxl for <code class="px-1">--excel</code></li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_job_listings.html</code> — offline HTML to parse without hitting the network.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/data-scrape-export/main.py" download="data-scrape-export-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/data-scrape-export/README.md" download="data-scrape-export-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/data-scrape-export/sample_job_listings.html" download="data-scrape-sample_job_listings.html"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_job_listings.html</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/data-scrape-export/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-pdf" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-pdf" data-bs-toggle="collapse" data-bs-target="#python-collapse-pdf" aria-expanded="false" aria-controls="python-collapse-pdf">
+                      <span class="python-auto-card__emoji" aria-hidden="true">📄</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">PDF merger &amp; splitter</span>
+                        <span class="python-auto-card__desc">Join several PDFs, pull out only the pages you need, or fix rotation in bulk—handy when scans or exports arrive wrong-way-up and you want a scriptable fix.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-pdf" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Run from <code class="px-1">Python-automation</code>. Install <code class="px-1">pypdf</code> via the root <code class="px-1">requirements.txt</code>. Put your own <code class="px-1">.pdf</code> files in this folder (or pass absolute paths) for merge/split examples.</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── pdf-merger-splitter/
+    ├── main.py
+    ├── README.md
+    └── samples/
+        ├── sample_a.pdf        ← one-page blank PDF
+        └── sample_b.pdf</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code>; then <code class="px-1">pip install -r requirements.txt</code>.</li>
+                          <li><strong>Demo (no user PDFs):</strong> <code class="px-1">python pdf-merger-splitter/main.py demo --dir pdf_demo_out</code> writes demo PDFs under <code class="px-1">pdf_demo_out</code> in the current directory.</li>
+                          <li><strong>Merge bundled samples:</strong> <code class="px-1">python pdf-merger-splitter/main.py merge pdf-merger-splitter/samples/sample_a.pdf pdf-merger-splitter/samples/sample_b.pdf -o merged_from_samples.pdf</code>.</li>
+                          <li><strong>Split / rotate:</strong> use <code class="px-1">samples/sample_a.pdf</code> as <code class="px-1">split</code> / <code class="px-1">rotate</code> input; see <code class="px-1">pdf-merger-splitter/README.md</code>.</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>pypdf (&gt;= 4)</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">samples/sample_a.pdf</code> and <code class="px-1">samples/sample_b.pdf</code> — single-page PDFs for merge/split/rotate experiments.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/pdf-merger-splitter/main.py" download="pdf-merger-splitter-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/pdf-merger-splitter/README.md" download="pdf-merger-splitter-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/pdf-merger-splitter/samples/sample_a.pdf" download="pdf-sample_a.pdf"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_a.pdf</a>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/pdf-merger-splitter/samples/sample_b.pdf" download="pdf-sample_b.pdf"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_b.pdf</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/pdf-merger-splitter/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-rename" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-rename" data-bs-toggle="collapse" data-bs-target="#python-collapse-rename" aria-expanded="false" aria-controls="python-collapse-rename">
+                      <span class="python-auto-card__emoji" aria-hidden="true">✏️</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">Bulk file rename</span>
+                        <span class="python-auto-card__desc">Rename hundreds of vacation photos, exports, or logs with counters and patterns—and preview every change with dry-run so you never trash a folder by accident.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-rename" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Run from <code class="px-1">Python-automation</code>. Point <code class="px-1">--dir</code> at the folder whose <strong>files</strong> you want renamed (never renames subfolders). The bundled <code class="px-1">sample_in/</code> folder is safe for dry-runs; copy it elsewhere before applying renames if you want to keep the originals in the repo pristine.</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── bulk-file-rename/
+    ├── main.py
+    ├── README.md
+    └── sample_in/              ← three .txt files for dry-run demos
+        ├── notes.txt
+        ├── draft v2.txt
+        └── extra.txt</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code> (stdlib only; no <code class="px-1">pip install</code> required).</li>
+                          <li><strong>Dry run on bundled samples:</strong> <code class="px-1">python bulk-file-rename/main.py --dir bulk-file-rename/sample_in --glob "*.txt" --serial --prefix note_ --counter-width 3 --dry-run</code></li>
+                          <li><strong>Apply:</strong> remove <code class="px-1">--dry-run</code> only when you are happy with the printed mapping (prefer a copy of <code class="px-1">sample_in</code> if you need to keep repo files unchanged).</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>Standard library only</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_in/*.txt</code> — plain text files to exercise <code class="px-1">--glob "*.txt"</code>, <code class="px-1">--serial</code>, and a filename containing spaces.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/bulk-file-rename/main.py" download="bulk-file-rename-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/bulk-file-rename/README.md" download="bulk-file-rename-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/bulk-file-rename/sample_in/notes.txt" download="bulk-rename-sample-notes.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>notes.txt</a>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/bulk-file-rename/sample_in/draft%20v2.txt" download="bulk-rename-draft-v2.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>draft v2.txt</a>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/bulk-file-rename/sample_in/extra.txt" download="bulk-rename-extra.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>extra.txt</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/bulk-file-rename/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-organizer" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-organizer" data-bs-toggle="collapse" data-bs-target="#python-collapse-organizer" aria-expanded="false" aria-controls="python-collapse-organizer">
+                      <span class="python-auto-card__emoji" aria-hidden="true">📁</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">File organizer</span>
+                        <span class="python-auto-card__desc">Take a messy “Downloads” pile and sort files into PDFs, Images, Code, and other buckets; plan moves first, then execute when the layout looks right.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-organizer" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Run from <code class="px-1">Python-automation</code>. <code class="px-1">--source</code> must be a directory whose <strong>files</strong> you want sorted; <code class="px-1">--dest</code> receives extension-based subfolders when you execute.</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── file-organizer/
+    ├── main.py
+    ├── README.md
+    └── sample_messy_in/        ← mixed extensions for --source
+        ├── readme.txt
+        ├── app.py
+        ├── notes.md
+        └── config.json</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code>.</li>
+                          <li><strong>Plan with bundled mess:</strong> create an empty output folder, e.g. <code class="px-1">mkdir organizer_demo_out</code>, then <code class="px-1">python file-organizer/main.py --source file-organizer/sample_messy_in --dest ./organizer_demo_out</code> (prints the move plan only).</li>
+                          <li><strong>Execute:</strong> add <code class="px-1">--execute</code> to move files into <code class="px-1">Documents/</code>, <code class="px-1">Code/</code>, etc. under <code class="px-1">--dest</code>. Optional <code class="px-1">--dedupe</code>, <code class="px-1">--date-subfolders</code> (see README).</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>Standard library only</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_messy_in/</code> — <code class="px-1">.txt</code>, <code class="px-1">.py</code>, <code class="px-1">.md</code>, <code class="px-1">.json</code> files to preview how paths map into type folders.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/file-organizer/main.py" download="file-organizer-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/file-organizer/README.md" download="file-organizer-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/file-organizer/sample_messy_in/readme.txt" download="organizer-sample-readme.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>readme.txt</a>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/file-organizer/sample_messy_in/app.py" download="organizer-sample-app.py"><i class="bi bi-download me-1" aria-hidden="true"></i>app.py</a>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/file-organizer/sample_messy_in/notes.md" download="organizer-sample-notes.md"><i class="bi bi-download me-1" aria-hidden="true"></i>notes.md</a>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/file-organizer/sample_messy_in/config.json" download="organizer-sample-config.json"><i class="bi bi-download me-1" aria-hidden="true"></i>config.json</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/file-organizer/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-email" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-email" data-bs-toggle="collapse" data-bs-target="#python-collapse-email" aria-expanded="false" aria-controls="python-collapse-email">
+                      <span class="python-auto-card__emoji" aria-hidden="true">✉️</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">Auto email sender</span>
+                        <span class="python-auto-card__desc">Schedule plain-text emails ahead of time in a JSON queue and let a local daemon send (or dry-run) when the clock hits—useful for reminders or batch outreach from your own machine.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-email" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Run from <code class="px-1">Python-automation</code>. The default queue file is <code class="px-1">email_schedules.json</code> in the <strong>current working directory</strong> (the toolkit root if you stay there after <code class="px-1">cd</code>).</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-2">Python-automation/
+└── auto-email-sender/
+    ├── main.py
+    ├── README.md
+    └── sample_queue.json       ← example queue (list / daemon with --file)</pre>
+                        <p class="small text-muted mb-3">By default the queue is stored as <code class="px-1">email_schedules.json</code> in your shell’s <strong>current working directory</strong> (often the toolkit root after <code class="px-1">cd</code>). Pass <code class="px-1">--file path\to\schedules.json</code> on the same line <strong>after</strong> the subcommand, e.g. <code class="px-1">python auto-email-sender/main.py list --file auto-email-sender/sample_queue.json</code>.</p>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code> (stdlib only).</li>
+                          <li><strong>Inspect the sample queue:</strong> <code class="px-1">python auto-email-sender/main.py list --file auto-email-sender/sample_queue.json</code> — shows the JSON shape without editing your real queue.</li>
+                          <li><strong>Queue a message:</strong> <code class="px-1">python auto-email-sender/main.py add --to you@example.com --subject Hi --body "Hello" --at "2026-05-03 14:30"</code> appends to <code class="px-1">email_schedules.json</code> in the current directory unless you pass <code class="px-1">--file</code>.</li>
+                          <li><strong>Daemon / send:</strong> <code class="px-1">python auto-email-sender/main.py daemon --interval 5</code> or use <code class="px-1">--send</code> with <code class="px-1">SMTP_*</code> environment variables (see <code class="px-1">auto-email-sender/README.md</code>).</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>Standard library (smtplib, ssl)</li>
+                          <li>SMTP account and env vars for live send</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_queue.json</code> — one pending job with a far-future <code class="px-1">send_at</code> for safe <code class="px-1">list</code> / dry-run <code class="px-1">daemon</code> experiments.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/auto-email-sender/main.py" download="auto-email-sender-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/auto-email-sender/README.md" download="auto-email-sender-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/auto-email-sender/sample_queue.json" download="auto-email-sample_queue.json"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_queue.json</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/auto-email-sender/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="python-url" class="python-auto-card">
+                    <button type="button" class="python-auto-card__toggle collapsed" id="python-heading-url" data-bs-toggle="collapse" data-bs-target="#python-collapse-url" aria-expanded="false" aria-controls="python-collapse-url">
+                      <span class="python-auto-card__emoji" aria-hidden="true">🔗</span>
+                      <span class="python-auto-card__text">
+                        <span class="python-auto-card__name">URL validation</span>
+                        <span class="python-auto-card__desc">Verify a list of links still work, capture final URLs after redirects, and export a spreadsheet—great after site moves or when you inherit a long URL list.</span>
+                      </span>
+                      <i class="bi bi-chevron-down python-auto-card__chev" aria-hidden="true"></i>
+                    </button>
+                    <div id="python-collapse-url" class="collapse" data-bs-parent="#python-auto-accordion">
+                      <div class="python-auto-card__body">
+                        <h5 class="fs-6 fw-bold mb-2">How to run</h5>
+                        <p class="small text-muted mb-2">Run from <code class="px-1">Python-automation</code>. Input can be the bundled sample list or your own text file; output CSV path is relative to the current directory.</p>
+                        <p class="small fw-semibold mb-1">Files for this tool</p>
+                        <pre class="python-auto-fs-tree mb-3">Python-automation/
+└── url-validation/
+    ├── main.py
+    ├── README.md
+    └── sample_urls.txt        ← one URL per line (--input …)</pre>
+                        <ol class="mb-3">
+                          <li><strong>Toolkit root:</strong> <code class="px-1">cd …/Python-automation</code> (stdlib only).</li>
+                          <li><strong>Sample run:</strong> <code class="px-1">python url-validation/main.py --input url-validation/sample_urls.txt -o results.csv</code>.</li>
+                          <li><strong>Inline URLs:</strong> <code class="px-1">python url-validation/main.py --url https://example.com</code> (repeat <code class="px-1">--url</code> for multiple).</li>
+                          <li><strong>Own list:</strong> put a <code class="px-1">.txt</code> file anywhere and pass <code class="px-1">--input path\to\urls.txt</code>; write <code class="px-1">-o</code> to control where the CSV is saved.</li>
+                        </ol>
+                        <h5 class="fs-6 fw-bold mb-2">Requirements</h5>
+                        <ul class="mb-3">
+                          <li>Python 3.10+</li>
+                          <li>Standard library only</li>
+                        </ul>
+                        <h5 class="fs-6 fw-bold mb-2">Sample inputs</h5>
+                        <ul class="small mb-3">
+                          <li><code class="px-1">sample_urls.txt</code> — one URL per line; lines starting with <code class="px-1">#</code> are comments.</li>
+                        </ul>
+                        <p class="mb-2 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Tool files:</span>
+                          <a class="btn btn-sm btn-primary" href="assets/projects/Python-automation/url-validation/main.py" download="url-validation-main.py"><i class="bi bi-download me-1" aria-hidden="true"></i>main.py</a>
+                          <a class="btn btn-sm btn-outline-primary" href="assets/projects/Python-automation/url-validation/README.md" download="url-validation-README.md"><i class="bi bi-download me-1" aria-hidden="true"></i>README.md</a>
+                        </p>
+                        <p class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+                          <span class="small text-muted">Sample data:</span>
+                          <a class="btn btn-sm btn-outline-secondary" href="assets/projects/Python-automation/url-validation/sample_urls.txt" download="url-validation-sample_urls.txt"><i class="bi bi-download me-1" aria-hidden="true"></i>sample_urls.txt</a>
+                        </p>
+                        <details class="project-python-code-details mb-0">
+                          <summary>View <code>main.py</code> (loads when expanded)</summary>
+                          <pre class="project-python-code" data-code-src="assets/projects/Python-automation/url-validation/main.py"><code class="project-python-code__inner"></code></pre>
+                          <p class="small text-muted mb-0 mt-2">Without JavaScript, use the <strong>main.py</strong> download above.</p>
+                        </details>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -546,6 +1010,7 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
   <script src="assets/js/projects-tabs.js"></script>
+  <script src="assets/js/projects-python-code.js"></script>
   <script src="assets/js/projects-deck-zoom.js"></script>
 
 </body>

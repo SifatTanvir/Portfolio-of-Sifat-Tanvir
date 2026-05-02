@@ -1999,15 +1999,25 @@ section,
   text-transform: none;
   line-height: 1.4;
   font-size: 17px;
+  color: #0ea5e9;
 }
 
 #research .resume-item h4 a {
-  color: inherit;
+  color: #0ea5e9;
   text-decoration: none;
 }
 
 #research .resume-item h4 a:hover {
-  color: var(--accent-color);
+  color: #0284c7;
+}
+
+/* DOI lines under publication titles (not other .text-muted on the page) */
+#research .resume-item h4 + p span.small.text-muted {
+  color: #000 !important;
+}
+
+html[data-theme="dark"] #research .resume-item h4 + p span.small.text-muted {
+  color: #cbd5e1 !important;
 }
 
 #research .award-honor-swiper {
@@ -2295,6 +2305,193 @@ section,
 
 .projects #project-panel-android [id^="android-"]:not(#android-toc-heading) {
   scroll-margin-top: 5.75rem;
+}
+
+/* Python automation: expandable cards */
+.projects #project-panel-python .python-auto-wrap {
+  max-width: 920px;
+  margin-inline: auto;
+}
+
+.projects #project-panel-python .python-auto-wrap > h3.project-panel-title {
+  margin-bottom: 1.25rem;
+}
+
+.projects #project-panel-python .python-auto-wrap > details.project-python-code-details {
+  margin-top: 1.5rem;
+}
+
+.projects #project-panel-python .python-auto-wrap > #python-auto-accordion {
+  margin-top: 1.75rem;
+}
+
+.projects #project-panel-python .python-auto-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.projects #project-panel-python .python-auto-card {
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 86%);
+  border-radius: 12px;
+  background: var(--surface-color);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.projects #project-panel-python .python-auto-card[id^="python-"]:not(#python-toc-heading) {
+  scroll-margin-top: 5.75rem;
+}
+
+.projects #project-panel-python #python-overview {
+  scroll-margin-top: 5.75rem;
+}
+
+.projects #project-panel-python .python-auto-card__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--heading-color);
+  transition: background 0.15s ease;
+}
+
+.projects #project-panel-python .python-auto-card__toggle:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 92%);
+}
+
+.projects #project-panel-python .python-auto-card__toggle:not(.collapsed) {
+  background: color-mix(in srgb, var(--accent-color), transparent 94%);
+}
+
+.projects #project-panel-python .python-auto-card__emoji {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.projects #project-panel-python .python-auto-card__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.projects #project-panel-python .python-auto-card__name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.projects #project-panel-python .python-auto-card__desc {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--default-color), transparent 18%);
+  line-height: 1.45;
+}
+
+.projects #project-panel-python .python-auto-card__chev {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  opacity: 0.65;
+}
+
+.projects #project-panel-python .python-auto-card__toggle:not(.collapsed) .python-auto-card__chev {
+  transform: rotate(180deg);
+}
+
+.projects #project-panel-python .python-auto-card__body {
+  padding: 1rem 1.1rem 1.35rem;
+  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+/* Subsections inside an expanded card */
+.projects #project-panel-python .python-auto-card__body > h5:not(:first-child) {
+  margin-top: 1.75rem;
+}
+
+.projects #project-panel-python .python-auto-card__body > p.small.fw-semibold {
+  margin-top: 1.35rem;
+}
+
+.projects #project-panel-python .python-auto-card__body > details.project-python-code-details {
+  margin-top: 1.5rem;
+}
+
+.projects #project-panel-python pre.python-auto-fs-tree {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  border-radius: 6px;
+  max-height: min(14rem, 42vh);
+  overflow: auto;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: color-mix(in srgb, var(--default-color), transparent 94%);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  color: var(--default-color);
+}
+
+.projects #project-panel-python .project-python-code-details {
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+  border-radius: 8px;
+  padding: 0.65rem 1rem 1rem;
+  background: var(--surface-color);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.projects #project-panel-python .project-python-code-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--heading-color);
+  font-size: 0.95rem;
+}
+
+.projects #project-panel-python pre.project-python-code {
+  max-height: min(32rem, 70vh);
+  overflow: auto;
+  margin: 0.75rem 0 0;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--default-color), transparent 94%);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+}
+
+.projects #project-panel-python pre.project-python-code code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+  color: var(--default-color);
+}
+
+/* Python automation: Bootstrap .text-muted + code blocks read clearly on dark panels */
+html[data-theme="dark"] .projects #project-panel-python pre.python-auto-fs-tree {
+  background: rgba(0, 0, 0, 0.42);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .projects #project-panel-python pre.project-python-code {
+  background: rgba(0, 0, 0, 0.42);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+html[data-theme="dark"] .projects #project-panel-python pre.project-python-code code {
+  color: #e2e8f0;
+}
+
+html[data-theme="dark"] .projects #project-panel-python .project-python-code-details {
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .hobbies-page #hobbies .hobby-logo-card {

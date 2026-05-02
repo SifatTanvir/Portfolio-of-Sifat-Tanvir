@@ -1,0 +1,14 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "to": [
+      "you@example.com"
+    ],
+    "cc": [],
+    "bcc": [],
+    "subject": "Sample job (from sample_queue.json)",
+    "body": "This row is for inspecting the JSON format with: python auto-email-sender/main.py --file auto-email-sender/sample_queue.json list\nSend time is far in the future so the daemon will not treat it as due during casual testing.",
+    "send_at": "2035-06-01T15:00:00+00:00",
+    "sent": false
+  }
+]

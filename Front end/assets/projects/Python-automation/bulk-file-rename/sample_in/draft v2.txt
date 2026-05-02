@@ -1,0 +1,1 @@
+Second sample with spaces in the filename (try --strip-spaces without --serial).
